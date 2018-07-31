@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<title>No Vin Cart</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<h:form id="form-g">
+				<p:growl id="error-growl" sticky="true"
+					rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+				<p:growl id="success-growl" sticky="true"
+					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+			</h:form>
+			<div align="center">
+				<h:form>
+					<h:outputText value="Cart # #{novincartBean.cart.id} No Vin"
+						styleClass="q-large-text" />
+				</h:form>
+			</div>
+			<div>
+				<div class="w3-row">
+					<div class="w3-half">
+						<h:form>
+							<h:panelGrid columns="3">
+								<h:panelGrid columns="2">
+									<h:outputLabel value="Cart ID" styleClass="q-bold" />
+									<h:inputText readonly="true" value="#{novincartBean.cart.id}" />
+									<h:outputLabel value="Date" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.created}">
+										<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+									</h:inputText>
+									<h:outputLabel value="Vehicle" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.modelYear.fullName}" />
+									<h:outputLabel value="VIN" styleClass="q-bold" />
+									<h:inputText value="#{novincartBean.cart.vin}"
+										validatorMessage="Invalid VIN" a:maxlength="17" tabindex="0"
+										style="text-transform: uppercase;margin: auto;background-color:#deeff5"
+										required="true" requiredMessage="Enter VIN">
+										<f:validateRegex pattern="^[a-zA-Z0-9]*$"></f:validateRegex>
+									</h:inputText>
+									<h:outputLabel styleClass="q-bold" value="City" />
+									<h:inputText readonly="true"
+										value=" #{novincartBean.cart.city.region.name} - #{novincartBean.cart.city.name}" />
+								</h:panelGrid>
+								<p:spacer width="50" />
+								<h:panelGrid columns="2">
+									<h:outputLabel styleClass="q-bold" value="ID" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.customer.id}" />
+									<h:outputLabel styleClass="q-bold" value="Name" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.customer.firstName} #{novincartBean.cart.customer.lastName}" />
+									<h:outputLabel styleClass="q-bold" value="Mobile" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.customer.mobile}" />
+									<h:outputLabel styleClass="q-bold" value="Email" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.customer.email}" />
+									<h:outputLabel styleClass="q-bold" value="Loyalty" />
+									<h:inputText readonly="true"
+										value="#{novincartBean.cart.customer.totalLoyaltyPoints}" />
+								</h:panelGrid>
+							</h:panelGrid>
+							<div align="center">
+								<p:commandButton value="Save Changes"
+									actionListener="#{novincartBean.saveChanges()}"
+									update=":form-g" styleClass="q-btn"></p:commandButton>
+							</div>
+						</h:form>
+						<br />
+						<div>
+							<h:dataTable value="#{novincartBean.previousCarts}" var="cart"
+								styleClass="w3-table w3-striped w3-border"
+								headerClass="w3-light-grey w3-border-bottom">
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="Previous Carts" />
+									</div>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Cart #" />
+									</f:facet>
+									<h:outputText value="#{cart.id}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Date" />
+									</f:facet>
+									<h:outputText value="#{cart.created}">
+										<f:convertDateTime type="date" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="VIN" />
+									</f:facet>
+									<h:outputText value="#{cart.vin}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Vehicle" />
+									</f:facet>
+									<h:outputText value="#{cart.modelYear.fullName}" />
+								</h:column>
+							</h:dataTable>
+						</div>
+					</div>
+					<div class="w3-half">
+						<h:dataTable value="#{novincartBean.cart.cartItems}" var="item"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom">
+							<f:facet name="header">
+								<div align="center">
+									<h:outputText value="Cart Items" />
+								</div>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Item Desc." />
+								</f:facet>
+								<h:outputText value="#{item.name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Quantity" />
+								</f:facet>
+								<h:outputText value="#{item.quantity}" />
+							</h:column>
+						</h:dataTable>
+						<br />
+						<div align="center">
+							<h:graphicImage rendered="#{novincartBean.cart.vinImage}"
+								value="/images/vin/#{novincartBean.vinImageDirectory}/#{novincartBean.cart.id}.jpg"
+								width="200" id="myImg" />
+						</div>
+						<div id="myModal" class="modal">
+
+							<!-- The Close Button -->
+							<span class="close">&times;</span>
+
+							<!-- Modal Content (The Image) -->
+							<img class="modal-content" id="img01" />
+							<!-- Modal Caption (Image Text) -->
+							<div id="caption"></div>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div align="center">
+					<h:panelGroup>
+						<div>
+							<div>
+								<h:dataTable value="#{novincartBean.cart.reviews}" var="review"
+									styleClass="w3-table w3-striped w3-border"
+									headerClass="w3-light-grey w3-border-bottom">
+									<f:facet name="header">
+										<div align="center">Reviews</div>
+									</f:facet>
+									<h:column>
+										<f:facet name="header">
+										Date
+									</f:facet>
+										<h:outputText value="#{review.created}">
+											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+										Reviewer
+									</f:facet>
+										<h:outputText
+											value="#{usersBean.getUserFromId(review.reviewerId).firstName}">
+											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+										Text
+									</f:facet>
+										<h:outputText value="#{review.reviewText}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+										Action
+									</f:facet>
+										<h:outputText value="#{review.actionValueString}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											More Action
+										</f:facet>
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'A'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'B'}" />
+										<h:outputText value="#{review.alternativePrice}"
+											rendered="#{review.actionValue eq 'C'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'D'}" />
+										<h:outputText value="#{review.reminderDate}"
+											rendered="#{review.actionValue eq 'E'}">
+											<f:convertDateTime pattern="dd-MMM-yyyy" />
+										</h:outputText>
+										<h:outputText value="#{review.boughtFrom}"
+											rendered="#{review.actionValue eq 'F'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'G'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'O'}" />
+									</h:column>
+								</h:dataTable>
+							</div>
+						</div>
+						<h:form id="form1">
+							<div class="w3-row">
+								<div class="w3-padding-12">
+									<h:outputText value="Action" />
+									<br />
+									<h:selectOneMenu id="select-action"
+										value="#{novincartBean.cartReview.actionValue}">
+										<f:selectItem noSelectionOption="true"
+											itemLabel="--Select Action--" />
+										<f:selectItem itemValue="B" itemLabel="General" />
+										<f:selectItem itemValue="X" itemLabel="Archive" />
+										<f:ajax execute="@this" render=":form-g" />
+									</h:selectOneMenu>
+									<br />
+								</div>
+								<div class="w3-padding-12">
+									<h:outputText value="Comments" />
+									<br />
+									<h:inputTextarea required="true"
+										requiredMessage="Enter comments before submitting"
+										value="#{novincartBean.cartReview.reviewText}" cols="70"
+										rows="3" />
+								</div>
+							</div>
+
+							<div>
+								<p:commandButton value="Submit" styleClass="q-btn"
+									actionListener="#{novincartBean.submitReview()}"
+									process="@form" ajax="false">
+								</p:commandButton>
+							</div>
+						</h:form>
+					</h:panelGroup>
+				</div>
+
+			</div>
+			<style>
+#myImg {
+	border-radius: 5px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+#myImg:hover {
+	opacity: 0.7;
+}
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+}
+
+/* Modal Content (image) */
+.modal-content {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+}
+
+/* Caption of Modal Image */
+#caption {
+	margin: auto;
+	display: block;
+	width: 80%;
+	max-width: 700px;
+	text-align: center;
+	color: #ccc;
+	padding: 10px 0;
+	height: 150px;
+}
+
+/* Add Animation */
+.modal-content, #caption {
+	-webkit-animation-name: zoom;
+	-webkit-animation-duration: 0.6s;
+	animation-name: zoom;
+	animation-duration: 0.6s;
+}
+
+@
+-webkit-keyframes zoom {
+	from {-webkit-transform: scale(0)
+}
+
+to {
+	-webkit-transform: scale(1)
+}
+
+}
+@
+keyframes zoom {
+	from {transform: scale(0)
+}
+
+to {
+	transform: scale(1)
+}
+
+}
+
+/* The Close Button */
+.close {
+	position: absolute;
+	top: 15px;
+	right: 35px;
+	color: #f1f1f1;
+	font-size: 40px;
+	font-weight: bold;
+	transition: 0.3s;
+}
+
+.close:hover, .close:focus {
+	color: #bbb;
+	text-decoration: none;
+	cursor: pointer;
+}
+</style>
+
+<script>
+//<![CDATA[
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+var img = document.getElementById('myImg');
+var modalImg = document.getElementById("img01");
+var captionText = document.getElementById("caption");
+img.onclick = function(){
+    modal.style.display = "block";
+    modalImg.src = this.src;
+    captionText.innerHTML = this.alt;
+}
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() { 
+    modal.style.display = "none";
+}
+//]]>
+</script>
+
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

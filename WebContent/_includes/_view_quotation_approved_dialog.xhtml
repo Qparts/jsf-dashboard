@@ -1,0 +1,192 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form id="form-approved" >
+		<p:dialog id="dlgapproved" widgetVar="dlgapprovedwv"
+			styleClass="q-dialog" header="Finalized Quotation" rendered="#{quotationViewBean.cart.status eq 'R'}">
+			<div align="center">
+				<h:panelGroup>
+					<h:outputText
+						value="Delivery Cost to #{quotationViewBean.cart.city.name}"
+						styleClass="q-med-text" />
+					<br />
+					<h:inputText value="#{quotationViewBean.cart.deliveryFees}"
+						required="true" requiredMessage="Enter delivery fees ">
+						<f:ajax render="prices-table"></f:ajax>	
+					</h:inputText>
+				</h:panelGroup>
+			</div>
+			<br />
+			<div class="scroll-div-300">
+				<p:dataTable styleClass="dialog-table" id="outer-table"
+					headerClass="w3-light-grey w3-border-bottom"
+					footerClass="w3-light-grey w3-border-bottom"
+					style="width:auto!important;"
+					value="#{quotationViewBean.finalizedItems}" var="fitem">
+					<f:facet name="header">
+						<div align="center">
+							<h:outputText value="Quotation Details" />
+						</div>
+					</f:facet>
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column rowspan="2" headerText="Item Name" width="180" />
+							<p:column rowspan="2" headerText="Q" width="30" />
+							<p:column rowspan="2" headerText="Status" width="80" />
+							<p:column colspan="8" headerText="Selected Response" />
+							<p:column rowspan="2" headerText="Unit Price" />
+							<p:column rowspan="2" headerText="Sales Price" />
+						</p:row>
+						<p:row>
+							<p:column headerText="Vendor" width="120" />
+							<p:column headerText="Part Numner" width="180" />
+							<p:column headerText="Q." width="30" />
+							<p:column headerText="Unit" />
+							<p:column headerText="Gross" />
+							<p:column headerText="%" width="50" />
+							<p:column headerText="Unit" />
+							<p:column headerText="Gross" />
+						</p:row>
+					</p:columnGroup>
+					<p:column>
+						<h:outputText value="#{fitem.itemDesc}" />
+					</p:column>
+					<p:column>
+						<div align="center">
+							<h:outputText value="#{fitem.requestedQuantity}" />
+						</div>
+					</p:column>
+					<p:column>
+						<div style="vertical-align: center;" align="center">
+							<h:outputText value="Ready" styleClass="w3-tag w3-green"
+								rendered="#{fitem.status eq 'F'}" />
+							<h:outputText value="Missing" rendered="#{fitem.status eq 'M'}"
+								styleClass="w3-tag w3-red" />
+							<h:outputText value="No Price!" styleClass="w3-tag w3-red"
+								rendered="#{fitem.status eq 'N'}" />
+							<br />
+							<p:commandLink oncomplete="PF('dlg4wv').show();" update=":form4"
+								actionListener="#{qBean.initManualQuotation(qitem)}"
+								rendered="#{qitem.integrityStatus eq 'I' or qitem.integrityStatus eq 'P'}">
+								<i class="fa fa-plus"></i>
+							</p:commandLink>
+						</div>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}">
+							<h:outputText value="#{response.vendor.name}" />
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}">
+							<h:outputText value="#{response.partNumber}" />
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column width="50">
+						<ui:repeat var="response" value="#{fitem.responses}">
+							<h:outputText value="#{response.selectedQuantity}" />
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}">
+							<h:outputText value="#{response.unitCost}">
+								<f:convertNumber type="currency" currencySymbol="" />
+							</h:outputText>
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}">
+							<h:outputText value="#{response.totalCost}">
+								<f:convertNumber type="currency" currencySymbol="" />
+							</h:outputText>
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}">
+							<h:inputText style="width:40px;height:20px"
+								styleClass="w3-text-grey" value="#{response.salesPercentage}">
+								<f:convertNumber type="percent" />
+								<f:ajax
+									render=":form-approved:outer-table:unit-sales-table:unit-sales 
+											:form-approved:outer-table:total-item-sales-table:total-item-sales 
+											:form-approved:outer-table:sales-price 
+											:form-approved:outer-table:unit-price
+											:form-approved:prices-table
+											:form-approved:outer-table" />
+							</h:inputText>
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}"
+							id="unit-sales-table">
+							<h:outputText id="unit-sales" value="#{response.unitSales}">
+								<f:convertNumber type="currency" currencySymbol="" />
+							</h:outputText>
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<ui:repeat var="response" value="#{fitem.responses}"
+							id="total-item-sales-table">
+							<h:outputText id="total-item-sales"
+								value="#{response.totalSales}">
+								<f:convertNumber type="currency" currencySymbol="" />
+							</h:outputText>
+							<br />
+						</ui:repeat>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Unit Price" />
+						</f:facet>
+						<h:outputText value="#{fitem.totalSalesPrice / fitem.totalSelectedQuantity}" id="unit-price"
+							styleClass="q-bold">
+							<f:convertNumber type="currency" currencySymbol="SR " />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Sales Price" />
+						</f:facet>
+						<h:outputText value="#{fitem.totalSalesPrice}" id="sales-price"
+							styleClass="q-bold">
+							<f:convertNumber type="currency" currencySymbol="SR " />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+			</div>
+			<div align="center" class="w3-padding-12">
+				<h:panelGrid columns="2" style="width:50%" styleClass="w3-table w3-striped w3-border" columnClasses="w3-border-right" id="prices-table">
+					<h:outputText value="Gross Sales Value" />
+					<h:outputText value="#{quotationViewBean.finalizedTotalSales}">
+						<f:convertNumber type="currency" currencySymbol="SR "/>
+					</h:outputText>
+					<h:outputText value="Delivery Value" />
+					<h:outputText value="#{quotationViewBean.cart.deliveryFees}">
+						<f:convertNumber type="currency" currencySymbol="SR "/>
+					</h:outputText>
+					<h:outputText value="VAT Value (5%)" />
+					<h:outputText value="#{quotationViewBean.cart.vatPercentage * (quotationViewBean.finalizedTotalSales + quotationViewBean.cart.deliveryFees)}">
+							<f:convertNumber type="currency" currencySymbol="SR "/>
+					</h:outputText>
+					<h:outputText value="Total Value with VAT" styleClass="q-bold"/>
+					<h:outputText styleClass="q-bold" value="#{quotationViewBean.finalizedTotalSales + quotationViewBean.cart.deliveryFees + (quotationViewBean.cart.vatPercentage * (quotationViewBean.finalizedTotalSales + quotationViewBean.cart.deliveryFees))}">
+							<f:convertNumber type="currency" currencySymbol="SR "/>
+					</h:outputText>
+				</h:panelGrid>
+				<br /> <br />
+				<p:commandButton value="Approve Quotation" actionListener="#{quotationViewBean.submitFinalized()}" styleClass="q-btn" update="@all"/>
+				<br />
+			</div>
+		</p:dialog>
+	</h:form>
+</ui:composition>

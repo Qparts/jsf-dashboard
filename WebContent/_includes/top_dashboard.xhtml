@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:include src="/_includes/_notification_form" />
+
+	<div class="w3-container">
+		<div class="">
+			<div align="left" class="w3-half">
+				<h:form id="notification-form">
+					<div class="w3-col s8">
+						<div class="q-navbar">
+							<h:panelGrid columns="11" styleClass="w3-table">
+								<h:outputLink value="home" title="home"
+									styleClass="q-nav-button w3-hover-text-blue">
+									<i class="fa fa-home"> </i>
+								</h:outputLink>
+								<h:outputLink value="quotations"
+									rendered="#{loginBean.hasAccess(act.pageQuotations)}"
+									styleClass="q-nav-button w3-hover-text-blue" title="my quotations">
+									<i class="fa fa-file-text"> </i>
+									<ui:fragment rendered="#{notificationBean.allQuotations gt 0}">
+										<span class="q-notification-badge">#{notificationBean.allQuotations}</span>
+									</ui:fragment>
+								</h:outputLink>
+								<h:outputLink styleClass="q-nav-button w3-hover-text-blue"
+									rendered="#{loginBean.hasAccess(act.pageWire)}"
+									value="wire_transfers" title="wire transfers">
+									<i class="fa fa-dollar"> </i>
+									<ui:fragment rendered="#{notificationBean.wires gt 0}">
+										<span class="q-notification-badge">#{notificationBean.wires}</span>
+									</ui:fragment>
+								</h:outputLink>
+								<h:outputLink styleClass="q-nav-button w3-hover-text-blue"
+									rendered="#{loginBean.hasAccess(act.pageFollowUpQuotations)}"
+									value="followups" title="followups">
+									<i class="fa fa-bell"> </i>
+									<ui:fragment rendered="#{notificationBean.followups gt 0}">
+										<span class="q-notification-badge">#{notificationBean.followups}</span>
+									</ui:fragment>
+								</h:outputLink>
+								<h:outputLink styleClass="q-nav-button w3-hover-text-blue"
+									rendered="#{loginBean.hasAccess(act.actionPartsCollect)}"
+									value="parts-collection" title="parts collection">
+									<i class="fa fa-cart-plus"> </i>
+									<ui:fragment rendered="#{notificationBean.collection gt 0}">
+										<span class="q-notification-badge">#{notificationBean.collection}</span>
+									</ui:fragment>
+								</h:outputLink>
+								<h:outputLink styleClass="q-nav-button w3-hover-text-blue"
+									rendered="#{loginBean.hasAccess(act.actionPartsReceive)}"
+									value="parts-collection" title="parts receive">
+									<i class="fa fa-cart-arrow-down"> </i>
+									<ui:fragment rendered="#{notificationBean.receival gt 0}">
+										<span class="q-notification-badge">#{notificationBean.receival}</span>
+									</ui:fragment>
+								</h:outputLink>
+								<h:outputLink styleClass="q-nav-button w3-hover-text-blue"
+									rendered="#{loginBean.hasAccess(act.pageNoVin)}"
+									value="no-vin-carts" title="no vin carts">
+									<i class="fa fa-adn"> </i>
+									<ui:fragment rendered="#{notificationBean.noVin gt 0}">
+										<span class="q-notification-badge">#{notificationBean.noVin}</span>
+									</ui:fragment>
+								</h:outputLink>
+								
+								<h:outputLink styleClass="q-nav-button w3-hover-text-blue"
+									rendered="#{loginBean.hasAccess(act.pageWalletsReport)}"
+									value="wallets-report" title="Wallets Report">
+									<i class="fa fa-credit-card"> </i>						
+								</h:outputLink>
+								
+								<h:commandLink actionListener="#{loginBean.doLogout()}"
+									styleClass="w3-hover-text-red q-nav-button" title="logout">
+									<i class="fa fa-power-off"> </i>
+								</h:commandLink>
+							</h:panelGrid>
+						</div>
+					</div>
+				</h:form>
+			</div>
+			<div align="right" class="w3-half">
+				<h:outputText value="dashboard"
+					style="color:white;vertical-align:top;" />
+				<h:graphicImage value="/resources/images/logo_no_text.png"
+					width="61" rendered="true" />
+			</div>
+		</div>
+		<p:separator rendered="false" height="0"></p:separator>
+	</div>
+</ui:composition>

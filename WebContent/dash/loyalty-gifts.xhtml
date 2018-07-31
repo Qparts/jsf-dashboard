@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Loyalty Gifts Master</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+			<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Loyalty Gifts" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<h:form id="form"  enctype="multipart/form-data">
+					<h:panelGrid columns="2">
+						<h:outputText value="Gift Name" />
+						<h:inputText value="#{loyaltyGiftsBean.gift.giftName}" required="true"/>
+						<h:outputText value="Gift Name Arabic" />
+						<h:inputText value="#{loyaltyGiftsBean.gift.giftNameAr}" required="true"/>
+						<h:outputText value="Points" />
+						<h:inputText value="#{loyaltyGiftsBean.gift.points}" required="true"/>
+						<h:outputText value="Status: " />
+						<h:selectOneRadio value="#{loyaltyGiftsBean.gift.status}" required="true">
+							<f:selectItem itemLabel="Active" itemValue="#{'A'}" />
+							<f:selectItem itemLabel="Deative" itemValue="#{'D'}" />
+						</h:selectOneRadio>	
+						<h:outputText value="Image" />
+						<h:inputFile value="#{loyaltyGiftsBean.gift.file}" required="true"/>
+						<h:commandButton value="Create" styleClass="q-btn"
+							actionListener="#{loyaltyGiftsBean.createLoyaltyGift()}"></h:commandButton>
+					</h:panelGrid>
+				</h:form>
+				<br />
+				<h:form id="form2">
+					<h:dataTable value="#{loyaltyGiftsBean.gifts}" var="var"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								Gift Name
+							</f:facet>
+							<h:outputText value="#{var.giftName}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Gift Name Arabic
+							</f:facet>
+							<h:outputText value="#{var.giftNameAr}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Points
+							</f:facet>
+							<h:outputText value="#{var.points}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Status
+							</f:facet>
+							<h:outputText rendered="#{var.status eq 'A'}" value="active" styleClass="w3-tag w3-green"  />
+							<h:outputText rendered="#{var.status eq 'D'}" value="inactive" styleClass="w3-tag w3-red"  />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Image
+							</f:facet>
+								
+							<h:graphicImage value="/images/gifts/#{var.id}.png" width="100"/>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+	</h:body>
+</html>

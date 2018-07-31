@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Vendor Users</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText
+						value="Vendor: #{vendorUserBean.vendorHolder.vendor.name} Users"
+						styleClass="q-large-text" />
+				</div>
+				<div class="w3-section">
+					<div class="w3-row-padding" style="margin: 0 -16px">
+						<div class="w3-third">
+							<h:form id="form">
+								<p:panel toggleable="true" header="New Vendor User"
+									collapsed="true" toggleSpeed="100">
+									<p:messages />
+									<h:panelGrid columns="2">
+										<h:outputText value="First Name" />
+										<h:inputText value="#{vendorUserBean.vendorUser.firstName}"
+											required="true" requiredMessage="Enter first name" />
+										<h:outputText value="Last Name" />
+										<h:inputText value="#{vendorUserBean.vendorUser.lastNAme}"
+											required="true" requiredMessage="Enter last name" />
+										<h:outputText value="Username" />
+										<h:inputText value="#{vendorUserBean.vendorUser.username}"
+											required="true" requiredMessage="Enter username" />
+										<h:outputText value="Password" />
+										<h:inputText value="#{vendorUserBean.vendorUser.password}"
+											disabled="true" />
+										<h:outputText value="Email" />
+										<h:inputText value="#{vendorUserBean.vendorUser.email}"
+											required="true" requiredMessage="Enter email" />
+										<h:outputText value="Contact Number" />
+										<h:inputText
+											value="#{vendorUserBean.vendorUser.contactNumber}"
+											required="true" requiredMessage="Enter contact number" />
+										<h:outputText value="Status" />
+										<h:selectOneRadio value="#{vendorUserBean.vendorUser.status}"
+											required="true" requiredMessage="Select status">
+											<f:selectItem itemValue="#{'A'}" itemLabel="Active" />
+											<f:selectItem itemValue="#{'I'}" itemLabel="Inactive" />
+										</h:selectOneRadio>
+									</h:panelGrid>
+									<h:commandButton
+										actionListener="#{vendorUserBean.createVendorUser()}"
+										value="Create Vendor User" styleClass="q-btn"/>
+								</p:panel>
+							</h:form>
+						</div>
+					</div>
+				</div>
+				<div class="w3-padding-24">
+					<h:dataTable value="#{vendorUserBean.vendorHolder.vendorUsers}"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey" var="user">
+						<f:facet name="header">
+							<div align="center">Users</div>
+						</f:facet>
+						<h:column>
+							<f:facet name="header">
+										Username
+									</f:facet>
+							<h:outputText value="#{user.username}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+										Status
+									</f:facet>
+							<h:outputText value="Active" styleClass="w3-tag w3-green"
+								rendered="#{user.status eq 'A'}" />
+							<h:outputText value="Inactive" styleClass="w3-tag w3-red"
+								rendered="#{user.status eq 'I'}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+										Name
+									</f:facet>
+							<h:outputText value="#{user.firstName} #{user.lastNAme}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+										Email
+									</f:facet>
+							<h:outputText value="#{user.email}" />
+						</h:column>
+						<h:column name="header">
+							<f:facet name="header">
+										Contact Number
+									</f:facet>
+							<h:outputText value="#{user.contactNumber}" />
+						</h:column>
+					</h:dataTable>
+
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+
+
+
+
+
+
+</h:body>
+</html>

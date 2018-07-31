@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Incomplete Purchases</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Incomplete Purchases"
+						styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<div>
+					<h:form id="form2">
+						<h:dataTable value="#{incompletePurchasesBean.purchases}" var="po"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="CART#" />
+								</f:facet>
+								<h:outputText value="#{po.cartId}" />
+							</h:column>
+							<h:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Purchase ID" />
+								</f:facet>
+								<h:outputText value="#{po.id}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Status" />
+								</f:facet>
+								<h:outputText value="Incomplete"
+									rendered="#{po.paymentStatus eq 'I'}"
+									styleClass="w3-orange w3-tag w3-text-white" />
+								<h:outputText value="completed"
+									rendered="#{po.paymentStatus eq 'O'}"
+									styleClass="w3-blue w3-tag w3-text-white" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="PO Date" />
+								</f:facet>
+								<h:outputText value="#{po.purchaseDate}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Type" />
+								</f:facet>
+								<h:outputText value="Credit"
+									rendered="#{po.transactionType eq 'T'}" />
+								<h:outputText value="Cash"
+									rendered="#{po.transactionType eq 'C'}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Vendor" />
+								</f:facet>
+								<h:outputText
+									value="#{vendorBean.getVendorFromId(po.vendorId).name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="View" />
+									</div>
+								</f:facet>
+								<div align="center">
+									<h:outputLink value="purchase-incomplete?id=#{po.id}">
+										<i class="fa fa-search-plus" style="font-size: 20px;"></i>
+									</h:outputLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</h:form>
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

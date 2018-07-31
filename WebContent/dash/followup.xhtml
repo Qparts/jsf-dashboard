@@ -1,0 +1,563 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Follow Up</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<h:form id="form-g">
+				<p:growl id="error-growl" sticky="true"
+					rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+				<p:growl id="success-growl" sticky="true"
+					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+			</h:form>
+			<div align="center">
+				<h:form>
+					<h:outputText value="Cart # #{followupBean.cart.cartId} Follow Up"
+						styleClass="q-large-text" />
+				</h:form>
+			</div>
+			<div>
+				<div class="w3-row">
+					<div class="w3-half">
+						<h:panelGrid columns="3">
+							<h:panelGrid columns="2">
+								<h:outputLabel value="Cart ID" styleClass="q-bold" />
+								<h:inputText readonly="true" value="#{followUpBean.cart.id}" />
+								<h:outputLabel value="Date" styleClass="q-bold" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.created}">
+									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+								</h:inputText>
+								<h:outputLabel value="Vehicle" styleClass="q-bold" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.modelYear.fullName}" />
+								<h:outputLabel value="VIN" styleClass="q-bold" />
+								<h:inputText readonly="true" value="#{followUpBean.cart.vin}" />
+								<h:outputLabel styleClass="q-bold" value="City" />
+								<h:inputText readonly="true"
+									value=" #{followUpBean.cart.city.region.name} #{followUpBean.cart.city.name}" />
+							</h:panelGrid>
+							<p:spacer width="50" />
+							<h:panelGrid columns="2">
+								<h:outputLabel styleClass="q-bold" value="ID" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.customer.id}" />
+								<h:outputLabel styleClass="q-bold" value="Name" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.customer.firstName} #{followUpBean.cart.customer.lastName}" />
+								<h:outputLabel styleClass="q-bold" value="Mobile" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.customer.mobile}" />
+								<h:outputLabel styleClass="q-bold" value="Email" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.customer.email}" />
+								<h:outputLabel styleClass="q-bold" value="Loyalty" />
+								<h:inputText readonly="true"
+									value="#{followUpBean.cart.customer.totalLoyaltyPoints}" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<div class="scroll-div-150">
+							<h:dataTable value="#{followUpBean.hitGroups}" var="hit"
+								styleClass="w3-table w3-striped w3-border"
+								headerClass="w3-border w3-light-grey">
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Device" />
+									</f:facet>
+									<h:outputText value="#{hit.firstActivity.device}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Date" />
+									</f:facet>
+									<h:outputText value="#{hit.firstActivity.created}">
+										<f:convertDateTime type="date" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Started" />
+									</f:facet>
+									<h:outputText value="#{hit.firstActivity.created}">
+										<f:convertDateTime pattern="HH:mm" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Duration" />
+									</f:facet>
+									<h:outputText value="#{hit.duration}">
+										<f:convertDateTime pattern="mm:ss" />
+									</h:outputText>
+								</h:column>
+								<p:column headerText="Details">
+									<div align="center">
+										<p:commandLink ajax="true" update=":form-hit"
+											actionListener="#{followUpBean.setSelectedHitGroup(hit)}"
+											onclick="PF('dlgwv').hide()" oncomplete="PF('dlgwv').show()">
+											<p:ajax update=":form-hit"></p:ajax>
+											<i class="fa fa-search-plus"></i>
+										</p:commandLink>
+									</div>
+								</p:column>
+							</h:dataTable>
+						</div>
+					</div>
+					<div class="w3-half">
+						<div class="scroll-div-150">
+							<h:dataTable styleClass="w3-table w3-striped w3-border"
+								headerClass="w3-light-grey w3-border"
+								value="#{followUpBean.cart.approvedItems}" var="item">
+								<f:facet name="header">
+									<div align="center">Quotation</div>
+								</f:facet>
+								<h:column headerClass="w3-border-bottom w3-light-grey">
+									<f:facet name="header">
+										Desc.
+									</f:facet>
+									<h:outputText value="#{item.itemDesc}" />
+								</h:column>
+								<h:column headerClass="w3-border-bottom w3-light-grey">
+									<f:facet name="header">
+										Number
+									</f:facet>
+									<h:outputText value="#{item.itemNumber}" />
+								</h:column>
+								<h:column headerClass="w3-border-bottom w3-light-grey">
+									<f:facet name="header">
+										Quantity
+									</f:facet>
+									<h:outputText value="#{item.quantity}" />
+								</h:column>
+								<h:column headerClass="w3-border-bottom w3-light-grey">
+									<f:facet name="header">
+										Unit Price
+									</f:facet>
+									<h:outputText value="#{item.totalSales / item.quantity}">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+								</h:column>
+								<h:column headerClass="w3-border-bottom w3-light-grey">
+									<f:facet name="header">
+										Gross Price
+									</f:facet>
+									<h:outputText value="#{item.totalSales}">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+								</h:column>
+							</h:dataTable>
+						</div>
+						<br />
+
+						<div align="center">
+							<h:panelGrid columns="3">
+								<h:outputText value="Delivery Cost: " />
+								<h:outputText value="#{followUpBean.cart.deliveryFees}">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+								<h:outputText value="" />
+								<h:outputText value="VAT: " />
+								<h:outputText
+									value="#{followUpBean.cart.vatPercentage * (followUpBean.cart.deliveryFees + followUpBean.cart.totalSales())}">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+								<h:outputText value="" />
+								<h:outputText value="Total: "
+									styleClass="#{followUpBean.cart.promoCodeObject.discountPromo ? '' : 'q-med-text'}" />
+								<h:outputText
+									value="#{followUpBean.cart.deliveryFees + followUpBean.cart.totalSales() + (followUpBean.cart.vatPercentage * (followUpBean.cart.deliveryFees + followUpBean.cart.totalSales()))}"
+									styleClass="#{followUpBean.cart.promoCodeObject.discountPromo ? '' : 'q-med-text'}">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+								<h:outputText value="" />
+								<h:outputText value="Promotion Discount: "
+									rendered="#{followUpBean.cart.promoCodeObject.discountPromo}" />
+								<h:outputText
+									value="#{followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.cart.deliveryFees + followUpBean.cart.totalSales())}"
+									style="color:red"
+									rendered="#{followUpBean.cart.promoCodeObject.discountPromo}">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+								<h:outputText
+									value="(#{followUpBean.cart.promoCodeObject.provider.name})"
+									rendered="#{followUpBean.cart.promoCodeObject.discountPromo}" />
+								<h:outputText value="Net Total: " styleClass="q-med-text"
+									rendered="#{followUpBean.cart.promoCodeObject.discountPromo}" />
+								<h:outputText
+									rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
+									value="#{followUpBean.cart.deliveryFees + followUpBean.cart.totalSales() + (followUpBean.cart.vatPercentage * (followUpBean.cart.deliveryFees + followUpBean.cart.totalSales())) - (followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.cart.deliveryFees + followUpBean.cart.totalSales()))}"
+									styleClass="q-med-text">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+							</h:panelGrid>
+							<h:outputText value="Loyalty Points Value: " style="color:green"
+								styleClass="q-bold" />
+							<h:outputText
+								value="#{followUpBean.getNewLoyaltyPoints(followUpBean.cart.deliveryFees + followUpBean.cart.totalSales() + (followUpBean.cart.vatPercentage * (followUpBean.cart.deliveryFees + followUpBean.cart.totalSales())))}"
+								style="color:green" styleClass="q-bold">
+								<f:convertNumber integerOnly="true" />
+							</h:outputText>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div align="center">
+					<h:panelGroup>
+						<div>
+							<div>
+								<h:dataTable value="#{followUpBean.cartReviews}" var="review"
+									styleClass="w3-table w3-striped w3-border"
+									headerClass="w3-light-grey w3-border-bottom">
+									<f:facet name="header">
+										<div align="center">Reviews</div>
+									</f:facet>
+									<h:column>
+										<f:facet name="header">
+										Date
+									</f:facet>
+										<h:outputText value="#{review.created}">
+											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+										Reviewer
+									</f:facet>
+										<h:outputText value="#{review.reviewer.firstName}">
+											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+										Text
+									</f:facet>
+										<h:outputText value="#{review.reviewText}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+										Action
+									</f:facet>
+										<h:outputText value="#{review.actionValueString}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											More Action
+										</f:facet>
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'A'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'B'}" />
+										<h:outputText value="#{review.alternativePrice}"
+											rendered="#{review.actionValue eq 'C'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'D'}" />
+										<h:outputText value="#{review.reminderDate}"
+											rendered="#{review.actionValue eq 'E'}">
+											<f:convertDateTime pattern="dd-MMM-yyyy" />
+										</h:outputText>
+										<h:outputText value="#{review.boughtFrom}"
+											rendered="#{review.actionValue eq 'F'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'G'}" />
+										<h:outputText value="N/A"
+											rendered="#{review.actionValue eq 'O'}" />
+									</h:column>
+								</h:dataTable>
+							</div>
+						</div>
+						<h:form id="form1">
+							<div class="w3-row">
+								<div class="w3-padding-12">
+									<h:outputText value="Action" />
+									<br />
+									<h:selectOneMenu id="select-action"
+										value="#{followUpBean.cartReview.actionValue}">
+										<f:selectItem noSelectionOption="true"
+											itemLabel="--Select Action--" />
+										<f:selectItem itemValue="A" itemLabel="Not interested" />
+										<f:selectItem itemValue="B" itemLabel="General" />
+										<f:selectItem itemValue="C" itemLabel="Exepnsive" />
+										<f:selectItem itemValue="D" itemLabel="Late Quotation" />
+										<f:selectItem itemValue="E" itemLabel="Postpone" />
+										<f:selectItem itemValue="F" itemLabel="Purchased from another" />
+										<f:selectItem itemValue="G" itemLabel="Edit items" />
+										<f:selectItem itemValue="H" itemLabel="No answer" />
+										<f:selectItem itemValue="O" itemLabel="Other and Close" />
+										<f:ajax execute="@this" render="more-action :form-g" />
+									</h:selectOneMenu>
+									<br />
+									<h:panelGroup id="more-action">
+										<h:panelGroup
+											rendered="#{followUpBean.cartReview.actionValue == 'F'}">
+											<h:panelGrid columns="1" styleClass="w3-center">
+												<h:outputText value="City" />
+												<h:selectOneMenu
+													value="#{followUpBean.cartReview.boughtCity}">
+													<f:selectItems value="#{followUpBean.cities}" var="var"
+														itemValue="#{var.id}" itemLabel="#{var.name}"></f:selectItems>
+													<f:ajax execute="@this" render="more-action" />
+												</h:selectOneMenu>
+												<h:outputText value="Vendor Name" />
+												<h:inputText value="#{followUpBean.cartReview.boughtFrom}" />
+												<h:outputText value="Found Price" />
+												<h:inputText
+													value="#{followUpBean.cartReview.alternativePrice}" />
+											</h:panelGrid>
+										</h:panelGroup>
+
+										<h:panelGroup
+											rendered="#{followUpBean.cartReview.actionValue == 'E'}">
+											<h:outputText value="Reminder Date" />
+											<p:calendar value="#{followUpBean.cartReview.reminderDate}"
+												mode="inline" required="true"></p:calendar>
+										</h:panelGroup>
+
+										<h:panelGroup
+											rendered="#{followUpBean.cartReview.actionValue == 'C'}">
+											<h:outputText value="Found Price" />
+											<br />
+											<h:inputText
+												value="#{followUpBean.cartReview.alternativePrice}" />
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{followUpBean.cartReview.actionValue == 'G'}">
+											<h:dataTable value="#{followUpBean.quotation.quotationItems}"
+												id="items-table" var="item" styleClass="w3-table w3-border"
+												headerClass="w3-light-grey">
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Item Name" />
+													</f:facet>
+													<h:inputText value="#{item.itemDesc}">
+														<f:ajax />
+													</h:inputText>
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Quantity" />
+													</f:facet>
+													<h:selectOneMenu value="#{item.quantity}">
+														<f:selectItems value="#{followUpBean.quantityArray}"
+															var="q" itemValue="#{q}" itemLabel="#{q}" />
+														<f:ajax />
+													</h:selectOneMenu>
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Action" />
+													</f:facet>
+													<h:commandButton value="-"
+														action="#{followUpBean.removeItem(item)}">
+														<f:ajax execute="@this" render="@form :form-g"></f:ajax>
+													</h:commandButton>
+												</h:column>
+											</h:dataTable>
+											<h:commandButton action="#{followUpBean.addItem()}" value="+">
+												<f:ajax execute="@this" render="items-table :form-g"></f:ajax>
+											</h:commandButton>
+										</h:panelGroup>
+									</h:panelGroup>
+								</div>
+								<div class="w3-padding-12">
+									<h:outputText value="Comments" />
+									<br />
+									<h:inputTextarea required="true"
+										requiredMessage="Enter comments before submitting"
+										value="#{followUpBean.cartReview.reviewText}" cols="70"
+										rows="3" />
+								</div>
+							</div>
+
+							<div>
+								<p:commandButton value="Submit" styleClass="q-btn"
+									actionListener="#{followUpBean.submitReview()}" process="@form"
+									ajax="false">
+								</p:commandButton>
+							</div>
+						</h:form>
+
+						<h:form>
+							<div>
+								<br />
+								<p:commandButton value="Make Sales Request" styleClass="q-btn"
+									update="wire-form" oncomplete="PF('dlg').show()">
+								</p:commandButton>
+							</div>
+						</h:form>
+
+						<h:form id="form-hit">
+							<p:dialog widgetVar="dlgwv" styleClass="q-dialog"
+								header="Hit Activity Details">
+								<div class="scroll-div-400">
+									<h:dataTable id="table"
+										value="#{followUpBean.selectedHitGroup.tailingActicities}"
+										var="hit" styleClass="w3-table w3-striped w3-border"
+										headerClass="w3-light-grey w3-border-bottom"
+										footerClass="w3-light-grey w3-border-top" binding="#{table}">
+										<f:facet name="header">
+											<div align="center">
+												<h:outputText value="Hit Activities" />
+											</div>
+										</f:facet>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="#" />
+											</f:facet>
+											<h:outputText value="#{table.rowIndex + 1}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Timestamp" />
+											</f:facet>
+											<h:outputText value="#{hit.created}">
+												<f:convertDateTime pattern="dd-MMM-yy HH:mm" />
+											</h:outputText>
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Desc" />
+											</f:facet>
+											<h:outputText value="#{hit.activityDes}">
+											</h:outputText>
+										</h:column>
+									</h:dataTable>
+								</div>
+							</p:dialog>
+						</h:form>
+
+						<h:form id="wire-form">
+							<p:dialog header="Sales Request" widgetVar="dlg"
+								styleClass="q-dialog">
+								<h:panelGroup id="holder">
+									<h:dataTable value="#{followUpBean.partsOrder.partsItems}"
+										var="part" styleClass="w3-table w3-striped w3-bordered"
+										headerClass="w3-light-grey">
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Desc." />
+											</f:facet>
+											<h:outputText value="#{part.itemDesc}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Unit Price" />
+											</f:facet>
+											<h:selectOneMenu value="#{part.newQuantity}">
+												<f:selectItems value="#{part.quantityArray}" var="q"
+													itemLabel="#{q}" itemVlaue="#{q}"></f:selectItems>
+												<f:ajax execute="@this"
+													render=":wire-form:holder :wire-form:footer-price" />
+											</h:selectOneMenu>
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Unit Price" />
+											</f:facet>
+											<h:outputText value="#{part.salesPrice}" id="unit-price">
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Gross Price" />
+											</f:facet>
+											<h:outputText value="#{part.newQuantityTotalPrice}"
+												id="total-price">
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+										</h:column>
+									</h:dataTable>
+								</h:panelGroup>
+								<h:panelGroup id="footer-price">
+									<div align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Delivery Cost: " />
+											<h:outputText value="#{followUpBean.cart.deliveryFees}">
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+											<h:outputText value="VAT: " />
+											<h:outputText
+												value="#{followUpBean.cart.vatPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}">
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+											<h:outputText value="Promotion Discount: " rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"/>
+											<h:outputText rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
+												value="#{followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}" style="color:red" >
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+											<h:outputText value="Total: " />
+											<h:outputText
+												value="#{followUpBean.cart.vatPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees) + followUpBean.cart.deliveryFees + followUpBean.partsOrder.newTotalPartsPrice}">
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+											<h:outputText value="Total After Discount: " rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"/>
+											<h:outputText rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
+												value="#{followUpBean.cart.vatPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees) + followUpBean.cart.deliveryFees + followUpBean.partsOrder.newTotalPartsPrice - followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}">
+												<f:convertNumber type="currency" currencySymbol="SR " />
+											</h:outputText>
+										</h:panelGrid>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup id="promo-panel">
+									<h:panelGrid columns="2">
+										<h:outputText value="Promo Code" />
+										<h:inputText id="in" value="#{followUpBean.promCodeString}" style="width:100px;" disabled="#{followUpBean.cart.promoCodeObject.discountPromo}"/>
+									</h:panelGrid>
+									<h:commandLink value="Verify" rendered="#{not followUpBean.cart.promoCodeObject.discountPromo}" actionListener="#{followUpBean.verifyPromCode()}">
+										<f:ajax execute="in @this"
+									render="footer-price promo-panel msgs"></f:ajax>
+									</h:commandLink>
+									<p:messages id="msgs"/>
+								</h:panelGroup>
+								<br/>
+								<div>
+									<h:panelGrid columns="2">
+										<h:outputText value="Payment Type" />
+										<h:selectOneMenu value="#{followUpBean.paymentMethod}">
+											<f:selectItem noSelectionOption="true" itemLabel="--Select Payment Method--"/>
+											<f:selectItem itemValue="#{'W'}" itemLabel="Wire Transfer"/>
+											<f:selectItem itemValue="#{'T'}" itemLabel="Credit Sales"/>
+											<f:selectItem itemValue="#{'D'}" itemLabel="Cash On Delivery"/>
+										</h:selectOneMenu>
+									</h:panelGrid>
+								</div>
+								<div>
+									<h:panelGrid columns="2">
+										<h:outputText value="Address 1" />
+										<h:inputText value="#{followUpBean.address.line1}" />
+										<h:outputText value="Address 2" />
+										<h:inputText value="#{followUpBean.address.line2}" />
+										<h:outputText value="City" />
+										<h:selectOneMenu value="#{followUpBean.address.cityId}">
+											<f:selectItems value="#{followUpBean.cities}" var="city"
+												itemValue="#{city.id}" itemLabel="#{city.name}"></f:selectItems>
+										</h:selectOneMenu>
+									</h:panelGrid>
+									<br />
+									<p:commandButton value="Make Sales Request" styleClass="q-btn"
+										actionListener="#{followUpBean.makeSalesRequest()}"
+										update=":form-g" />
+								</div>
+							</p:dialog>
+						</h:form>
+					</h:panelGroup>
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Roles Master</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Roles Master" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<p:panel toggleable="true" header="New Role" collapsed="true"
+					toggleSpeed="100" styleClass="w3-third">
+					<h:form id="form">
+						<h:panelGrid columns="3"
+							columnClasses="q-vert-align,q-vert-align,q-vert-align">
+							<h:panelGroup>
+								<h:panelGrid columns="2">
+									<h:outputText value="Role Name" />
+									<h:inputText value="#{roleBean.role.name}" required="true" />
+									<h:outputText value="Status" />
+									<h:selectOneRadio value="#{roleBean.role.status}"
+										required="true">
+										<f:selectItem itemValue="#{'A'}" itemLabel="Active" />
+										<f:selectItem itemValue="#{'I'}" itemLabel="Inactive" />
+									</h:selectOneRadio>
+									<h:outputText value="Activities" />
+									<p:commandLink oncomplete="PF('dlg2').show()"
+										value="Set Activities" process="@this" />
+								</h:panelGrid>
+								<p:dialog id="dlg2" widgetVar="dlg2"
+									header="New Role Activities">
+									<div class="scroll-div-600">
+										<h:dataTable value="#{roleBean.role.activityList}"
+											var="activity" styleClass="w3-table w3-striped w3-border"
+											headerClass="w3-border-bottom w3-light-grey">
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Activity Type" />
+												</f:facet>
+												<h:outputText value="#{activity.type}" />
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Activity Name" />
+												</f:facet>
+												<h:outputText value="#{activity.name}" />
+											</h:column>
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Access" />
+												</f:facet>
+												<h:selectBooleanCheckbox value="#{activity.access}">
+													<f:ajax />
+												</h:selectBooleanCheckbox>
+											</h:column>
+										</h:dataTable>
+									</div>
+								</p:dialog>
+								<div align="center">
+									<br />
+									<h:commandButton action="#{roleBean.createRole()}"
+										value="Create Role" styleClass="q-btn" />
+								</div>
+							</h:panelGroup>
+						</h:panelGrid>
+					</h:form>
+				</p:panel>
+				<br /> <br /> <br />
+				<h:form>
+					<h:dataTable value="#{roleBean.allRoles}" var="role"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="ID#" />
+							</f:facet>
+							<h:outputText value="#{role.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:outputText value="#{role.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Status" />
+							</f:facet>
+							<h:outputText rendered="#{role.status eq 'I'}" value="inactive"
+								styleClass="w3-tag w3-red" />
+							<h:outputText rendered="#{role.status eq 'A'}" value="active"
+								styleClass="w3-tag w3-green" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Activities" />
+							</f:facet>
+							<p:commandLink value="View"
+								actionListener="#{roleBean.setSelectedRole(role)}"
+								oncomplete="PF('dlg3').show()" update=":form-3" />
+						</h:column>
+					</h:dataTable>
+				</h:form>
+				<h:form id="form-3">
+					<p:dialog widgetVar="dlg3">
+						<h:panelGrid columns="2">
+							<h:outputText value="Role ID" />
+							<h:outputText value="#{roleBean.selectedRole.id}" />
+							<h:outputText value="Role Name" />
+							<h:outputText value="#{roleBean.selectedRole.name}" />
+							<h:outputText value="Status" />
+							<h:outputText value="#{roleBean.selectedRole.status}" />
+						</h:panelGrid>
+
+						<div class="scroll-div-400">
+							<h:dataTable value="#{roleBean.selectedRole.activityList}"
+								var="activity" styleClass="w3-table w3-striped w3-border"
+								headerClass="w3-border-bottom w3-light-grey">
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Activity Type" />
+									</f:facet>
+									<h:outputText value="#{activity.type}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Activity Name" />
+									</f:facet>
+									<h:outputText value="#{activity.name}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Access" />
+									</f:facet>
+									<h:selectBooleanCheckbox value="#{activity.access}" />
+								</h:column>
+							</h:dataTable>
+						</div>
+						<br />
+						<div align="center">
+							<h:commandButton styleClass="q-btn"
+								action="#{roleBean.saveRoleChanges()}" value="Save Changes" />
+						</div>
+					</p:dialog>
+				</h:form>
+				<br />
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

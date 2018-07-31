@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+<h:head>
+	<title>Vendor Joining Requests</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Vendor Joining Request"
+						styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<h:form>
+					<h:dataTable value="#{vendorJoinBean.vendorJoins}" var="vj"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-light-grey w3-border-bottom">
+						<h:column style="width:100px">
+							<f:facet name="header">
+								<h:outputText value="ID#" />
+							</f:facet>
+							<h:outputText value="#{vj.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Date" />
+							</f:facet>
+							<h:outputText value="#{vj.created}">
+								<f:convertDateTime type="date" />
+							</h:outputText>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:outputText value="#{vj.companyName}">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:outputText>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="City" />
+							</f:facet>
+							<h:outputText value="#{vj.mainBranchLocation}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Makes" />
+							</f:facet>
+							<h:outputText value="#{vj.carModel}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Activities" />
+							</f:facet>
+							<h:outputText value="#{vj.workActivity}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Delivery" />
+							</f:facet>
+							<h:outputText value="#{vj.deliveryService}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Type" />
+							</f:facet>
+							<div>
+								<h:outputText value="#{vj.partsType}" />
+							</div>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Details" />
+							</f:facet>
+							<div align="center">
+								<p:commandLink process="@this" update=":form1"
+									actionListener="#{vendorJoinBean.setSelectedVendorJoin(vj)}"
+									oncomplete="PF('dlgwv1').show()">
+									<i class="fa fa-search-plus"></i>
+								</p:commandLink>
+							</div>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+				<h:form id="form1">
+					<p:dialog styleClass="q-dialog" header="Vendor Join" id="dlg1"
+						widgetVar="dlgwv1" width="700">
+						<h:panelGrid columns="3">
+							<h:panelGrid columns="2">
+								<h:outputLabel value="ID" styleClass="q-bold" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.id}" />
+								<h:outputLabel value="Date" styleClass="q-bold" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.created}">
+									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+								</h:inputText>
+
+								<h:outputText value="Makes" styleClass="q-bold" />
+								<h:inputTextarea readonly="true" rows="3" cols="23"
+									resizable="false"
+									value="#{vendorJoinBean.selectedVendorJoin.carModel}" />
+								<h:outputLabel styleClass="q-bold" value="Activities" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.workActivity}" />
+								<h:outputLabel styleClass="q-bold" value="Parts Type" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.partsType}" />
+								<h:outputLabel styleClass="q-bold" value="Delivery" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.deliveryService}" />
+							</h:panelGrid>
+							<p:spacer width="50" />
+							<h:panelGrid columns="2">
+								<h:outputLabel styleClass="q-bold" value="Company" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.companyName}" />
+								<h:outputLabel styleClass="q-bold" value="City" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.mainBranchLocation}" />
+								<h:outputLabel styleClass="q-bold" value="Branches" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.numberOfBranch}" />
+								<h:outputLabel styleClass="q-bold" value="Manager" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.nameOfManger}" />
+								<h:outputLabel styleClass="q-bold" value="Mobile" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.phoneNumber}" />
+								<h:outputLabel styleClass="q-bold" value="Email" />
+								<h:inputText readonly="true"
+									value="#{vendorJoinBean.selectedVendorJoin.email}" />
+							</h:panelGrid>
+						</h:panelGrid>
+						<br />
+						<div align="center">
+							<h:commandButton actionListener="#{vendorJoinBean.archiveVendorJoin()}" value="Archive" styleClass="q-btn"/>
+						</div>
+					</p:dialog>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

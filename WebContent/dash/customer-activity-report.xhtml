@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Customer Activity</title>
+	<ui:include src="/_includes/_dashboard_header" />
+	<script src="https://code.highcharts.com/highcharts.js" />
+	<script src="https://code.highcharts.com/modules/funnel.js" />
+	<script src="https://code.highcharts.com/modules/exporting.js" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Customer Activity" styleClass="q-large-text" />
+				</div>
+				<br />
+				<div class="w3-row">
+				<div>
+					<h:panelGroup styleClass="w3-quarter">
+						<div class="w3-panel q-panel" align="center">
+							<br />
+							<p>
+								<h:outputText value="Visits Today"
+									styleClass="q-med-text" />
+								<br />
+								<h:outputText
+									value="#{customerActivityBean.todayHits}"
+									styleClass="q-med-text" />
+							</p>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup styleClass="w3-quarter">
+						<div class="w3-panel q-panel" align="center">
+							<br />
+							<p>
+								<h:outputText value="Registered Today"
+									styleClass="q-med-text" />
+								<br />
+								<h:outputText
+									value="#{customerActivityBean.todayRegistered}"
+									styleClass="q-med-text" />
+							</p>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup styleClass="w3-quarter">
+						<div class="w3-panel q-panel" align="center">
+							<br />
+							<p>
+								<h:outputText value="Logins Today"
+									styleClass="q-med-text" />
+								<br />
+								<h:outputText
+									value="#{customerActivityBean.todayLogins}"
+									styleClass="q-med-text" />
+							</p>
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup styleClass="w3-quarter">
+						<div class="w3-panel q-panel" align="center">
+							<br />
+							<p>
+								<h:outputText value="Carts Today"
+									styleClass="q-med-text" />
+								<br />
+								<h:outputText
+									value="#{customerActivityBean.todayCarts}"
+									styleClass="q-med-text" />
+							</p>
+						</div>
+					</h:panelGroup>
+				</div>
+				</div>
+				<div>
+					<div id="container" class="w3-half w3-left"
+						style="min-width: 210px; max-width: 500px; height: 350px; margin: 0 auto;">
+
+					</div>
+					<div id="container2" class="w3-half w3-right"
+						style="min-width: 310px; max-width: 500px; height: 350px; margin: 0 auto"></div>
+
+					<div id="container3"
+						style="min-width: 310px; max-width: 300px; height: 300px; margin: 0 auto"></div>
+				</div>
+			</div>
+
+			<h:inputText id="hits" value="#{customerActivityBean.globalHits}"
+				style="display:none" />
+			<h:outputScript>
+			//<![CDATA[
+			Highcharts.chart('container', {
+    			chart: {
+        			type: 'funnel'
+    			},
+    			title: {
+        			text: 'Customer Activity'
+    			},
+    			plotOptions: {
+        			series: {
+            			dataLabels: {
+                			enabled: true,
+                			format: '<b>{point.name}</b> ({point.y:,.0f})',
+                			color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                			softConnector: true
+            			},
+            			center: ['40%', '50%'],
+            			neckWidth: '20%',
+            			neckHeight: '40%',
+            			width: '70%'
+        			}
+    			},
+    			legend: {
+        			enabled: false
+    			},
+    			series: [{
+        				name: 'Unique users',
+        				data: [
+            				['Visits', #{customerActivityBean.globalHits}],
+            				['Logins', #{customerActivityBean.globalLogins}],
+            				['Carts', #{customerActivityBean.globalCarts}],
+            				['Parts orders', #{customerActivityBean.globalPartsOrdes}],
+            				['Feedbacks', #{customerActivityBean.globalFeedbacks}]
+        				]
+   				 }]
+			});
+			//]]>
+
+			</h:outputScript>
+
+
+
+			<h:outputScript>
+			//<![CDATA[
+			
+			Highcharts.chart('container2', {
+    			chart: {
+        			plotBackgroundColor: null,
+        			plotBorderWidth: null,
+        			plotShadow: false,
+        			type: 'bar'
+    			},
+			    title: {
+        			text: 'Active Customers Now <b>#{customerActivityBean.activeSessions.total}</b>'
+    			},
+ 			   	tooltip: {
+        			pointFormat: '{series.name}: <b>{point.y:,.0f}</b>'
+    			},
+    			plotOptions: {
+        			bar: {
+            			allowPointSelect: true,
+            			cursor: 'pointer',
+            			dataLabels: {
+                			enabled: true,
+                			format: '<b>{point.name}</b>: {point.y:,.0f}',
+                			style: {
+                    			color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                			}
+            			}
+        			}
+    			},
+    			series: [{
+        			name: 'Platform',
+        			colorByPoint: true,
+        			data: [
+        					{name: 'windows', y: #{customerActivityBean.activeSessions.windows}}, 
+        					{name: 'mac', y: #{customerActivityBean.activeSessions.mac}}, 
+        					{name: 'unix', y: #{customerActivityBean.activeSessions.unix}}, 
+        					{name: 'android', y: #{customerActivityBean.activeSessions.android}}, 
+        					{name: 'ios', y: #{customerActivityBean.activeSessions.ios}}, 
+        					{name: 'unknown', y: #{customerActivityBean.activeSessions.unknown}}
+        			]
+        		}]
+			});
+			//]]>
+			</h:outputScript>
+
+
+
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

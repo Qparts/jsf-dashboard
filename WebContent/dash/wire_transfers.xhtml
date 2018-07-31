@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Wire Transfers</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Wire Transfers" styleClass="q-large-text" />
+				</div>
+				<div>
+					<h:form id="form-g">
+						<p:growl id="error-growl"
+							rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+						<p:growl id="success-growl"
+							rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+					</h:form>
+					<h:form>
+						<h:dataTable value="#{wireBean.wires}" var="wire"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom">
+							<h:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="CART#" />
+								</f:facet>
+								<h:outputText value="#{wire.cart.id}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="DATE" />
+								</f:facet>
+								<h:outputText value="#{wire.created}">
+									<f:convertDateTime type="date" locale="en_US" />
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Customer" />
+								</f:facet>
+								<h:outputText
+									value="#{wire.customer.firstName} #{wire.customer.lastName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Loyalty Points" />
+								</f:facet>
+								<h:outputText value="#{wire.customer.totalLoyaltyPoints}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Vehicle" />
+								</f:facet>
+								<h:outputText value="#{wire.cart.modelYear.fullName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Mobile" />
+								</f:facet>
+								<h:outputText value="#{wire.customer.mobile}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Amount" />
+								</f:facet>
+								<div>
+									<h:outputText value="#{wire.amount}">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+								</div>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Am" />
+								</f:facet>
+								<div>
+									<h:outputText rendered="#{not(wire.cart.reviews.isEmpty())}"
+										value="Yes" styleClass="w3-tag w3-green" />
+									<h:outputText rendered="#{wire.cart.reviews.isEmpty()}" value="No"
+										styleClass="w3-tag w3-red" />
+								</div>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="Details" />
+									</div>
+								</f:facet>
+								<div align="center">
+									<p:commandLink process="@this" update=":form1"
+										actionListener="#{wireBean.setSelectedWire(wire)}"
+										oncomplete="PF('dlgwv1').show()">
+										<i class="fa fa-search-plus"></i>
+									</p:commandLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</h:form>
+					<p:dialog styleClass="q-dialog " header="Wire Transfer" id="dlg1"
+						widgetVar="dlgwv1" width="700">
+						<h:form id="form1">
+							<h:panelGrid columns="3">
+								<h:panelGrid columns="2">
+									<h:outputLabel value="Cart ID" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.cart.id}" />
+									<h:outputLabel value="Mobile" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.customer.mobile}" />
+									<h:outputLabel value="Request Date" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.created}">
+										<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+									</h:inputText>
+									<h:outputLabel value="Vehicle" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.cart.modelYear.fullName}">
+										<f:convertNumber currencySymbol="SR " type="currency" />
+									</h:inputText>
+									<h:outputText value="City" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.cart.city.region.name} - #{wireBean.selectedWire.cart.city.name}" />
+								</h:panelGrid>
+								<p:spacer width="50" />
+								<h:panelGrid columns="2">
+									<h:outputLabel styleClass="q-bold" value="ID" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.customer.id}" />
+									<h:outputLabel styleClass="q-bold" value="Name" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.customer.firstName} #{wireBean.selectedWire.customer.lastName}" />
+									<h:outputLabel styleClass="q-bold" value="Mobile" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.customer.mobile}" />
+									<h:outputLabel styleClass="q-bold" value="Email" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.customer.email}" />
+									<h:outputLabel styleClass="q-bold" value="Loyalty Points" />
+									<h:inputText readonly="true"
+										value="#{wireBean.selectedWire.customer.totalLoyaltyPoints}" />
+								</h:panelGrid>
+							</h:panelGrid>
+							<div class="w3-padding-8 scroll-div-150">
+								<h:dataTable value="#{wireBean.selectedWire.cart.approvedItems}"
+									var="approved" styleClass="w3-table w3-striped"
+									headerClass="w3-light-grey">
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Item" />
+										</f:facet>
+										<h:outputText value="#{approved.itemDesc}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Quantity" />
+										</f:facet>
+										<h:outputText value="#{approved.quantity}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Unit Price" />
+										</f:facet>
+										<h:outputText value="#{approved.unitSales}">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Gross Price" />
+										</f:facet>
+										<h:outputText value="#{approved.totalSales}">
+
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+									</h:column>
+								</h:dataTable>
+							</div>
+							<br />
+							<div align="center">
+								<h:panelGrid columns="2">
+									<h:outputText value="Delivery Cost:" />
+									<h:outputText
+										value="#{wireBean.selectedWire.cart.deliveryFees}">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+									<h:outputText value="Parts Total" />
+									<h:outputText
+										value="#{wireBean.selectedWire.cart.totalSales()}">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+
+									<h:outputText value="VAT" />
+									<h:outputText
+										value="#{wireBean.selectedWire.cart.vatPercentage * (wireBean.selectedWire.cart.totalSales() + wireBean.selectedWire.cart.deliveryFees)}">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+
+									<h:outputText value="Promotion Discount"
+										rendered="#{wireBean.selectedWire.cart.promoCodeObject.discountPromo}" />
+									<h:outputText
+										value="#{wireBean.selectedWire.cart.promoCodeObject.discountPercentage * (wireBean.selectedWire.cart.totalSales() + wireBean.selectedWire.cart.deliveryFees)}"
+										rendered="#{wireBean.selectedWire.cart.promoCodeObject.discountPromo}"
+										style="color:red">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+
+									<h:outputText value="Total Transfer Amount:" />
+									<h:outputText value="#{wireBean.selectedWire.amount}"
+										styleClass="q-large-text">
+										<f:convertNumber type="currency" currencySymbol="SR " />
+									</h:outputText>
+
+									<h:outputText value="Loyalty Points Value:" styleClass="q-bold"
+										style="color:green" />
+									<h:outputText value="#{wireBean.selectedWire.newLoyaltyPoints}"
+										styleClass="q-bold" style="color:green">
+									</h:outputText>
+									<br />
+								</h:panelGrid>
+							</div>
+							<div align="center">
+								<h:button value="View"
+									outcome="wire-transfer?cart=#{wireBean.selectedWire.cartId}"
+									styleClass="q-btn" />
+							</div>
+						</h:form>
+					</p:dialog>
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

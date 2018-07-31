@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Products</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Products" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<p:panel toggleable="true" header="New Product" collapsed="true"
+					toggleSpeed="100">
+
+					<div class="w3-row">
+						<div class="w3-half">
+							<h:form id="form">
+								<h:panelGrid columns="2">
+									<h:outputText value="Number" />
+									<h:inputText value="#{productBean.product.productNumber}"
+										required="true" />
+									<h:outputText value="Make" />
+									<h:selectOneMenu value="#{productBean.product.makeId}"
+										required="true">
+										<f:selectItem noSelectionOption="true"
+											itemLabel="--Select Make--" />
+										<f:selectItems value="#{vehicleBean.makes}" var="make"
+											itemLabel="#{make.name}" itemValue="#{make.id}" />
+									</h:selectOneMenu>
+									<h:outputText value="Product Name" />
+									<h:inputText value="#{productBean.product.productName.name}"
+										readonly="true" required="true" />
+								</h:panelGrid>
+								<br />
+								<h:commandButton value="Create" styleClass="q-btn"
+									actionListener="#{productBean.createProduct()}" />
+							</h:form>
+						</div>
+						<div class="w3-half">
+							<h:form id="form2">
+								<div align="center">
+									<h:outputText value="Search Product Name" />
+									<br />
+									<h:inputText value="#{productNameBean.searchProductName}" />
+									<h:commandButton
+										actionListener="#{productNameBean.searchProducts()}"
+										value="Search" styleClass="q-btn">
+										<f:ajax execute="@form" render=":form3 :form-g" />
+									</h:commandButton>
+									<br />
+								</div>
+								<br />
+							</h:form>
+							<h:form id="form3">
+								<div class="scroll-div-300">
+									<h:dataTable value="#{productNameBean.productNames}" var="var"
+										styleClass="w3-table w3-striped w3-border"
+										headerClass="w3-border-bottom w3-light-grey">
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="ID" />
+											</f:facet>
+											<h:outputText value="#{var.id}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Name" />
+											</f:facet>
+											<h:outputText value="#{var.name}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Name Arabic" />
+											</f:facet>
+											<h:outputText value="#{var.nameAr}" />
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Alternative Names" />
+											</f:facet>
+											<p:commandLink
+												actionListener="#{productNameBean.setSelectedProductName(var)}"
+												oncomplete="PF('dlgvwv').show()" update=":form4">
+												<i class="fa fa-search-plus"></i>
+											</p:commandLink>
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Select" />
+											</f:facet>
+											<p:commandLink
+												actionListener="#{productBean.selectProductName(var)}"
+												update=":form">
+												<i class="fa fa-search-plus"></i>
+											</p:commandLink>
+										</h:column>
+									</h:dataTable>
+								</div>
+							</h:form>
+							<h:form id="form4">
+								<p:dialog id="dlg" widgetVar="dlgvwv" styleClass="q-dialog"
+									header="Alternative Names">
+									<h:dataTable
+										value="#{productNameBean.selectedProductName.altProductNames}"
+										var="alt">
+										<h:column>
+											<h:outputText value="#{alt.name}" />
+										</h:column>
+									</h:dataTable>
+								</p:dialog>
+							</h:form>
+						</div>
+					</div>
+				</p:panel>
+				<br />
+				<h:form>
+					<div>
+						<h:outputText value="Search Products" />
+						<h:panelGrid columns="2">
+							<h:outputText value="Product Name" />
+							<h:inputText value="#{productBean.searchName}" />
+							<h:outputText value="Product Number" />
+							<h:inputText value="#{productBean.searchNumber}" />
+							<h:outputText value="Make" />
+							<h:selectOneMenu value="#{productBean.searchMakeId}">
+								<f:selectItem itemValue="#{0}" itemLabel="All" />
+								<f:selectItems value="#{vehicleBean.makes}" var="make"
+									itemValue="#{make.id}" itemLabel="#{make.name}"></f:selectItems>
+							</h:selectOneMenu>
+						</h:panelGrid>
+						<h:commandButton actionListener="#{productBean.searchProduct()}"
+							value="Search" styleClass="q-btn">
+							<f:ajax execute="@form" render=":form-g :form5"></f:ajax>
+						</h:commandButton>
+					</div>
+				</h:form>
+				<br />
+				<h:form id="form5">
+					<h:dataTable value="#{productBean.products}" var="var"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="ID" />
+							</f:facet>
+							<h:outputText value="#{var.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Make" />
+							</f:facet>
+							<h:outputText
+								value="#{vehicleBean.getMakeFromId(var.makeId).name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:outputText value="#{var.productName.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name Arabic" />
+							</f:facet>
+							<h:outputText value="#{var.productName.nameAr}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Number" />
+							</f:facet>
+							<h:outputText value="#{var.productNumber}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Number Undecorated" />
+							</f:facet>
+							<h:outputText value="#{var.productNumberUndecorated}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Edit Names" />
+							</f:facet>
+							<p:commandLink
+								actionListener="#{productBean.setSelectedProduct(var)}"
+								oncomplete="PF('dlg6wv').show()" update=":form6">
+								<i class="fa fa-search-plus"></i>
+							</p:commandLink>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+
+				<h:form id="form6">
+					<p:dialog id="dlg6" widgetVar="dlg6wv" styleClass="q-dialog"
+						header="Product Details">
+						<h:panelGrid columns="2">
+							<h:outputText value="Number" />
+							<h:outputText
+								value="#{productBean.selectedProduct.productNumber}" />
+							<h:outputText value="Number Undecorated" />
+							<h:outputText
+								value="#{productBean.selectedProduct.productNumberUndecorated}" />
+							<h:inputText
+								value="#{productBean.updateProductName}" required="true"/>
+						</h:panelGrid>
+						<h:commandButton actionListener="#{productBean.updateProduct()}" value="Update Product" styleClass="q-btn"/>
+					</p:dialog>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Levam</title>
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Raleway" />
+	<h:outputStylesheet library="css" name="dashboard.css" />
+	<h:outputStylesheet library="css" name="w3.css" />
+</h:head>
+<h:body>
+	<div class="w3-container" align="center">
+		<br /> <br />
+		<h:form id="form-g">
+			<p:growl id="error-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+
+		<h:form>
+			<h:inputText value="#{levamCatalogBean.vin}" />
+			<p:commandButton value="search" styleClass="q-btn"
+				actionListener="#{levamCatalogBean.searchVin()}"
+				update=":form1 :form-group"></p:commandButton>
+		</h:form>
+		<h:form id="form1">
+			<h:panelGrid columns="2" styleClass="w3-table w3-striped w3-border"
+				rendered="#{levamCatalogBean.vinResult.error.length() gt 0}">
+				<h:outputText value="VIN Not Found" />
+			</h:panelGrid>
+			<h:panelGrid columns="2" styleClass="w3-table w3-striped w3-border"
+				rendered="#{((levamCatalogBean.vinResult.error eq null) or (levamCatalogBean.vinResult.error.length() eq 0)) and (not (levamCatalogBean.vinResult.client eq null))}">
+				<h:outputText value="Category" styleClass="q-bold" />
+				<h:outputText value="Value" styleClass="q-bold" />
+				<h:outputText value="Catalog Code" rendered="false" />
+				<h:outputText
+					value="#{levamCatalogBean.vinResult.client.catalogCode}"
+					rendered="false" />
+				<h:outputText value="Family" rendered="false" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.family}"
+					rendered="false" />
+				<h:outputText value="Frame" rendered="false" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.frame}"
+					rendered="false" />
+				<h:outputText value="Group" rendered="false" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.group}"
+					rendered="false" />
+				<h:outputText value="Mark" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.mark}" />
+				<h:outputText value="Model" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.model}" />
+				<h:outputText value="Modification" rendered="false" />
+				<h:outputText
+					value="#{levamCatalogBean.vinResult.client.modification}"
+					rendered="false" />
+				<h:outputText value="Param" rendered="false" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.param}"
+					rendered="false" />
+				<h:outputText value="SSD" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.ssd}" />
+				<h:outputText value="Sub Group" rendered="false" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.subgroup}"
+					rendered="false" />
+				<h:outputText value="Universal Classifier" rendered="false" />
+				<h:outputText
+					value="#{levamCatalogBean.vinResult.client.universalClassifier}"
+					rendered="false" />
+				<h:outputText value="VIN" />
+				<h:outputText value="#{levamCatalogBean.vinResult.client.vin}" />
+			</h:panelGrid>
+			<br />
+			<h:dataTable value="#{levamCatalogBean.vinResult.models}" var="model"
+				styleClass="w3-table w3-striped w3-border"
+				headerClass="w3-light-grey w3-border-bottom"
+				rendered="#{levamCatalogBean.selectedModel eq null}">
+				<h:column>
+					<f:facet name="header">
+						Link
+					</f:facet>
+					<p:commandButton
+						actionListener="#{levamCatalogBean.chooseModel(model)}"
+						value="Select" styleClass="q-btn" update=":form-group" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						Unkown
+					</f:facet>
+					<h:outputText value="#{model.unknown}" />
+					<h:outputText value="#{model.brand}" />
+				</h:column>
+			</h:dataTable>
+			<ui:repeat var="var" value="#{levamCatalogBean.vinResult.models}">
+
+			</ui:repeat>
+
+		</h:form>
+
+		<h:form id="form-group">
+			<h:panelGroup style="float:left">
+				<ui:repeat var="rootGroup"
+					value="#{levamCatalogBean.rootGroup.groups}"
+					rendered="#{levamCatalogBean.rootGroup.groups.size() gt 0}">
+					<p:commandLink value="#{rootGroup.fullName}"
+						actionListener="#{levamCatalogBean.callPartsOrSubgroup(levamCatalogBean.rootGroup, rootGroup)}"
+						style="float:left" />
+						<br/>
+						<ui:repeat var="sg" value="#{rootGroup.groupResult.groups}" rendered="#{not (rootGroup.groupResult eq null)}">
+							<p:commandLink value=" -  #{sg.fullName}"
+							actionListener="#{levamCatalogBean.callPartsOrSubgroup(rootGroup.groupResult, sg)}"
+							style="float:left" update="@form"/>
+							<br/>
+						
+						</ui:repeat>
+				</ui:repeat>
+			</h:panelGroup>
+		</h:form>
+
+		<h:form id="form-group2" rendered="false">
+			<h:graphicImage value="#{levamCatalogBean.groupResult.modelImage}"
+				width="200" />
+			<br />
+			<br />
+			<div class="w3-row">
+				<ui:repeat var="group"
+					value="#{levamCatalogBean.groupResult.groups}">
+					<div class="w3-quarter">
+						<h:outputText value="#{group.fullName}" />
+						<br />
+						<h:graphicImage value="#{group.image.get(0)}" />
+						<br /> <br />
+					</div>
+				</ui:repeat>
+			</div>
+		</h:form>
+
+
+		<h:form rendered="false">
+			<div class="w3-row">
+				<ui:repeat value="#{levamCatalogBean.levamCats.catalogs}" var="cat"
+					rendered="false">
+					<div class="w3-third">
+						<h:outputText value="#{cat.name}" />
+						<br />
+						<h:graphicImage value="#{cat.logoSmall}" />
+						<br />
+					</div>
+				</ui:repeat>
+			</div>
+		</h:form>
+	</div>
+</h:body>
+</html>

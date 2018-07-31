@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Regions Master</title>
+	<ui:include src="/_includes/_dashboard_header" />
+	<script
+		src="https://maps.google.com/maps/api/js?key=AIzaSyDYZvQNSAQEdn6aOycWv_uFnpI7WKPibv8"
+		type="text/javascript"></script>
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Regions Master" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<p:panel toggleable="true" header="New Region" collapsed="true"
+					toggleSpeed="100">
+					<h:panelGrid columns="3">
+						<h:form id="form">
+							<h:panelGrid columns="2">
+								<h:outputText value="Country" />
+								<h:selectOneMenu value="#{regionBean.region.country}"
+									converter="#{countryConverter}">
+									<f:selectItems value="#{countryBean.countries}" var="var"
+										itemValue="#{var}" itemLabel="#{var.name}" />
+									<f:ajax listener="#{regionBean.resetMap()}" execute="@this"
+										render="@form :form1" />
+								</h:selectOneMenu>
+								<h:outputText value="Region Name: " />
+								<h:inputText value="#{regionBean.region.name}">
+									<f:ajax/>
+								</h:inputText>
+								<h:outputText value="Region Name Arabic: " />
+								<h:inputText value="#{regionBean.region.nameAr}">
+									<f:ajax/>
+								</h:inputText>
+								<h:outputText value="Latitude: " />
+								<h:inputText value="#{regionBean.region.latitude}" />
+								<h:outputText value="Longitude: " />
+								<h:inputText value="#{regionBean.region.longitude}" />
+								<h:outputText value="Map Zoom: " />
+								<h:inputText value="#{regionBean.region.mapZoom}" />
+								<h:outputText value="Json Code" />
+								<h:inputText value="#{regionBean.region.jsonCode}" />
+								<h:commandButton value="Create" styleClass="q-btn"
+									actionListener="#{regionBean.createRegion()}"></h:commandButton>
+							</h:panelGrid>
+						</h:form>
+						<p:spacer height="0" width="100"></p:spacer>
+						<h:form id="form1">
+							<h:panelGroup>
+								<p:gmap
+									center="#{regionBean.region.latitude},#{regionBean.region.longitude}"
+									zoom="#{cityBean.city.mapZoom}" type="ROADMAP"
+									style="width:500px;height:400px">
+									<p:ajax event="stateChange"
+										listener="#{regionBean.onStateChange}" update=":form" />
+								</p:gmap>
+							</h:panelGroup>
+						</h:form>
+					</h:panelGrid>
+				</p:panel>
+				<br />
+				<h:form id="form2">
+					<h:dataTable value="#{regionBean.regions}" var="var"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								Country
+							</f:facet>
+							<h:outputText value="#{var.country.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Name
+							</f:facet>
+							<h:outputText value="#{var.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Name Arabic
+							</f:facet>
+							<h:outputText value="#{var.nameAr}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Json Code
+							</f:facet>
+							<h:outputText value="#{var.jsonCode}"/>
+						</h:column>
+						<h:column headerText="Details">
+							<f:facet name="header">
+								<div align="center">Details</div>
+							</f:facet>
+							<div align="center">
+								<p:commandLink oncomplete="PF('dlgwv').show()" update=":form3">
+									<p:ajax listener="#{regionBean.selectRegion(var)}" />
+									<i class="fa fa-search-plus"></i>
+								</p:commandLink>
+							</div>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+				<h:form id="form3">
+					<p:dialog styleClass="q-dialog" id="dlg" widgetVar="dlgwv"
+						header="Region Details">
+						<h:outputText
+							value="#{regionBean.selectedRegion.country.name} : #{regionBean.selectedRegion.name}" />
+						<p:gmap disableDefaultUI="true" navigationControl="false"
+							draggable="false"
+							center="#{regionBean.selectedRegion.latitude}, #{regionBean.selectedRegion.longitude}"
+							zoom="#{regionBean.selectedRegion.mapZoom}" type="ROADMAP"
+							style="width:500px;height:400px">
+						</p:gmap>
+						<br/>
+						<div class="scroll-div-150">
+						<h:dataTable value="#{regionBean.selectedRegion.cities}" var="city" headerClass="w3-light-grey" styleClass="w3-table w3-bordered w3-striped">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="City" />
+								</f:facet>
+								<h:outputText value="#{city.name}" />
+							</h:column>						
+						</h:dataTable>
+						</div>
+					</p:dialog>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

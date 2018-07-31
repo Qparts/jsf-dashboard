@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Dashboard Login</title>
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Raleway" />
+	<h:outputStylesheet library="css" name="dashboard.css" />
+	<h:outputStylesheet library="css" name="w3.css" />
+</h:head>
+<h:body>
+	<div class="w3-container" align="center">
+		<br /> <br />
+		<h:form id="form-g">
+			<p:growl id="error-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<h:form id="vin-form">
+			<h:panelGrid columns="1" styleClass="w3-center">
+				<h:outputText value="Enter VIN Number" />
+				<h:inputText value="#{catalogBean.catalogId}" />
+				<h:outputText value="Enter VIN Number" />
+				<h:inputText id="vin" value="#{catalogBean.vin}" required="true"
+					requiredMessage="Enter VIN" validatorMessage="Invalid VIN"
+					a:placeHolder="VIN" a:maxlength="17" styleClass="form-control"
+					style="width:230px;text-transform: uppercase;margin: auto;">
+					<f:validateRegex pattern="^[a-zA-Z0-9]*$"></f:validateRegex>
+				</h:inputText>
+			</h:panelGrid>
+			<p:commandButton actionListener="#{catalogBean.findVehicle()}"
+				value="Find Vehicle" styleClass="q-btn"
+				update=":car-form :form-g :group-form" />
+		</h:form>
+		<br />
+		<h:form id="car-form">
+			<h:panelGrid columns="2">
+				<h:outputText value="Car: " styleClass="q-bold" />
+				<h:outputText value="#{catalogBean.carModel.title}" />
+				<h:outputText value="Car ID: " styleClass="q-bold" />
+				<h:outputText value="#{catalogBean.carModel.carId}" />
+				<h:outputText value="Parameters: " styleClass="q-bold" />
+			</h:panelGrid>
+			<h:dataTable styleClass="w3-table w3-striped w3-border"
+				style="width:50%" value="#{catalogBean.carModel.parameters}"
+				var="par">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name" />
+					</f:facet>
+					<h:outputText value="#{par.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Value" />
+					</f:facet>
+					<h:outputText value="#{par.value}" />
+				</h:column>
+			</h:dataTable>
+			<br />
+			<br />
+		</h:form>
+
+		<h:form id="group-form">
+			<div class="w3-row">
+				<div class="w3-half">
+					<ui:repeat var="group"
+						value="#{catalogBean.carModel.catalogGroups}">
+						<h:graphicImage value="https://#{group.img}" />
+						<br />
+						<p:commandLink value="#{group.name}" update="@form"
+							process="@this"
+							actionListener="#{catalogBean.loadSubGroup(group)}" />
+						<br />
+					</ui:repeat>
+				</div>
+				<div class="w3-half">
+					<ui:repeat var="group"
+						value="#{catalogBean.selectedGroup.subGroups}">
+						<h:graphicImage value="https://#{group.img}" />
+						<br />
+						<p:commandLink value="#{group.name}" update=":part-form :form-g"
+							process="@this" actionListener="#{catalogBean.loadParts(group)}" />
+						<br />
+					</ui:repeat>
+				</div>
+			</div>
+		</h:form>
+
+		<h:form id="part-form">
+			<div class="w3-row">
+				<div class="w3-half">
+					<h:graphicImage
+						value="https://#{catalogBean.selectedSubGroup.partList.img}" />
+				</div>
+				<div class="w3-half">
+					<h:dataTable
+						value="#{catalogBean.selectedSubGroup.partList.partGroups.get(0).parts}"
+						var="part" styleClass="w3-table w3-striped w3-border"
+						style="width:100%">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Number" />
+							</f:facet>
+							<h:outputText value="#{part.number}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Name" />
+							</f:facet>
+							<h:outputText value="#{part.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Position" />
+							</f:facet>
+							<h:outputText value="#{part.positionNumber}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Price" />
+							</f:facet>
+							<h:outputText value="#{part.product.bestPrice}" />
+						</h:column>
+					</h:dataTable>
+				</div>
+			</div>
+		</h:form>
+	</div>
+</h:body>
+</html>

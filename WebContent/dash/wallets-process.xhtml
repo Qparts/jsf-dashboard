@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Process Wallets</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Awaiting Wallets" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<div>
+					<h:form id="form2">
+						<h:dataTable value="#{processWalletsBean.wallets}" var="wallet"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="CART#" />
+								</f:facet>
+								<h:outputText value="#{wallet.cartId}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Status" />
+								</f:facet>
+								<h:outputText value="Awaiting"
+									rendered="#{wallet.status eq 'A'}"
+									styleClass="w3-yellow w3-tag" />
+								<h:outputText value="Purchased"
+									rendered="#{wallet.status eq 'P'}"
+									styleClass="w3-orange w3-tag w3-text-white" />
+								<h:outputText value="Sold" rendered="#{wallet.status eq 'S'}"
+									styleClass="w3-green w3-tag" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Payment" />
+								</f:facet>
+								<h:outputText value="Wire"
+									rendered="#{wallet.paymentType eq 'wiretransfer'}"
+									styleClass="w3-indigo w3-tag" />
+								<h:outputText value="CC"
+									rendered="#{wallet.paymentType eq 'creditcard'}"
+									styleClass="w3-blue w3-tag" />
+								<h:outputText value="COD"
+									rendered="#{wallet.paymentType eq 'cashondelivery'}"
+									styleClass="w3-red w3-tag" />
+								<h:outputText value="Credit"
+									rendered="#{wallet.paymentType eq 'creditsales'}"
+									styleClass="w3-pale-red w3-tag" />
+							</h:column>
+							<h:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Customer" />
+								</f:facet>
+								<h:outputText value="#{wallet.customerName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="City" />
+								</f:facet>
+								<h:outputText value="#{wallet.cart.address.city.region.name} - #{wallet.cart.address.city.name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Order Date" />
+								</f:facet>
+								<h:outputText value="#{wallet.created}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+							<h:column rendered="false">
+								<f:facet name="header">
+									<h:outputText value="City" />
+								</f:facet>
+								<h:outputText value="#{cart.address.city.name}">
+								</h:outputText>
+							</h:column>
+							<h:column rendered="false">
+								<f:facet name="header">
+									<h:outputText value="Vehicle" />
+								</f:facet>
+								<h:outputText value="#{cart.modelYear.fullName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="View" />
+									</div>
+								</f:facet>
+								<div align="center">
+									<h:outputLink rendered="#{wallet.status eq 'A'}"
+										value="wallet-awaiting?wallet=#{wallet.id}">
+										<i class="fa fa-search-plus" style="font-size: 20px;"></i>
+									</h:outputLink>
+									<h:outputLink rendered="#{wallet.status eq 'P'}"
+										value="wallet-sales?wallet=#{wallet.id}">
+										<i class="fa fa-search-plus" style="font-size: 20px;"></i>
+									</h:outputLink>
+									<h:outputLink rendered="#{wallet.status eq 'S'}"
+										value="shipments?customer=#{wallet.customerId}">
+										<i class="fa fa-search-plus" style="font-size: 20px;"></i>
+									</h:outputLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</h:form>
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

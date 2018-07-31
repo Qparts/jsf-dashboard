@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Dashboard Login</title>
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Raleway" />
+	<h:outputStylesheet library="css" name="dashboard.css" />
+	<h:outputStylesheet library="css" name="w3.css" />
+	<h:outputStylesheet library="css" name="bootstrap.css" />
+	<h:outputStylesheet library="css" name="style.css" />
+	<h:outputStylesheet library="css" name="page.css" />
+	<h:outputStylesheet library="css" name="hover.css" />
+	<h:outputStylesheet library="css" name="bootstrap-rtl.css" />
+	<h:outputScript library="js" name="bootstrap.min.js" />
+	<h:outputStylesheet library="css" name="design.css" />
+</h:head>
+<h:body>
+	<ui:include src="/_includes/_customer_top" />
+	<div class="w3-container" align="center">
+		<br /> <br />
+		<h:form id="form-g">
+			<p:growl id="error-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<h:form>
+			<div class="w3-card-2" style="width: 400px">
+				<div class="w3-padding-12"></div>
+				<h:panelGrid columns="1" style="width:300px" styleClass="w3-center">
+					<h:inputText value="#{loginBean.username}"
+						a:placeholder="username" required="true"
+						requiredMessage="Enter user name" styleClass="w3-input w3-border" />
+					<div class="w3-padding-8"></div>
+					<h:inputSecret value="#{loginBean.password}"
+						a:placeholder="password" required="true"
+						requiredMessage="Enter Password" styleClass="w3-input w3-border" />
+					<div class="w3-padding-8"></div>
+					<h:commandButton value="Login"
+						actionListener="#{loginBean.login()}"
+						styleClass="w3-btn q-btn-orange"></h:commandButton>
+					<div class="w3-padding-8"></div>
+				</h:panelGrid>
+				<div class="w3-padding-12"></div>
+			</div>
+		</h:form>
+	</div>
+</h:body>
+</html>

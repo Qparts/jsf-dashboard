@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Sales Search</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Sales Search" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+
+				<h:form id="form">
+					<div class="w3-row">
+						<div class="w3-third">
+							<h:panelGrid columns="2">
+								<h:outputText value="Cart ID" />
+								<h:inputText value="#{salesSearchBean.cartId}" />
+								<h:outputText value="Customer" />
+								<h:inputText value="#{salesSearchBean.customerVar}" />
+								<h:outputText value="Product" />
+								<h:inputText value="#{salesSearchBean.productVar}" />
+								<h:outputText value="Make" />
+								<h:selectOneMenu value="#{salesSearchBean.makeId}">
+									<f:selectItem itemValue="#{0}" itemLabel="All" />
+									<f:selectItems value="#{vehicleBean.makes}" var="make"
+										itemLabel="#{make.name}" itemValue="#{make.id}" />
+								</h:selectOneMenu>
+							</h:panelGrid>
+						</div>
+						<div class="w3-third">
+							<h:panelGrid columns="2">
+								<h:outputText value="Promo Code" />
+								<h:inputText value="#{salesSearchBean.promotionString}" />
+								<h:outputText value="Courrier" />
+								<h:selectOneMenu value="#{salesSearchBean.courrier}">
+									<f:selectItem itemLabel="All" itemValue="" />
+									<f:selectItem itemLabel="Fetchr" itemValue="Fetchr" />
+									<f:selectItem itemLabel="SMSA" itemValue="SMSA" />
+									<f:selectItem itemLabel="Zajil" itemValue="Zajil" />
+									<f:selectItem itemLabel="Qetaa" itemValue="QETAA" />
+									<f:ajax />
+								</h:selectOneMenu>
+								<h:outputText value="From" />
+								<p:calendar value="#{salesSearchBean.from}"
+									pattern="dd-MMM-yyyy" styleClass="q-input-undecorate"
+									process="@this" update="@this" />
+								<h:outputText value="To" />
+								<p:calendar value="#{salesSearchBean.to}" pattern="dd-MMM-yyyy"
+									styleClass="q-input-undecorate" process="@this" update="@this" />
+							</h:panelGrid>
+						</div>
+						<div class="w3-third">
+							<h:commandButton actionListener="#{salesSearchBean.search()}"
+								value="Search" styleClass="q-btn" />
+						</div>
+					</div>
+				</h:form>
+
+				<br />
+				<h:form id="form2">
+					<h:dataTable value="#{salesSearchBean.foundSales}" var="sales"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								Sales ID
+							</f:facet>
+							<h:outputText value="#{sales.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Cart ID
+							</f:facet>
+							<h:outputText value="#{sales.cartId}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Sales Date
+							</f:facet>
+							<h:outputText value="#{sales.salesDate}">
+								<f:convertDateTime type="date" />
+							</h:outputText>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Customer
+							</f:facet>
+							<h:outputText value="#{sales.cart.customer.fullName}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Vehicle
+							</f:facet>
+							<h:outputText value="#{sales.totalSalesWv}">
+								<f:convertNumber currencySymbol="SR " type="currency"/>
+							</h:outputText>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								View
+							</f:facet>
+							<h:outputLink value="sales-details?id=#{sales.id}" target="_blank">
+								<i class="fa fa-search-plus" style="font-size: 20px;"></i>
+							</h:outputLink>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+				
+				
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Parts Return Search</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Purchase Return Search"
+						styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<div>
+					<h:form id="form2">
+						<h:dataTable value="#{purchaseReturnSearchBean.salesReturns}"
+							var="sr" styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom">
+							<f:facet name="header">
+								<div align="center">
+									<h:outputText value="Sales Returns" />
+								</div>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="SR#" />
+								</f:facet>
+								<h:outputText value="#{sr.id}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="CART#" />
+								</f:facet>
+								<h:outputText value="#{sr.cartId}" />
+							</h:column>
+							<h:column style="width:100px">
+								<f:facet name="header">
+									<h:outputText value="Customer" />
+								</f:facet>
+								<h:outputText value="#{sr.sales.cart.customer.fullName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Return Date" />
+								</f:facet>
+								<h:outputText value="#{sr.returnDate}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Returned By" />
+								</f:facet>
+								<h:outputText
+									value="#{usersBean.getUserFromId(sr.returnBy).firstName}">
+								</h:outputText>
+							</h:column>
+							<h:column rendered="true">
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="Return Purchase" />
+									</div>
+								</f:facet>
+								<div align="center">
+									<h:outputLink value="purchase-return?srid=#{sr.id}">
+										<i class="fa fa-cart-arrow-down"
+											style="font-size: 20px; color: red"></i>
+									</h:outputLink>
+								</div>
+							</h:column>
+						</h:dataTable>
+					</h:form>
+					<h:form id="form3">
+						<p:dialog styleClass="q-dialog" id="dlg3" widgetVar="dlgwv3"
+							header="Part Order" width="1000" onHide="PF('dlg4wv').hide()">
+							<div class="w3-third">
+								<h:panelGrid columns="2">
+									<h:outputLabel value="Cart ID" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.id}" />
+									<h:outputLabel value="Date" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.created}">
+										<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+									</h:inputText>
+									<h:outputLabel value="Vehicle" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.modelYear.fullName}" />
+									<h:outputLabel value="VIN" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.vin}" />
+									<h:outputLabel value="Delivery Fees" styleClass="q-bold" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.deliveryFees}" />
+								</h:panelGrid>
+							</div>
+							<div class="w3-third">
+								<h:panelGrid columns="2">
+									<h:outputLabel styleClass="q-bold" value="ID" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.customer.id}" />
+									<h:outputLabel styleClass="q-bold" value="Name" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.customer.firstName} #{partOrdersBean.selectedCart.customer.lastName}" />
+									<h:outputLabel styleClass="q-bold" value="Mobile" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.customer.mobile}" />
+									<h:outputLabel styleClass="q-bold" value="Email" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.customer.email}" />
+									<h:outputLabel styleClass="q-bold" value="Loyalty Points" />
+									<h:inputText readonly="true"
+										value="#{partOrdersBean.selectedCart.customer.totalLoyaltyPoints}" />
+
+								</h:panelGrid>
+							</div>
+							<div class="w3-third">
+								<h:panelGrid columns="2">
+									<h:outputText value="Address" />
+									<h:inputTextarea readonly="true"
+										value="#{partOrdersBean.selectedCart.address.line1} - #{partOrdersBean.selectedCart.address.line2}"
+										cols="23" rows="3" />
+									<h:outputText value="City" />
+									<h:inputText
+										value="#{partOrdersBean.selectedCart.address.city.region.name} - #{partOrdersBean.selectedCart.address.city.name}"
+										readonly="true" />
+									<h:outputText value="Country" />
+									<h:inputText
+										value="#{partOrdersBean.selectedCart.address.city.country.name}"
+										readonly="true" />
+									<h:outputText value="Promotion" />
+									<h:outputText
+										value="#{partOrdersBean.selectedCart.promoCodeObject.provider.name}"
+										styleClass="w3-tag w3-green"
+										rendered="#{not (partOrdersBean.selectedCart.promoCodeObject eq null)}" />
+								</h:panelGrid>
+							</div>
+							<br />
+							<h:panelGroup id="scroll">
+								<h:outputText
+									value="#{partOrdersBean.selectedCart.partsItemsApproved.size()}"
+									style="visibility:hidden" />
+								<div class="scroll-div-150">
+									<h:dataTable styleClass="w3-table w3-striped w3-border"
+										headerClass="w3-light-grey w3-border"
+										value="#{partOrdersBean.selectedCart.partsItemsApproved}"
+										var="approved">
+										<f:facet name="header">
+											<div align="center">Parts Order Items</div>
+										</f:facet>
+										<h:column headerClass="w3-border-bottom w3-light-grey">
+											<f:facet name="header">
+												<h:outputText value="Vendor" />
+											</f:facet>
+											<h:outputText
+												value="#{vendorBean.getVendorFromId(approved.vendorId).name}" />
+										</h:column>
+										<h:column headerClass="w3-border-bottom w3-light-grey">
+											<f:facet name="header">
+												<h:outputText value="Status" />
+											</f:facet>
+											<h:outputText value="Waiting for Purchase"
+												styleClass="w3-tag w3-indigo"
+												rendered="#{approved.stockQuantity lt approved.approvedQuantity}" />
+											<h:outputText value="Purchased"
+												styleClass="w3-tag w3-orange w3-text-white"
+												rendered="#{approved.stockQuantity eq approved.approvedQuantity}" />
+										</h:column>
+
+										<h:column headerClass="w3-border-bottom w3-light-grey">
+											<f:facet name="header">
+												<h:outputText value="Name" />
+											</f:facet>
+											<h:outputText value="#{approved.itemDesc}" />
+										</h:column>
+										<h:column headerClass="w3-border-bottom w3-light-grey">
+											<f:facet name="header">
+												<h:outputText value="Item Number" />
+											</f:facet>
+											<h:outputText value="#{approved.itemNumber}" />
+										</h:column>
+										<h:column headerClass="w3-border-bottom w3-light-grey">
+											<f:facet name="header">
+												<h:outputText value="Ordered Q." />
+											</f:facet>
+											<h:outputText value="#{approved.approvedQuantity}" />
+										</h:column>
+										<h:column headerClass="w3-border-bottom w3-light-grey">
+											<f:facet name="header">
+												<h:outputText value="Stock Q." />
+											</f:facet>
+											<h:outputText value="#{approved.stockQuantity}" />
+										</h:column>
+									</h:dataTable>
+								</div>
+							</h:panelGroup>
+							<br />
+							<div class="w3-half">
+								<div class="scroll-div-150">
+									<h:outputText value="No Reviews!"
+										rendered="#{partOrdersBean.selectedCart.reviews.isEmpty()}" />
+									<ui:repeat value="#{partOrdersBean.selectedCart.reviews}"
+										var="review">
+										<h:outputText value="#{review.created}" styleClass="q-bold"
+											style="color:#2dacd1!important;">
+											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+										</h:outputText>
+										<h:outputText value=" #{review.reviewer.firstName} : "
+											style="color:#2dacd1!important;" styleClass="q-bold" />
+										<h:outputText dir="rtl" value=" #{review.reviewText}" />
+										<br />
+										<br />
+									</ui:repeat>
+								</div>
+							</div>
+							<div class="w3-half">
+								<div align="center">
+									<h:panelGroup
+										rendered="#{(partOrdersBean.selectedCart.status eq 'E') and (loginBean.hasAccess(act.actionPartsShip))}">
+										<div class="w3-padding-8" align="center">
+											<h:panelGroup styleClass="padding-8" layout="block">
+												<h:outputText value="Shipment Cost" />
+												<br />
+												<h:inputText value="#{partOrdersBean.shipmentCost}"
+													required="true">
+													<f:ajax></f:ajax>
+												</h:inputText>
+											</h:panelGroup>
+											<h:panelGroup styleClass="padding-8" layout="block">
+												<h:outputText value="Shipment Reference" />
+												<br />
+												<h:inputText value="#{partOrdersBean.shipmentReference}"
+													required="true">
+													<f:ajax></f:ajax>
+												</h:inputText>
+											</h:panelGroup>
+											<h:panelGroup styleClass="padding-8" layout="block">
+												<h:outputText value="Courrier Name" />
+												<br />
+												<h:selectOneMenu value="#{partOrdersBean.courrierName}">
+													<f:selectItem itemLabel="Fetchr" itemValue="Fetchr" />
+													<f:selectItem itemLabel="SMSA" itemValue="SMSA" />
+													<f:selectItem itemLabel="Zajil" itemValue="Zajil" />
+													<f:selectItem itemLabel="Qetaa" itemValue="QETAA" />
+													<f:ajax />
+												</h:selectOneMenu>
+											</h:panelGroup>
+
+											<h:panelGroup styleClass="padding-8" layout="block">
+												<p:commandButton value="Ship Order" styleClass="q-btn"
+													update="@all"
+													actionListener="#{partOrdersBean.shipItems()}" />
+											</h:panelGroup>
+
+										</div>
+									</h:panelGroup>
+								</div>
+							</div>
+						</p:dialog>
+					</h:form>
+				</div>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

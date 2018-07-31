@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+	<h:form id="form2">
+		<p:dialog styleClass="q-dialog" id="dlg2" widgetVar="dlgwv2"
+			header="View Vendor Quotation">
+			<h:panelGroup
+				rendered="#{qBean.selectedQuotationVendor != null}">
+				<h:panelGrid columns="2">
+					<h:outputText value="Vendor" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{qBean.selectedQuotationVendor.vendor.name}" />
+					<h:outputText value="Submitted" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{qBean.selectedQuotationVendor.submitted}">
+						<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+					</h:inputText>
+					<h:outputText value="Cost Price" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{qBean.selectedQuotationVendor.itemsTotalPriceCost}">
+						<f:convertNumber type="currency" currencySymbol="SR " />
+					</h:inputText>
+					<h:outputText value="Sales Price" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{qBean.selectedQuotationVendor.itemsTotalPriceSales}">
+						<f:convertNumber type="currency" currencySymbol="SR " />
+					</h:inputText>
+
+				</h:panelGrid>
+				<br />
+				<h:dataTable styleClass="w3-table w3-border w3-striped"
+					headerClass="w3-light-grey w3-border-bottom"
+					value="#{qBean.selectedQuotationVendor.qvItems}" var="item">
+					<f:facet name="header">
+						<div align="center">
+							<h:outputText value="Quotation" />
+						</div>
+					</f:facet>
+					<h:column>
+						<f:facet name="header">
+														Item Name
+													</f:facet>
+						<h:outputText value="#{item.quotationOrderItem.itemName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+														Item Number
+													</f:facet>
+						<h:outputText value="#{item.itemNumber}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+														Unit Price
+													</f:facet>
+						<h:outputText value="#{item.itemPrice}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<div align="center">Available Quantity</div>
+						</f:facet>
+						<div align="center">
+							<h:outputText value="#{item.quantity}" />
+						</div>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<div align="center">Cost Price</div>
+						</f:facet>
+						<h:outputText value="#{item.totalPriceCost}">
+							<f:convertNumber type="currency" currencySymbol="SR " />
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<div align="center">Sales Price</div>
+						</f:facet>
+						<h:outputText value="#{item.totalPriceSales}">
+							<f:convertNumber type="currency" currencySymbol="SR " />
+						</h:outputText>
+					</h:column>
+				</h:dataTable>
+			</h:panelGroup>
+		</p:dialog>
+	</h:form>
+</ui:composition>

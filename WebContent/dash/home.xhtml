@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Qetaa Dashboard Home</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText
+						value="Welcome #{dashLoginBean.userHolder.user.firstName}"
+						styleClass="q-large-text" />
+				</div>
+				<br />
+				<div>
+					<div class="w3-row">
+						<h:panelGroup layout="block"
+							rendered="#{loginBean.hasAccess(act.pageWire)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="/dashboard/dash/wire_transfers"
+								styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Wire Transfers" styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.wires}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.pageFollowUpQuotations)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="/dashboard/dash/followups"
+								styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Follow Ups" styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.followups}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.actionQuotationsAdvisor)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="quotations" styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="My Quotations" styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.quotations}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+						
+						<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.pageQuotationMonitor)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="quotations-monitoring" styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="All Quotations" styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.allQuotations}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+						<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.pagePartOrders)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="wallet-awaiting" styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Awaiting Wallets" styleClass="q-med-text" />
+										<br />
+										<h:outputText value="0"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+
+						<h:panelGroup rendered="#{loginBean.hasAccess(act.pageAssign)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="/dashboard/dash/assign-quotations"
+								styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Unassigned Quotations"
+											styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.unassigned}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.pagePartsCollection)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="parts-collection"
+								styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Items to be collected"
+											styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.collection}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.pagePartsCollection)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="parts-collection"
+								styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Items to be received"
+											styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{notificationBean.receival}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+						
+							<h:panelGroup
+							rendered="#{loginBean.hasAccess(act.pageVendorJoinRequest)}"
+							styleClass="w3-quarter">
+							<h:outputLink value="vendor-join"
+								styleClass="q-no-decoration">
+								<div class="w3-panel q-panel" align="center">
+									<br />
+									<p>
+										<h:outputText value="Vendor Join Requests"
+											styleClass="q-med-text" />
+										<br />
+										<h:outputText value="#{vendorJoinBean.vendorJoins.size()}"
+											styleClass="q-med-text" />
+									</p>
+								</div>
+							</h:outputLink>
+						</h:panelGroup>
+					</div>
+				</div>
+
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

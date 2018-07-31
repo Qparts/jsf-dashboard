@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Vendors Master</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Vendors Master" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<div class="w3-section">
+					<div class="w3-row-padding" style="margin: 0 -16px">
+						<div class="w3-third">
+							<h:form id="form">
+								<p:panel toggleable="true" header="New Vendor" collapsed="true"
+									toggleSpeed="100">
+									<h:panelGrid columns="2">
+										<h:outputText value="Vendor Name: " />
+										<h:inputText value="#{vendorBean.vendorHolder.vendor.name}" />
+										<h:outputText value="Arabic: " />
+										<h:inputText value="#{vendorBean.vendorHolder.vendor.nameAr}" />
+										<h:outputText value="Status: " />
+										<h:selectOneRadio
+											value="#{vendorBean.vendorHolder.vendor.status}">
+											<f:selectItem itemValue="#{'A'}" itemLabel="Active" />
+											<f:selectItem itemValue="#{'I'}" itemLabel="Inactive" />
+										</h:selectOneRadio>
+										<h:outputText value="Base City" />
+										<h:selectOneMenu
+											value="#{vendorBean.vendorHolder.vendor.cityId}"
+											required="true">
+											<f:selectItem noSelectionOption="true"
+												itemLabel="--Select City--" />
+											<f:selectItems value="#{cityBean.internalActiveCities}"
+												var="city" itemValue="#{city.id}" itemLabel="#{city.name}"></f:selectItems>
+										</h:selectOneMenu>
+										<h:commandButton actionListener="#{vendorBean.createVendor()}"
+											value="Create" styleClass="q-btn" />
+									</h:panelGrid>
+								</p:panel>
+							</h:form>
+						</div>
+					</div>
+				</div>
+				<h:form id="form1">
+					<h:dataTable value="#{vendorBean.vendorHolders}" var="holder"
+						styleClass="w3-table w3-striped_immediate w3-border"
+						headerClass="w3-light-grey w3-border-bottom w3-border-right"
+						columnClasses="w3-border,w3-border,w3-border,w3-border,w3-border,w3-border,w3-border">
+						<h:column>
+							<f:facet name="header">
+								<div align="center">Name</div>
+							</f:facet>
+							<h:outputText value="#{holder.vendor.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<div align="center">Arabic</div>
+							</f:facet>
+							<h:outputText style="float:right" value="#{holder.vendor.nameAr}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<div align="center">Status</div>
+							</f:facet>
+							<div align="center">
+								<h:outputText value="Active" styleClass="w3-tag w3-green"
+									rendered="#{holder.vendor.status eq 'A'}" />
+								<h:outputText value="Inactive" styleClass="w3-tag w3-red"
+									rendered="#{holder.vendor.status eq 'I'}" />
+							</div>
+						</h:column>
+						<h:column headerText="Users">
+							<f:facet name="header">
+								<div align="center">Users</div>
+							</f:facet>
+							<div align="center">
+								<p:commandLink oncomplete="PF('dlgwv3').show()"
+									actionListener="#{vendorBean.setSelectedVendorHolder(holder)}"
+									value="#{holder.vendorUsers.size()} users" update=":form3">
+								</p:commandLink>
+							</div>
+						</h:column>
+						<h:column headerText="Users">
+							<f:facet name="header">
+								<div align="center">Makes</div>
+							</f:facet>
+							<h:dataTable var="vmake" value="#{holder.vendorMakes}"
+								styleClass="w3-table">
+								<h:column>
+									<h:outputText
+										value="#{vehicleBean.getMakeFromId(vmake.makeId).name}" />
+								</h:column>
+								<h:column>
+									<h:outputText value="#{vmake.percentage}">
+										<f:convertNumber type="percent" />
+									</h:outputText>
+								</h:column>
+							</h:dataTable>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<div align="center">Details</div>
+							</f:facet>
+							<div align="center">
+								<p:commandLink oncomplete="PF('dlgwv').show()"
+									actionListener="#{vendorBean.setSelectedVendorHolder(holder)}"
+									update=":form2">
+									<i class="fa fa-search-plus"></i>
+								</p:commandLink>
+							</div>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<div align="center">Edit Makes</div>
+							</f:facet>
+							<div align="center">
+								<p:commandLink oncomplete="PF('dlgwv4').show()"
+									actionListener="#{vendorBean.setSelectedVendorHolder(holder)}"
+									update=":form4">
+									<i class="fa fa-search-plus"></i>
+								</p:commandLink>
+							</div>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+				<h:form id="form2">
+					<p:dialog styleClass="q-dialog" id="dlg" widgetVar="dlgwv"
+						header="Vendor Details">
+						<h:panelGrid columns="2">
+							<h:outputText value="Vendor Name: " />
+							<h:outputText
+								value="#{vendorBean.selectedVendorHolder.vendor.name}" />
+							<h:outputText value="Arabic: " />
+							<h:outputText
+								value="#{vendorBean.selectedVendorHolder.vendor.nameAr}" />
+							<h:outputText value="Status: " />
+							<h:selectOneRadio
+								value="#{vendorBean.selectedVendorHolder.vendor.status}">
+								<f:selectItem itemValue="#{'A'}" itemLabel="Active" />
+								<f:selectItem itemValue="#{'I'}" itemLabel="Inactive" />
+							</h:selectOneRadio>
+						</h:panelGrid>
+						<h:commandButton actionListener="#{vendorBean.updateVendor()}"
+							value="Save Changes" styleClass="q-btn" />
+					</p:dialog>
+				</h:form>
+				<h:form id="form3">
+					<p:dialog styleClass="q-dialog" id="dlg3" widgetVar="dlgwv3"
+						header="Vendor Users">
+						<h:panelGrid columns="2">
+							<h:outputText value="Vendor Name: " />
+							<h:outputText
+								value="#{vendorBean.selectedVendorHolder.vendor.name}" />
+						</h:panelGrid>
+						<h:outputText value="Users: " />
+						<h:dataTable styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-border-bottom w3-light-grey"
+							value="#{vendorBean.selectedVendorHolder.vendorUsers}" var="user">
+							<f:facet name="header">
+								<div align="center">Users</div>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">
+										Username
+									</f:facet>
+								<h:outputText value="#{user.username}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+										Status
+									</f:facet>
+								<h:outputText value="Active" styleClass="w3-tag w3-green"
+									rendered="#{user.status eq 'A'}" />
+								<h:outputText value="Inactive" styleClass="w3-tag w3-red"
+									rendered="#{user.status eq 'I'}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+										Name
+									</f:facet>
+								<h:outputText value="#{user.firstName} #{user.lastNAme}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+										Email
+									</f:facet>
+								<h:outputText value="#{user.email}" />
+							</h:column>
+							<h:column name="header">
+								<f:facet name="header">
+										Contact Number
+									</f:facet>
+								<h:outputText value="#{user.contactNumber}" />
+							</h:column>
+						</h:dataTable>
+						<div align="center" class="w3-padding-8">
+							<h:button styleClass="q-btn" value="view"
+								outcome="vendor_user?vendor-id=#{vendorBean.selectedVendorHolder.vendor.id}">
+							</h:button>
+						</div>
+					</p:dialog>
+				</h:form>
+				<h:form id="form4">
+					<h:outputText value="#{vendorBean.initUnselectedVehicleMakes()}" />
+					<p:dialog styleClass="q-dialog" id="dlg4" widgetVar="dlgwv4"
+						header="Vendor Makes">
+						<h:panelGroup rendered="#{vendorBean.unselectedMakes.size() gt 0}">
+							<div align="center">Add Make</div>
+							<div class="w3-padding-12">
+								<h:panelGrid columns="2">
+									<h:outputText value="Select Make" />
+									<h:selectOneMenu value="#{vendorBean.vendorMake.makeId}">
+										<f:selectItems value="#{vendorBean.unselectedMakes}"
+											var="make" itemLabel="#{make.name}" itemValue="#{make.id}" />
+									</h:selectOneMenu>
+									<h:outputText value="Percentage" />
+									<h:inputText value="#{vendorBean.vendorMake.percentage}"
+										validatorMessage="Sales Percentage must be between 0.01 and 1.0">
+										<f:convertNumber type="percent" />
+										<f:validateDoubleRange minimum="0.01" maximum="1.0"></f:validateDoubleRange>
+									</h:inputText>
+								</h:panelGrid>
+								<div align="center" class="w3-padding-8">
+									<h:commandButton value="Add Make" styleClass="q-btn"
+										actionListener="#{vendorBean.addVendorMake()}">
+									</h:commandButton>
+								</div>
+							</div>
+						</h:panelGroup>
+						<h:dataTable styleClass="w3-table w3-striped w3-border"
+							value="#{vendorBean.selectedVendorHolder.vendorMakes}"
+							var="vmake" headerClass="w3-light-grey w3-border-bottom">
+							<f:facet name="header">
+								<div align="center">
+									<h:outputText value="Added Makes" />
+								</div>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">
+											Make
+										</f:facet>
+								<h:outputText value="#{vmake.makeId}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+											Percentage
+										</f:facet>
+								<h:outputText value="#{vmake.percentage}"></h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+											Remove
+										</f:facet>
+								<p:commandButton value="-" styleClass="q-btn"
+									actionListener="#{vendorBean.removeVendorMake(vmake)}"
+									onsuccess="location.reload();" process="@this">
+								</p:commandButton>
+							</h:column>
+						</h:dataTable>
+					</p:dialog>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

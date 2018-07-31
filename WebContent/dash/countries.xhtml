@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Countries Master</title>
+	<ui:include src="/_includes/_dashboard_header" />
+	<script
+		src="https://maps.google.com/maps/api/js?key=AIzaSyDYZvQNSAQEdn6aOycWv_uFnpI7WKPibv8"
+		type="text/javascript"></script>
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Countries Master" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<p:panel toggleable="true" header="New Country" collapsed="true"
+					toggleSpeed="100">
+					<h:panelGrid columns="3">
+						<h:form id="form">
+							<h:panelGrid columns="2">
+								<h:outputText value="Country Name: " />
+								<h:inputText value="#{countryBean.country.name}">
+									<f:ajax/>
+								</h:inputText>
+								<h:outputText value="Country Name Arabic: " />
+								<h:inputText value="#{countryBean.country.nameAr}">
+									<f:ajax/>
+								</h:inputText>
+								<h:outputText value="Latitude: " />
+								<h:inputText value="#{countryBean.country.latitude}" readonly="true" />
+								<h:outputText value="Longitude: " />
+								<h:inputText value="#{countryBean.country.longitude}" readonly="true"/>
+								<h:outputText value="Map Zoom: " />
+								<h:inputText value="#{countryBean.country.mapZoom}" readonly="true"/>
+								<h:outputText value="Country Code" />
+								<h:inputText value="#{countryBean.country.countryCode}"/>
+								<h:outputText value="Internal Status" />
+								<h:selectOneRadio value="#{countryBean.country.internalStatus}">
+									<f:selectItem itemValue="#{'A'}" itemLabel="Active" />
+									<f:selectItem itemValue="#{'I'}" itemLabel="Inactive" />
+								</h:selectOneRadio>
+								<h:outputText value="Customer Status" />
+								<h:selectOneRadio value="#{countryBean.country.customerStatus}">
+									<f:selectItem itemValue="#{'A'}" itemLabel="Active" />
+									<f:selectItem itemValue="#{'I'}" itemLabel="Inactive" />
+								</h:selectOneRadio>
+								<h:commandButton value="Create" styleClass="q-btn"
+									actionListener="#{countryBean.createCountry()}"></h:commandButton>
+							</h:panelGrid>
+						</h:form>
+						<p:spacer height="0" width="100"></p:spacer>
+						<h:form id="form1">
+							<h:panelGroup>
+								<p:gmap
+									center="#{countryBean.country.latitude}, #{countryBean.country.longitude}"
+									zoom="#{countryBean.country.mapZoom}" type="ROADMAP"
+									style="width:500px;height:400px">
+									<p:ajax event="stateChange"
+										listener="#{countryBean.onStateChange}" update=":form" />
+								</p:gmap>
+							</h:panelGroup>
+						</h:form>
+					</h:panelGrid>
+				</p:panel>
+				<br />
+				<h:form id="form2">
+					<h:dataTable value="#{countryBean.countries}" var="var"
+						styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								Name
+							</f:facet>
+							<h:outputText value="#{var.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Name Arabic
+							</f:facet>
+							<h:outputText value="#{var.nameAr}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Internal Status
+							</f:facet>
+							<h:outputText value="active" styleClass="w3-tag w3-green"
+								rendered="#{var.internalStatus eq 'A'}" />
+							<h:outputText value="inactive" styleClass="w3-tag w3-red"
+								rendered="#{var.internalStatus eq 'I'}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								Customer Status
+							</f:facet>
+							<h:outputText value="active" styleClass="w3-tag w3-green"
+								rendered="#{var.customerStatus eq 'A'}" />
+							<h:outputText value="inactive" styleClass="w3-tag w3-red"
+								rendered="#{var.customerStatus eq 'I'}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<div align="center">Details</div>
+							</f:facet>
+							<div align="center">
+								<p:commandLink oncomplete="PF('dlgwv').show()" update=":form3">
+									<p:ajax listener="#{countryBean.setSelectedCountry(var)}" />
+									<i class="fa fa-search-plus"></i>
+								</p:commandLink>
+							</div>
+						</h:column>
+					</h:dataTable>
+				</h:form>
+				<h:form id="form3">
+					<p:dialog styleClass="q-dialog" id="dlg" widgetVar="dlgwv" header="Country Details">
+						<h:outputText value="#{countryBean.selectedCountry.name}" />
+						<p:gmap disableDefaultUI="true" navigationControl="false"
+							draggable="false"
+							center="#{countryBean.selectedCountry.latitude}, #{countryBean.selectedCountry.longitude}"
+							zoom="#{countryBean.selectedCountry.mapZoom}" type="ROADMAP"
+							style="width:500px;height:400px">
+						</p:gmap>
+					</p:dialog>
+				</h:form>
+
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

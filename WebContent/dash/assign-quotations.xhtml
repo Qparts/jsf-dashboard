@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<title>Assign Quotation</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<p:layout fullPage="true">
+	<p:layoutUnit position="north" size="62"
+		styleClass="q-dashboard-background" id="north">
+		<ui:include src="/_includes/top_dashboard" />
+	</p:layoutUnit>
+	<ui:include src="/_includes/side" />
+	<p:layoutUnit position="center">
+		<div class="w3-container">
+			<div align="center" class="w3-padding-8">
+				<h:outputText value="Assign Quotations" styleClass="q-large-text" />
+			</div>
+			<div class="w3-section w3-container">
+				<div align="center">Unassigned Carts</div>
+				<h:form id="form1">
+					<p:dataGrid id="available-carts" var="cart"
+						value="#{assignBean.unassigned}" columns="6"
+						styleClass="w3-center">
+						<p:panel id="cart-panel">
+							<f:facet name="header">
+								<h:outputText value="#{cart.id}" />
+							</f:facet>
+							<p:panelGrid layout="grid" columns="2" style="width:100%">
+								<p:commandLink process="@this" update=":form2"
+									actionListener="#{assignBean.setSelectedCart(cart)}"
+									oncomplete="PF('dlgwv2').show()">
+									<i class="fa fa-search-plus"></i>
+								</p:commandLink>
+								<h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
+								<p:draggable for="dragIcon" revert="true" helper="clone" />
+							</p:panelGrid>
+						</p:panel>
+					</p:dataGrid>
+				</h:form>
+			</div>
+			<div align="center">Advisors</div>
+			<h:form id="form4">
+				<p:outputPanel id="drop-area">
+					<p:dataGrid id="repeat" styleClass="q-vert-align" columns="3"
+						value="#{assignBean.advisorCarts}" var="advisor">
+						<p:fieldset id="selected-advisor" toggleable="true"
+							toggleSpeed="100"
+							legend="#{advisor.user.firstName} #{advisor.user.lastName}">
+							<h:dataTable id="assigned-carts"
+								styleClass="w3-table w3-striped w3-border"
+								value="#{advisor.carts}" var="cart" headerClass="w3-light-grey">
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Cart #" />
+									</f:facet>
+									<h:outputText value="#{cart.id}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Customer" />
+									</f:facet>
+									<h:outputText
+										value="#{cart.customer.firstName} #{cart.customer.lastName}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Status" />
+									</f:facet>
+									<h:outputText rendered="#{cart.status == 'A'}"
+										value="Request Edit" styleClass="w3-teal w3-tag" />
+									<h:outputText rendered="#{cart.status == 'R'}"
+										value="Ready for submission" styleClass="w3-green w3-tag" />
+									<h:outputText rendered="#{cart.status == 'W'}"
+										value="Waiting for Vendors" styleClass="w3-indigo w3-tag" />
+									<h:outputText rendered="#{cart.status == 'N'}"
+										value="New order" styleClass="w3-orange w3-tag w3-text-white" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Details" />
+									</f:facet>
+									<p:commandLink process="@this" update=":form2"
+										actionListener="#{assignBean.setSelectedCart(cart)}"
+										oncomplete="PF('dlgwv2').show()">
+										<i class="fa fa-search-plus"></i>
+									</p:commandLink>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Unassign" />
+									</f:facet>
+									<p:commandLink title="unassign" update=":form1 :form2 :form4"
+										actionListener="#{assignBean.unassignCart(cart)}">
+										<i class="fa fa-close"></i>
+									</p:commandLink>
+								</h:column>
+							</h:dataTable>
+							<p:droppable for="repeat:selected-advisor" tolerance="touch"
+								activeStyleClass="ui-state-highlight"
+								datasource=":form1:available-carts" onDrop="handleDrop">
+								<p:ajax listener="#{assignBean.onCartDrop}"
+									update="@form :form1:available-carts" />
+							</p:droppable>
+						</p:fieldset>
+					</p:dataGrid>
+				</p:outputPanel>
+			</h:form>
+			<h:form id="form2">
+				<p:dialog styleClass="q-dialog" widgetVar="dlgwv2"
+					header="Cart Details">
+					<h:panelGrid columns="3">
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Cart ID" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.id}" />
+							<h:outputLabel value="Date" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.created}">
+								<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+							</h:inputText>
+							<h:outputLabel value="Vehicle" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.modelYear.fullName}" />
+							<h:outputLabel value="VIN" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.vin}" />
+						</h:panelGrid>
+						<p:spacer width="50" />
+						<h:panelGrid columns="2">
+							<h:outputLabel styleClass="q-bold" value="Name" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.customer.firstName} #{assignBean.selectedCart.customer.lastName}" />
+							<h:outputLabel styleClass="q-bold" value="Mobile" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.customer.mobile}" />
+							<h:outputLabel styleClass="q-bold" value="Email" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.customer.email}" />
+							<h:outputLabel styleClass="q-bold" value="ID" />
+							<h:inputText readonly="true"
+								value="#{assignBean.selectedCart.customer.id}" />
+						</h:panelGrid>
+					</h:panelGrid>
+					<br />
+					<div class="scroll-div-150">
+						<h:dataTable rendered="#{assignBean.selectedCart.status eq 'N'}"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border"
+							value="#{assignBean.selectedCart.cartItems}" var="item">
+							<f:facet name="header">
+								<div align="center">
+									<h:outputText value="Cart Items" />
+								</div>
+							</f:facet>
+							<h:column headerClass="w3-border-bottom w3-light-grey">
+								<f:facet name="header">
+									<h:outputText value="Name" />
+								</f:facet>
+								<h:outputText value="#{item.name}" />
+							</h:column>
+							<h:column headerClass="w3-border-bottom w3-light-grey">
+								<f:facet name="header">
+									<h:outputText value="Quantity" />
+								</f:facet>
+								<h:outputText value="#{item.quantity}" />
+							</h:column>
+						</h:dataTable>
+					</div>
+					<br />
+				</p:dialog>
+			</h:form>
+
+		</div>
+	</p:layoutUnit>
+</p:layout>
+</html>

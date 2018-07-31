@@ -1,0 +1,507 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Purchase</title>
+	<ui:include src="/_includes/_dashboard_header" />
+</h:head>
+<h:body>
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<div class="w3-container">
+				<div align="center" class="w3-padding-8">
+					<h:outputText value="Purchase" styleClass="q-large-text" />
+				</div>
+				<h:form id="form-g">
+					<p:growl id="error-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+					<p:growl id="success-growl"
+						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+				</h:form>
+				<div class="w3-row">
+					<div class="w3-third w3-container">
+						<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
+							<h:panelGrid columns="2">
+								<h:outputText value="Cart ID" />
+								<h:inputText value="#{cartPurchaseBean.cart.id}" readonly="true" />
+								<h:outputText value="Cart Date" />
+								<h:inputText value="#{cartPurchaseBean.cart.created}"
+									readonly="true">
+									<f:convertDateTime type="date" />
+								</h:inputText>
+								<h:outputText value="Vehicle" />
+								<h:inputText value="#{cartPurchaseBean.cart.modelYear.fullName}"
+									readonly="true" />
+								<h:outputText value="VIN" />
+								<h:inputText value="#{cartPurchaseBean.cart.vin}"
+									readonly="true" />
+								<h:outputText value="Delivery Fees" />
+								<h:inputText value="#{cartPurchaseBean.cart.deliveryFees}"
+									readonly="true" />
+							</h:panelGrid>
+						</div>
+					</div>
+					<div class="w3-third w3-container">
+						<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
+							<h:panelGrid columns="2">
+								<h:outputText value="Customer ID" />
+								<h:inputText value="#{cartPurchaseBean.cart.customerId}"
+									readonly="true" />
+								<h:outputText value="Name" />
+								<h:inputText value="#{cartPurchaseBean.cart.customer.fullName}"
+									readonly="true" />
+								<h:outputText value="Mobile" />
+								<h:inputText value="#{cartPurchaseBean.cart.customer.mobile}"
+									readonly="true" />
+								<h:outputText value="Email" />
+								<h:inputText value="#{cartPurchaseBean.cart.customer.email}"
+									readonly="true" />
+								<h:outputText value="Loyalty Points" />
+								<h:inputText
+									value="#{cartPurchaseBean.cart.customer.totalLoyaltyPoints}"
+									readonly="true" />
+							</h:panelGrid>
+						</div>
+					</div>
+					<div class="w3-third">
+						<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
+							<h:panelGrid columns="2">
+								<h:outputText value="Address" />
+								<h:inputText value="#{cartPurchaseBean.cart.address.line1}"
+									readonly="true" />
+								<h:outputText value="" />
+								<h:inputText value="#{cartPurchaseBean.cart.address.line2}"
+									readonly="true" />
+								<h:outputText value="Country" />
+								<h:inputText
+									value="#{cartPurchaseBean.cart.address.city.country.name}"
+									readonly="true" />
+								<h:outputText value="City" />
+								<h:inputText
+									value="#{cartPurchaseBean.cart.address.city.region.name} - #{cartPurchaseBean.cart.address.city.name}"
+									readonly="true" />
+								<h:outputText value="Promo Code" />
+								<h:outputText
+									value="#{cartPurchaseBean.cart.promoCodeObject.provider.name}"
+									styleClass="w3-tag w3-green" />
+							</h:panelGrid>
+						</div>
+					</div>
+				</div>
+				<br />
+				<div class="w3-row">
+					<div>
+						<h:form id="form4">
+							<h:dataTable
+								rendered="#{cartPurchaseBean.partsAvailableforPurchase}"
+								value="#{cartPurchaseBean.purchase.purchaseProducts}" var="pp"
+								styleClass="w3-table w3-striped w3-border"
+								headerClass="w3-light-grey w3-border-bottom"
+								footerClass="w3-light-grey w3-border-top">
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="Purchase Order Products" />
+									</div>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Product ID" />
+									</f:facet>
+									<h:outputText value="#{pp.productId}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Product Name" />
+									</f:facet>
+									<h:outputText value="#{pp.product.productName.name}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Arabic" />
+									</f:facet>
+									<h:outputText value="#{pp.product.productName.nameAr}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Number" />
+									</f:facet>
+									<h:outputText value="#{pp.product.productNumber}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Number" />
+									</f:facet>
+									<h:outputText value="#{pp.quantity}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Plain Cost" />
+									</f:facet>
+									<h:outputText value="#{pp.unitCost}">
+										<f:convertNumber currencySymbol="SR " type="currency" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="VAT" />
+									</f:facet>
+									<h:outputText value="#{pp.unitCostWv - pp.unitCost}">
+										<f:convertNumber currencySymbol="SR " type="currency" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Unit Gross" />
+									</f:facet>
+									<h:outputText value="#{pp.unitCostWv}">
+										<f:convertNumber currencySymbol="SR " type="currency" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Gross Cost" />
+									</f:facet>
+									<h:outputText value="#{pp.unitCostWv * pp.quantity}">
+										<f:convertNumber currencySymbol="SR " type="currency" />
+									</h:outputText>
+								</h:column>
+								<f:facet name="footer">
+									<div align="center">
+										<h:outputText value="Total Cost: " styleClass="q-bold" />
+										<h:outputText value="#{cartPurchaseBean.totalCost}"
+											styleClass="q-bold">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+										<br />
+										<h:outputText value="VAT: " styleClass="q-bold" />
+										<h:outputText value="#{cartPurchaseBean.totalVat}"
+											styleClass="q-bold">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+										<br />
+										<h:outputText value="Total Cost: " styleClass="q-bold" />
+										<h:outputText value="#{cartPurchaseBean.totalCostWithVat}"
+											styleClass="q-bold">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+									</div>
+								</f:facet>
+							</h:dataTable>
+						</h:form>
+
+						<br />
+						<h:form id="form2">
+							<div align="center" class="w3-third">
+								<h:panelGroup
+									rendered="#{cartPurchaseBean.partsAvailableforPurchase}">
+									<h:panelGrid columns="2">
+										<h:outputText value="Purchase Order Vendor" />
+										<h:selectOneMenu value="#{cartPurchaseBean.purchase.vendorId}"
+											required="true">
+											<f:selectItem noSelectionOption="true"
+												itemLabel="--Select Vendor--" />
+											<f:selectItems
+												value="#{vendorBean.getMakeVendors(cartPurchaseBean.cart.makeId)}"
+												var="vendor" itemLabel="#{vendor.name}"
+												itemValue="#{vendor.id}" />
+											<f:ajax render="@form" execute="@this" />
+										</h:selectOneMenu>
+										<h:outputText value="Transaction Type" />
+										<h:selectOneMenu
+											value="#{cartPurchaseBean.purchase.transactionType}"
+											required="true">
+											<f:selectItem itemValue="#{'T'}" itemLabel="Credit" />
+											<f:ajax render="@form" execute="@this" />
+										</h:selectOneMenu>
+										<h:outputText value="Payment Method"
+											rendered="#{cartPurchaseBean.purchase.transactionType eq 'C'}" />
+										<h:selectOneMenu
+											value="#{cartPurchaseBean.purchasePayment.method}"
+											required="true"
+											rendered="#{cartPurchaseBean.purchase.transactionType eq 'C'}">
+											<f:selectItem noSelectionOption="true"
+												itemLabel="--Select Method--" />
+											<f:selectItem itemValue="#{'C'}" itemLabel="Cash" />
+											<f:selectItem itemValue="#{'T'}" itemLabel="Wire Transfer" />
+											<f:selectItem itemValue="#{'S'}" itemLabel="Span" />
+											<f:ajax render="@form" execute="@this" />
+										</h:selectOneMenu>
+										<h:outputText value="Bank"
+											rendered="#{cartPurchaseBean.purchasePayment.method eq 'T' or cartPurchaseBean.purchasePayment.method eq 'S'}" />
+										<h:selectOneMenu
+											value="#{cartPurchaseBean.purchasePayment.bankId}"
+											required="true"
+											rendered="#{cartPurchaseBean.purchasePayment.method eq 'T' or cartPurchaseBean.purchasePayment.method eq 'S'}">
+											<f:selectItem noSelectionOption="true"
+												itemLabel="--Select Bank--" />
+											<f:selectItems value="#{banksBean.banks}" var="bank"
+												itemLabel="#{bank.name}" itemValue="#{bank.bankId}" />
+											<f:ajax render="@form" execute="@this" />
+										</h:selectOneMenu>
+									</h:panelGrid>
+
+									<br />
+									<p:commandButton value="Create Purchase Order"
+										styleClass="q-btn"
+										actionListener="#{cartPurchaseBean.createPurchase()}"
+										disabled="#{cartPurchaseBean.purchase.purchaseProducts.isEmpty() or cartPurchaseBean.purchase.vendorId eq 0}" />
+									<br />
+									<br />
+								</h:panelGroup>
+							</div>
+						</h:form>
+
+						<h:form id="form5">
+							<div class="w3-twothird">
+								<h:dataTable value="#{cartPurchaseBean.purchases}" rendered="#{cartPurchaseBean.purchases.size() gt 0}"
+									var="purchase" styleClass="w3-table w3-striped w3-border"
+									headerClass="w3-light-grey w3-border-bottom">
+									<f:facet name="header">
+										<div align="center">
+											<h:outputText value="Purchase Orders" />
+										</div>
+									</f:facet>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="ID" />
+										</f:facet>
+										<h:outputText value="#{purchase.id}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Status" />
+										</f:facet>
+										<h:outputText rendered="#{purchase.paymentStatus eq 'O'}"
+											value="Outstanding" />
+										<h:outputText rendered="#{purchase.paymentStatus eq 'P'}"
+											value="Paid" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Vendor" />
+										</f:facet>
+										<h:outputText
+											value="#{vendorBean.getVendorFromId(purchase.vendorId).name}" />
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Cost" />
+										</f:facet>
+										<h:outputText value="#{purchase.totalCost}">
+											<f:convertNumber currencySymbol="SR " type="currency" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="VAT" />
+										</f:facet>
+										<h:outputText
+											value="#{purchase.totalCostWv - purchase.totalCost}">
+											<f:convertNumber currencySymbol="SR " type="currency" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Gross Total" />
+										</f:facet>
+										<h:outputText value="#{purchase.totalCostWv}">
+											<f:convertNumber currencySymbol="SR " type="currency" />
+										</h:outputText>
+									</h:column>
+								</h:dataTable>
+								<br />
+							</div>
+
+						</h:form>
+
+
+						<br /> <br />
+						<div>
+							<h:form>
+								<div align="center">
+								<h:outputText value="All Items Purchased!" rendered="#{not cartPurchaseBean.partsAvailableforPurchase}" styleClass="q-med-text"/>
+								</div>
+								<h:dataTable styleClass="w3-table w3-striped w3-border"
+									headerClass="w3-light-grey w3-border" rendered="#{cartPurchaseBean.partsAvailableforPurchase}"
+									value="#{cartPurchaseBean.cart.partsItemsApproved}" var="item">
+									<f:facet name="header">
+										<div align="center">Parts Order Items</div>
+									</f:facet>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Product ID" />
+										</f:facet>
+										<h:outputText value="#{item.productId}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Vendor" />
+										</f:facet>
+										<h:outputText
+											value="#{vendorBean.getVendorFromId(item.vendorId).name}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Name" />
+										</f:facet>
+										<h:outputText value="#{item.itemDesc}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Item Number" />
+										</f:facet>
+										<h:outputText value="#{item.itemNumber}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Ordered Q." />
+										</f:facet>
+										<h:outputText value="#{item.approvedQuantity}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Stock Q." />
+										</f:facet>
+										<p:commandLink
+											actionListener="#{cartPurchaseBean.chooseApprovedItem(item)}"
+											value="#{item.stockQuantity}" update=":form3" process="@this"
+											oncomplete="PF('dlg2wv').show()"
+											style="#{item.stockQuantity lt item.approvedQuantity ? 'color:red' : ''}">
+										</p:commandLink>
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Unit Cost" />
+										</f:facet>
+										<h:outputText value="#{item.costPrice}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Gross Cost" />
+										</f:facet>
+										<h:outputText
+											value="#{item.approvedQuantity * item.costPrice}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Sales Price" />
+										</f:facet>
+										<h:outputText
+											value="#{item.approvedQuantity * item.salesPrice}" />
+									</h:column>
+									<h:column headerClass="w3-border-bottom w3-light-grey">
+										<f:facet name="header">
+											<h:outputText value="Add" />
+										</f:facet>
+										<p:commandButton
+											actionListener="#{cartPurchaseBean.chooseApprovedItem(item)}"
+											value="Add"
+											rendered="#{item.stockQuantity lt item.approvedQuantity}"
+											oncomplete="PF('dlgwv').show()" styleClass="q-btn"
+											update=":form1" />
+									</h:column>
+								</h:dataTable>
+							</h:form>
+						</div>
+					</div>
+				</div>
+				<div class="w3-row"></div>
+
+				<h:form id="form1">
+					<p:dialog id="dlg" widgetVar="dlgwv" styleClass="q-dialog"
+						header="Add Item">
+						<h:panelGrid columns="2"
+							styleClass="w3-table w3-striped w3-border">
+							<h:outputText value="Product ID" />
+							<h:outputText
+								value="#{cartPurchaseBean.purchaseProduct.product.id}" />
+							<h:outputText value="Product Name" />
+							<h:outputText
+								value="#{cartPurchaseBean.purchaseProduct.product.productName.name}" />
+							<h:outputText value="Product Arabic Name" />
+							<h:outputText
+								value="#{cartPurchaseBean.purchaseProduct.product.productName.nameAr}" />
+							<h:outputText value="Product Number" />
+							<h:outputText
+								value="#{cartPurchaseBean.purchaseProduct.product.productNumber}" />
+							<h:outputText value="Cost Price" />
+							<h:inputText
+								value="#{cartPurchaseBean.purchaseProduct.unitCostWv}">
+								<f:ajax listener="#{cartPurchaseBean.recalculatePrice()}"
+									execute="@this" render="cost-wv"></f:ajax>
+							</h:inputText>
+							<h:outputText value="Cost Price W/O Vat" />
+							<h:outputText id="cost-wv"
+								value="#{cartPurchaseBean.purchaseProduct.unitCost}">
+								<f:convertNumber currencySymbol="" type="currency" />
+							</h:outputText>
+							<h:outputText value="Quantity" />
+							<h:selectOneMenu
+								value="#{cartPurchaseBean.purchaseProduct.newQuantity}">
+								<f:selectItems
+									value="#{cartPurchaseBean.purchaseProduct.getQuantityArray(cartPurchaseBean.selectedApprovedItem.stockQuantity)}"
+									var="q" itemValue="#{q}" itemLabel="#{q}"></f:selectItems>
+							</h:selectOneMenu>
+						</h:panelGrid>
+						<div align="center">
+							<br />
+							<p:commandButton value="Add To Purchase Oreder"
+								actionListener="#{cartPurchaseBean.addToPurchaseOrder()}"
+								update=":form-g :form4 :form2" styleClass="q-btn"
+								process="@form" oncomplete="PF('dlgwv').hide()" />
+						</div>
+					</p:dialog>
+				</h:form>
+
+				<h:form id="form3">
+					<p:dialog id="dlg2" widgetVar="dlg2wv" styleClass="q-dialog"
+						header="Product Stock">
+						<h:panelGrid columns="2">
+							<h:outputText value="Product Number" />
+							<h:outputText
+								value="#{cartPurchaseBean.selectedApprovedItem.product.productNumber}" />
+						</h:panelGrid>
+						<h:dataTable
+							value="#{cartPurchaseBean.selectedApprovedItem.product.stockList}"
+							var="stock" styleClass="w3-table w3-striped"
+							headerClass="w3-light-grey w3-border-bottom">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Purchase ID" />
+								</f:facet>
+								<h:outputText value="#{stock.purchaseId}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Vendor" />
+								</f:facet>
+								<h:outputText
+									value="#{vendorBean.getVendorFromId(cartPurchaseBean.getPurchaseFromId(stock.purchaseId).vendorId).name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Purchase Date" />
+								</f:facet>
+								<h:outputText
+									value="#{cartPurchaseBean.getPurchaseFromId(stock.purchaseId).purchaseDate}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+						</h:dataTable>
+					</p:dialog>
+				</h:form>
+			</div>
+		</p:layoutUnit>
+	</p:layout>
+</h:body>
+</html>

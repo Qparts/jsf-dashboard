@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+
+	<o:form id="form-manual" includeRequestParams="true" includeViewParams="true">
+		<p:dialog id="dlgmanual" widgetVar="dlgmanualwv" styleClass="q-dialog"
+			header="Manual Vendor Quotation">
+			<h:panelGrid columns="2">
+				<h:outputText value="Item" />
+				<h:outputText
+					value="#{quotationBean.selectedQuotationItem.itemDesc}" />
+				<h:outputText value="Quantity" />
+				<h:outputText
+					value="#{quotationBean.selectedQuotationItem.quantity}" />
+			</h:panelGrid>
+			<h:dataTable value="#{quotationBean.makeVendors}" var="vendor"
+				styleClass="w3-table w3-striped w3-border"
+				headerClass="w3-light-grey w3-border" columnClasses="w3-border-right">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Vendor" />
+					</f:facet>
+					<h:outputText value="#{vendor.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Vendor" />
+					</f:facet>
+					<div align="center">
+					<h:commandButton actionListener="#{quotationBean.addManualQuotationVendor(quotationBean.selectedQuotationItem, vendor.id)}" value="Select" styleClass="q-btn">
+						<f:param value="#{quotationBean.cart.id}" name="cart-id"></f:param>
+					</h:commandButton>
+					</div>
+				</h:column>
+			</h:dataTable>
+		</p:dialog>
+	</o:form>
+</ui:composition>

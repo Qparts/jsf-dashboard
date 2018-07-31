@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+        <title>Google Maps Multiple Markers</title> 
+
+    </head>
+
+    <body onload="initialize()">
+        <script src="https://maps.google.com/maps/api/js?key=AIzaSyDYZvQNSAQEdn6aOycWv_uFnpI7WKPibv8"></script>
+
+        <div id="map_canvas" style="width: 1200px; height: 550px;"></div>
+        <script type="text/javascript">
+
+
+        var map;
+        // The map object
+        var labels = '4'
+
+        var myCentreLat = 23.8859;
+        var myCentreLng = 45.0792;
+        var initialZoom = 4;
+        function infoCallback(infowindow, marker) {
+            return function () {
+                infowindow.open(map, marker);
+            };
+        }
+
+
+        function initialize() {
+            var latlng = new google.maps.LatLng(myCentreLat, myCentreLng);
+            var markerOFRiyad;
+
+            var myOptions = {
+                zoom: initialZoom,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"),
+                    myOptions);
+            // First marker For Riyad
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(23.8859, 45.0792),
+                map: map,
+                label: labels
+            });
+            // First infowindow
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Riyad'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            map.addListener('center_changed', function () {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                window.setTimeout(function () {
+                    map.panTo(marker.getPosition());
+                }, 3000);
+            });
+            marker.addListener('click', function () {
+                var myCentreLatOfRiyad = 24.774265;
+                var myCentreLngOfRiyad = 46.738586;
+                var myOptions = {
+                    zoom: 5,
+                    center: new google.maps.LatLng(myCentreLatOfRiyad, myCentreLngOfRiyad),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById("map_canvas"),
+                        myOptions);
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.774265, 46.738586),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Riyad'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                map.addListener('center_changed', function () {
+                    // 3 seconds after the center of the map has changed, pan back to the
+                    // marker.
+                    window.setTimeout(function () {
+                        map.panTo(markerOFRiyad.getPosition());
+                    }, 3000);
+                });
+                markerOFRiyad.addListener('click', function () {
+
+                    var myCentreLatOfRiyad1 = 24.7514;
+                    var myCentreLngOfRiyad1 = 46.5355;
+                    var myOptions = {
+                        zoom: 6,
+                        center: new google.maps.LatLng(myCentreLatOfRiyad1, myCentreLngOfRiyad1),
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    map = new google.maps.Map(document.getElementById("map_canvas"),
+                            myOptions);
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(24.7514, 46.5355),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Diriyah'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(25.8967, 45.3557),
+                        map: map,
+                        label: labels
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al Majmaah'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 3rd of Al Al-Ghat
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(26.0302, 44.9471),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al - Ghat'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 4th of Al- Kharj
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(24.1455, 47.3119),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Kharj'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 5th of Dawadmi
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(24.5167, 44.4182),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Dawadmi'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 6th of Al-Quway'iyah
+                    markerOFRiyad = new google.maps.Marker({
+
+                        position: new google.maps.LatLng(24.04634, 45.26561),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al - Quwayiyah'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 7th of Wadi ad-Dawasir
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(20.1472, 44.8505),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Dawadmi'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 8th of Al-Eflaj
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(22.1494, 47.1362),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al - Eflaj'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 9th of Al Zulfi
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(26.3099, 44.8318),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al_Zulfi'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 10th of Shaqraa
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(25.2476, 45.2525),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Shaqraa'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 11th of Hotat Bani Tamim
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(23.48679, 46.88450),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Hotat Bani Tamim'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 12th of Afif
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(23.9052, 42.9125),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Afif'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 13th of Sulayyil
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(20.4669, 45.5629),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Sulayyil'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 14th of Dhurma
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(24.36, 46.2),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Dhurma'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 15th of Al-Muzahmiyya
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(24.48215, 46.25605),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al - Muzahmiyya'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 16th of Al-Rimah
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(25.5611701, 47.160573),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Rimah'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 17th of Thadig
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(25.17, 45.52),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Thadig'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 18th of Hremlaa
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(25.1085252, 46.098547),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Hremlaa'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 19th of Al-Hariq
+                    markerOFRiyad = new google.maps.Marker({
+                        position: new google.maps.LatLng(23.38, 46.31),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Al - Hariq'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                    // 20th of Mrat
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(25.416, 45.2722),
+                        map: map,
+                        label: labels
+
+                    });
+                    var infowindow = new google.maps.InfoWindow({
+                        content: 'Mrat'
+                    });
+                    google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                });
+                //2nd of najran
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(17.5656, 44.2289),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Njran'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //3rd of Jazan
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(16.8894, 42.5706),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Jazan'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //4th of Baha
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(20.0217, 41.4713),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Baha'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //5th of Mecca
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(21.3891, 39.8579),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Mecca'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //6th of Medina
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.5247, 39.5692),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Medina'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //7th of Jouf
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(29.8874, 39.3206),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Jouf'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //8th of Ha'il
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(27.5114, 41.7208),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Hail'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //9th of Tabuk
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(28.3835, 36.5662),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Tabuk'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //10th of Asir
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(19.0969, 42.8638),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Asir'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //11th of Qasim
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.8275, 42.8638),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Qasim'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //12th of Eastern Province
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(22.2954, 50.6794),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Eastern Province'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+                //13th of Northern Borders
+
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(29.7249, 42.2362),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Northern Borders'
+                });
+                google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            });
+        }
+
+
+
+
+
+        function viewRegions() {
+
+            var myCentreLatOfRiyad = 24.774265;
+            var myCentreLngOfRiyad = 46.738586;
+            var myOptions = {
+                zoom: 5,
+                center: new google.maps.LatLng(myCentreLatOfRiyad, myCentreLngOfRiyad),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"),
+                    myOptions);
+            markerOFRiyad = new google.maps.Marker({
+                position: new google.maps.LatLng(24.774265, 46.738586),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Riyad'
+            });
+            google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+            map.addListener('center_changed', function () {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                window.setTimeout(function () {
+                    map.panTo(markerOFRiyad.getPosition());
+                }, 3000);
+            });
+            markerOFRiyad.addListener('click', function () {
+
+                var myCentreLatOfRiyad1 = 24.7514;
+                var myCentreLngOfRiyad1 = 46.5355;
+                var myOptions = {
+                    zoom: 6,
+                    center: new google.maps.LatLng(myCentreLatOfRiyad1, myCentreLngOfRiyad1),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById("map_canvas"),
+                        myOptions);
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.7514, 46.5355),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Diriyah'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.8967, 45.3557),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al Majmaah'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 3rd of Al Al-Ghat
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(26.0302, 44.9471),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al - Ghat'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 4th of Al- Kharj
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.1455, 47.3119),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Kharj'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 5th of Dawadmi
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.5167, 44.4182),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Dawadmi'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 6th of Al-Quway'iyah
+                markerOFRiyad = new google.maps.Marker({
+
+                    position: new google.maps.LatLng(24.04634, 45.26561),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al - Quwayiyah'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 7th of Wadi ad-Dawasir
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(20.1472, 44.8505),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Dawadmi'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 8th of Al-Eflaj
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(22.1494, 47.1362),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al - Eflaj'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 9th of Al Zulfi
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(26.3099, 44.8318),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al_Zulfi'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 10th of Shaqraa
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.2476, 45.2525),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Shaqraa'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 11th of Hotat Bani Tamim
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(23.48679, 46.88450),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Hotat Bani Tamim'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 12th of Afif
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(23.9052, 42.9125),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Afif'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 13th of Sulayyil
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(20.4669, 45.5629),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Sulayyil'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 14th of Dhurma
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.36, 46.2),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Dhurma'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 15th of Al-Muzahmiyya
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(24.48215, 46.25605),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al - Muzahmiyya'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 16th of Al-Rimah
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.5611701, 47.160573),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Rimah'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 17th of Thadig
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.17, 45.52),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Thadig'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 18th of Hremlaa
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.1085252, 46.098547),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Hremlaa'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 19th of Al-Hariq
+                markerOFRiyad = new google.maps.Marker({
+                    position: new google.maps.LatLng(23.38, 46.31),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Al - Hariq'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+                // 20th of Mrat
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(25.416, 45.2722),
+                    map: map,
+                    label: labels
+
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: 'Mrat'
+                });
+                google.maps.event.addListener(markerOFRiyad, 'click', infoCallback(infowindow, markerOFRiyad));
+            });
+            //2nd of najran
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(17.5656, 44.2289),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Njran'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //3rd of Jazan
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(16.8894, 42.5706),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Jazan'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //4th of Baha
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(20.0217, 41.4713),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Baha'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //5th of Mecca
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(21.3891, 39.8579),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Mecca'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //6th of Medina
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(24.5247, 39.5692),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Medina'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //7th of Jouf
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(29.8874, 39.3206),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Jouf'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //8th of Ha'il
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(27.5114, 41.7208),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Hail'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //9th of Tabuk
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(28.3835, 36.5662),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Tabuk'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //10th of Asir
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(19.0969, 42.8638),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Asir'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //11th of Qasim
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(25.8275, 42.8638),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Qasim'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //12th of Eastern Province
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(22.2954, 50.6794),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Eastern Province'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+            //13th of Northern Borders
+
+
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(29.7249, 42.2362),
+                map: map,
+                label: labels
+
+            });
+            var infowindow = new google.maps.InfoWindow({
+                content: 'Northern Borders'
+            });
+            google.maps.event.addListener(marker, 'click', infoCallback(infowindow, marker));
+        }
+        </script>
+
+
+
+        <h:commandButton onclick="initialize();" value="Back to Country"></h:commandButton><br/>
+        <h:commandButton onclick="viewRegions();" value="view Regions"></h:commandButton>
+    </body>
+</html>
