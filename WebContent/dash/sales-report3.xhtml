@@ -31,14 +31,14 @@
 					<h:form id="form1">
 						<h:panelGrid columns="2">
 							<h:outputText value="Year" />
-							<h:selectOneMenu value="#{salesReportBean.year}" required="true">
+							<h:selectOneMenu value="#{salesReport3Bean.year}" required="true">
 								<f:selectItem itemLabel="2017" itemValue="#{2017}" />
 								<f:selectItem itemLabel="2018" itemValue="#{2018}" />
 								<f:selectItem itemLabel="2019" itemValue="#{2019}" />
 								<f:selectItem itemLabel="2020" itemValue="#{2020}" />
 							</h:selectOneMenu>
 							<h:outputText value="Month" />
-							<h:selectOneMenu value="#{salesReportBean.month}" required="true">
+							<h:selectOneMenu value="#{salesReport3Bean.month}" required="true">
 								<f:selectItem itemLabel="January" itemValue="#{0}" />
 								<f:selectItem itemLabel="February" itemValue="#{1}" />
 								<f:selectItem itemLabel="March" itemValue="#{2}" />
@@ -52,28 +52,39 @@
 								<f:selectItem itemLabel="November" itemValue="#{10}" />
 								<f:selectItem itemLabel="December" itemValue="#{11}" />
 							</h:selectOneMenu>
-							<h:outputText value="Payment Method" />
-							<h:selectOneMenu value="#{salesReportBean.method}">
+							<h:outputText value="Transaction Type" />
+							<h:selectOneMenu value="#{salesReport3Bean.transactionType}">
 								<f:selectItem itemLabel="All" itemValue="#{'A'}" />
-								<f:selectItem itemLabel="Credit Card" itemValue="#{'C'}" />
-								<f:selectItem itemLabel="Wire Transfer" itemValue="#{'R'}" />
+								<f:selectItem itemLabel="Cash" itemValue="#{'C'}" />
+								<f:selectItem itemLabel="Credit" itemValue="#{'T'}" />
+							</h:selectOneMenu>
+							<h:outputText value="Payment Status" />
+							<h:selectOneMenu value="#{salesReport3Bean.paymentStatus}">
+								<f:selectItem itemLabel="All" itemValue="#{'A'}" />
+								<f:selectItem itemLabel="Paid" itemValue="#{'P'}" />
+								<f:selectItem itemLabel="Outstanding" itemValue="#{'O'}" />
+							</h:selectOneMenu>
+							<h:outputText value="Make" />
+							<h:selectOneMenu value="#{salesReport3Bean.makeId}">
+								<f:selectItem itemLabel="All" itemValue="#{0}" />
+								<f:selectItems value="#{vehicleBean.makes}" var="make" itemValue="#{make.id}" itemLabel="#{make.name}"></f:selectItems>
 							</h:selectOneMenu>
 						</h:panelGrid>
 						<div align="center">
 							<h:commandButton value="Generate"
-								actionListener="#{salesReportBean.generateReport()}"
+								actionListener="#{salesReport3Bean.generateReport()}"
 								styleClass="q-btn" />
 						</div>
 					</h:form>
 				</div>
 				<br />
 				<h:panelGroup
-					rendered="#{salesReportBean.salesReturns.size() gt 0 or salesReportBean.sales.size() gt 0}">
+					rendered="#{salesReport3Bean.completeSalesHolders.size() gt 0 or salesReport3Bean.completeSalesReturnsHolders.size() gt 0}">
 					<div class="w3-row">
 						<div class="w3-third">
 							<h:panelGrid columns="2">
 								<h:outputText value="Sales" />
-								<h:inputText value="#{salesReportBean.totalSalesWv}"
+								<h:inputText value="#{salesReport3Bean.completeTotalSalesWv}"
 									readonly="true">
 									<f:convertNumber type="currency" currencySymbol="SR " />
 								</h:inputText>
@@ -135,8 +146,8 @@
 				</h:panelGroup>
 				<br />
 				<div>
-					<h:dataTable value="#{salesReportBean.sales}"
-						rendered="#{salesReportBean.sales.size() gt 0}" var="sales"
+					<h:dataTable value="#{salesReport3Bean.completeSalesHolders}"
+						rendered="#{salesReport3Bean.completeSalesHolders.size() gt 0}" var="holder"
 						styleClass="w3-table w3-striped w3-border"
 						headerClass="w3-light-grey w3-border-bottom"
 						footerClass="w3-light-grey w3-border-top">
@@ -149,25 +160,25 @@
 							<f:facet name="header">
 								<h:outputText value="Sales ID" />
 							</f:facet>
-							<h:outputText value="#{sales.id}" />
+							<h:outputText value="#{holder.sales.id}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">
 								<h:outputText value="Cart#" />
 							</f:facet>
-							<h:outputText value="#{sales.cart.id}" />
+							<h:outputText value="#{holder.sales.cart.id}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">
 								<h:outputText value="Customer" />
 							</f:facet>
-							<h:outputText value="#{sales.cart.customer.fullName}" />
+							<h:outputText value="#{holder.sales.cart.customer.fullName}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">
 								<h:outputText value="Date" />
 							</f:facet>
-							<h:outputText value="#{sales.salesDate}">
+							<h:outputText value="#{holder.sales.salesDate}">
 								<f:convertDateTime pattern="d" />
 							</h:outputText>
 						</h:column>
@@ -175,7 +186,7 @@
 							<f:facet name="header">
 								<h:outputText value="Parts" />
 							</f:facet>
-							<h:outputText value="#{sales.totalPartsWvAmount}"
+							<h:outputText value="#{holder.sales.totalPartsWvAmount}"
 								style="color:green;">
 								<f:convertNumber type="currency" currencySymbol="" />
 							</h:outputText>
@@ -184,7 +195,7 @@
 							<f:facet name="header">
 								<h:outputText value="Delivery" />
 							</f:facet>
-							<h:outputText value="#{sales.totalDeliveryFees}"
+							<h:outputText value="#{holder.sales.totalDeliveryFees}"
 								style="color:green;">
 								<f:convertNumber type="currency" currencySymbol="" />
 							</h:outputText>
@@ -193,8 +204,12 @@
 							<f:facet name="header">
 								<h:outputText value="Parts" />
 							</f:facet>
-							<h:outputText value="#{sales.totalPartsCostWv}"
-								style="color:red;">
+							<h:outputText value="#{holder.partsPurchaseCost}"
+								style="color:red;" rendered="#{holder.purchasesComplete}">
+								<f:convertNumber type="currency" currencySymbol="" />
+							</h:outputText>
+							<h:outputText value="#{holder.partsPurchaseCost}"
+								style="background-color:#8b0000;" styleClass="w3-tag w3-text-white" rendered="#{not holder.purchasesComplete}">
 								<f:convertNumber type="currency" currencySymbol="" />
 							</h:outputText>
 						</h:column>
@@ -202,8 +217,8 @@
 							<f:facet name="header">
 								<h:outputText value="Credit %" />
 							</f:facet>
-							<h:outputText value="#{sales.totalCreditFees}"
-								rendered="#{sales.totalCreditFees gt 0}" style="color:red;">
+							<h:outputText value="#{holder.sales.totalCreditFees}"
+								rendered="#{holder.sales.totalCreditFees gt 0}" style="color:red;">
 								<f:convertNumber type="currency" currencySymbol="" />
 							</h:outputText>
 						</h:column>
@@ -212,8 +227,8 @@
 							<f:facet name="header">
 								<h:outputText value="Promo" />
 							</f:facet>
-							<h:outputText value="#{sales.promotionDiscount}"
-								rendered="#{sales.promotionDiscount gt 0}" style="color:red;">
+							<h:outputText value="#{holder.sales.promotionDiscount}"
+								rendered="#{holder.sales.promotionDiscount gt 0}" style="color:red;">
 								<f:convertNumber type="currency" currencySymbol="" />
 							</h:outputText>
 						</h:column>
@@ -222,7 +237,10 @@
 							<f:facet name="header">
 								<h:outputText value="Profit" />
 							</f:facet>
-							<h:outputText value="#{sales.profit}" styleClass="q-bold">
+							<h:outputText value="#{holder.sales.netTotalSales  - holder.partsPurchaseCost - holder.sales.totalCreditFees}" styleClass="q-bold" rendered="#{holder.purchasesComplete}">
+								<f:convertNumber type="currency" currencySymbol="SR " />
+							</h:outputText>
+							<h:outputText value="#{holder.sales.netTotalSales  - holder.partsPurchaseCost - holder.sales.totalCreditFees}" styleClass="q-bold w3-tag w3-text-white" style="background-color:#8b0000" rendered="#{not holder.purchasesComplete}">
 								<f:convertNumber type="currency" currencySymbol="SR " />
 							</h:outputText>
 						</h:column>

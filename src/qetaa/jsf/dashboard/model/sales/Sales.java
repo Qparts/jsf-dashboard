@@ -159,6 +159,7 @@ public class Sales implements Serializable {
 	@JsonIgnore
 	public double getTotalCreditFees() {
 		double total = 0;
+		
 		if (this.salesPayments != null) {
 			for (SalesPayment sp : salesPayments) {
 				if (sp.getCreditFees() != null)
@@ -204,7 +205,7 @@ public class Sales implements Serializable {
 		return this.getTotalPartsCostWv() + this.getShipmentFees() + this.getPromotionDiscount()
 				+ this.getTotalCreditFees();
 	}
-
+	
 	@JsonIgnore
 	public double getProfit() {
 		return getTotalSalesWv() - getTotalCostWv();

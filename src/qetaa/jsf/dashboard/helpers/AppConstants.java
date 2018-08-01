@@ -205,6 +205,9 @@ public class AppConstants {
 	public final static String GET_VENDOR_JOIN_REQUESTS = VENDOR_SERVICE + "active-vendor-join-requests";
 	
 	public final static String POST_ADDRESSES_FROM_CART_IDS = CART_SERVICE + "addresses/cart-ids";
+	
+	public final static String POST_SALES_REPORT_3 = INVOICE_SERVICE + "sales-report";
+	public final static String POST_SALES_RETURN_REPORT_3 = INVOICE_SERVICE + "sales-return-report";
 
 	public final static String deleteVendorJoinRequest(int vendorJoinId) {
 		return VENDOR_SERVICE + "vendor-join/" + vendorJoinId;
