@@ -129,10 +129,85 @@ public class SalesReport3Bean implements Serializable{
 	public double getCompleteTotalSalesWv() {
 		double total = 0;
 		for(SalesHolder sh : this.completeSalesHolders) {
-			total = total + sh.getSales().getTotalSalesWv();
+			if(sh.isPurchasesComplete()) {
+				total = total + sh.getSales().getTotalSalesWv();
+			}
 		}
 		return total;
 	}
+	
+	public double getIncompleteTotalSalesWv() {
+		double total = 0;
+		for(SalesHolder sh : this.completeSalesHolders) {
+			if(!sh.isPurchasesComplete()) {
+				total = total + sh.getSales().getTotalSalesWv();
+			}
+		}
+		return total;
+	}
+	
+	public double getCompletedTotalCostWv() {
+		double total = 0;
+		for(SalesHolder sh : this.completeSalesHolders) {
+			if(sh.isPurchasesComplete()){
+				total = total + sh.getPartsPurchaseCost();
+			}
+		}
+		return total;
+	}
+	
+	public double getIncompletedTotalCostWv() {
+		double total = 0;
+		for(SalesHolder sh : this.completeSalesHolders) {
+			if(!sh.isPurchasesComplete()){
+				total = total + sh.getPartsPurchaseCost();
+			}
+		}
+		return total;
+	}
+	
+	
+	public double getCompleteTotalSalesReturnWv() {
+		double total = 0;
+		for(SalesReturnHolder sh : this.completeSalesReturnsHolders) {
+			if(sh.isPurchasesComplete()) {
+				total = total + sh.getSalesReturn().getNetSalesReturn();
+			}
+		}
+		return total;
+	}
+	
+	public double getIncompleteTotalSalesReturnWv() {
+		double total = 0;
+		for(SalesReturnHolder sh : this.completeSalesReturnsHolders) {
+			if(!sh.isPurchasesComplete()) {
+				total = total + sh.getSalesReturn().getNetSalesReturn();
+			}
+		}
+		return total;
+	}
+	
+	public double getCompletedReturnTotalCostWv() {
+		double total = 0;
+		for(SalesReturnHolder sh : this.completeSalesReturnsHolders) {
+			if(sh.isPurchasesComplete()){
+				total = total + sh.getPartsPurchaseCost();
+			} 
+		}
+		return total;
+	}
+	
+	public double getIncompletedReturnTotalCostWv() {
+		double total = 0;
+		for(SalesReturnHolder sh : this.completeSalesReturnsHolders) {
+			if(!sh.isPurchasesComplete()){
+				total = total + sh.getPartsPurchaseCost();
+			}
+		}
+		return total;
+	}
+	
+	///////getters and setters/////////
 
 	public int getYear() {
 		return year;

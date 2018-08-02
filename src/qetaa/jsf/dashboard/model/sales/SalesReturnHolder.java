@@ -10,6 +10,18 @@ public class SalesReturnHolder {
 	private boolean purchasesComplete;
 	
 	
+	public double getPartsPurchaseCost() {
+		double total = 0;
+		if (purchases != null) {
+			for (Purchase purchase : purchases) {
+				for(SalesReturnProduct srp : salesReturn.getSalesReturnProducts()) {
+					total += purchase.getPartTotalCostWv(srp.getPurchaseProduct(), srp.getQuantity());
+				}
+				
+			}
+		}
+		return total;
+	}
 	
 	public boolean isPurchasesComplete() {
 		return purchasesComplete;

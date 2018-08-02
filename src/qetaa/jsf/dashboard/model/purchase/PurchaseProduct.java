@@ -128,6 +128,82 @@ public class PurchaseProduct implements Serializable{
 	public void setWithVat(boolean withVat) {
 		this.withVat = withVat;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + newQuantity;
+		result = prime * result + ((product == null) ? 0 : product.hashCode());
+		result = prime * result + (int) (productId ^ (productId >>> 32));
+		result = prime * result + ((purchase == null) ? 0 : purchase.hashCode());
+		result = prime * result + quantity;
+		result = prime * result + ((salesProduct == null) ? 0 : salesProduct.hashCode());
+		result = prime * result + ((unitCost == null) ? 0 : unitCost.hashCode());
+		result = prime * result + ((unitCostWv == null) ? 0 : unitCostWv.hashCode());
+		result = prime * result + ((walletItem == null) ? 0 : walletItem.hashCode());
+		result = prime * result + ((walletItemId == null) ? 0 : walletItemId.hashCode());
+		result = prime * result + (withVat ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PurchaseProduct other = (PurchaseProduct) obj;
+		if (id != other.id)
+			return false;
+		if (newQuantity != other.newQuantity)
+			return false;
+		if (product == null) {
+			if (other.product != null)
+				return false;
+		} else if (!product.equals(other.product))
+			return false;
+		if (productId != other.productId)
+			return false;
+		if (purchase == null) {
+			if (other.purchase != null)
+				return false;
+		} else if (!purchase.equals(other.purchase))
+			return false;
+		if (quantity != other.quantity)
+			return false;
+		if (salesProduct == null) {
+			if (other.salesProduct != null)
+				return false;
+		} else if (!salesProduct.equals(other.salesProduct))
+			return false;
+		if (unitCost == null) {
+			if (other.unitCost != null)
+				return false;
+		} else if (!unitCost.equals(other.unitCost))
+			return false;
+		if (unitCostWv == null) {
+			if (other.unitCostWv != null)
+				return false;
+		} else if (!unitCostWv.equals(other.unitCostWv))
+			return false;
+		if (walletItem == null) {
+			if (other.walletItem != null)
+				return false;
+		} else if (!walletItem.equals(other.walletItem))
+			return false;
+		if (walletItemId == null) {
+			if (other.walletItemId != null)
+				return false;
+		} else if (!walletItemId.equals(other.walletItemId))
+			return false;
+		if (withVat != other.withVat)
+			return false;
+		return true;
+	}
 	
 	
 	

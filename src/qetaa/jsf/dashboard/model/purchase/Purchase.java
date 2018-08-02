@@ -143,6 +143,24 @@ public class Purchase implements Serializable{
 		}
 		return total;
 	}
+	
+	
+	@JsonIgnore
+	public double getPartTotalCostWv(PurchaseProduct ppcheck, int quantity) {
+		double total = 0;
+		if(purchaseProducts == null) {
+			return 0;
+		}
+		for(PurchaseProduct pp : purchaseProducts) {
+			if(ppcheck.equals(pp)) {
+				if(pp.getUnitCostWv() != null)
+					total = total + pp.getUnitCostWv() * quantity;
+			}
+			
+		}
+		return total;
+	}
+	
 	public long getId() {
 		return id;
 	}

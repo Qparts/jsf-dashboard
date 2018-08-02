@@ -113,8 +113,7 @@ public class SalesReturn implements Serializable{
 		if(salesReturnProducts == null) {
 			return 0;
 		}
-		total = total + (getTotalPartsSalesWv() - this.getTotalDeductionFees() - this.getPromotionDiscount() + this.getReturnedDeliveryFeesSafe());
-		
+		total = total + (getTotalPartsSalesWv() - this.getTotalDeductionFees() - this.getPromotionDiscount() + this.getReturnedDeliveryFeesWvSafe());		
 		return total;
 	}
 	
@@ -220,8 +219,12 @@ public class SalesReturn implements Serializable{
 		}
 	}
 	
-	private double getReturnedDeliveryFeesSafe() {
+	public double getReturnedDeliveryFeesSafe() {
 		return (this.returnedDeliveryFees == null ? 0 : this.returnedDeliveryFees);
+	}
+	
+	public double getReturnedDeliveryFeesWvSafe() {
+		return (this.getReturnedDeliveryFees() == null ? 0 : this.getReturnedDeliveryFeesWithVat());
 	}
 	
 	public char getMethod() {
