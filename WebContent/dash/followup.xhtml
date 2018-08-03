@@ -549,6 +549,8 @@
 									</h:panelGrid>
 									<br />
 									<p:commandButton value="Make Sales Request" styleClass="q-btn"
+										widgetVar="submitSalesRequest"
+										onclick="PF('submitSalesRequest').disable()"
 										actionListener="#{followUpBean.makeSalesRequest()}"
 										update=":form-g" />
 								</div>

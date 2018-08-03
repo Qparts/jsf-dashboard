@@ -240,7 +240,7 @@
 
 						<br />
 						<div align="center">
-							<p:commandButton value="Create Sales" actionListener="#{salesWalletBean.createSales()}" styleClass="q-btn" />
+							<p:commandButton value="Create Sales" actionListener="#{salesWalletBean.createSales()}" styleClass="q-btn" widgetVar="submitSales" onclick="PF('submitSales').disable()"/>
 						</div>
 					</h:form>
 					<br />

@@ -219,10 +219,12 @@ public class SalesReturn implements Serializable{
 		}
 	}
 	
+	@JsonIgnore
 	public double getReturnedDeliveryFeesSafe() {
 		return (this.returnedDeliveryFees == null ? 0 : this.returnedDeliveryFees);
 	}
 	
+	@JsonIgnore
 	public double getReturnedDeliveryFeesWvSafe() {
 		return (this.getReturnedDeliveryFees() == null ? 0 : this.getReturnedDeliveryFeesWithVat());
 	}

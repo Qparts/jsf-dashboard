@@ -222,6 +222,8 @@
 								</h:selectOneMenu>
 								<br /> <br />
 								<p:commandButton update=":form-g"
+									widgetVar="submitRefund"
+									onclick="PF('submitRefund').disable()"
 									actionListener="#{awaitingWalletBean.refundItems()}"
 									value="Refund" styleClass="q-btn" />
 							</div>
@@ -292,6 +294,8 @@
 								</h:selectOneMenu>
 								<br /> <br />
 								<p:commandButton id="purchase-btn"
+									widgetVar="submitPurchaseBtn"
+									onclick="PF('submitPurchaseBtn').disable()"
 									actionListener="#{awaitingWalletBean.createPurchase()}"
 									update=":form-g" value="Create Purchase"
 									disabled="#{awaitingWalletBean.selectedPurchaseItems.size() eq 0 or awaitingWalletBean.purchase.vendorId eq 0}"

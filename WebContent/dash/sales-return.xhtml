@@ -280,7 +280,8 @@
 						<p:commandButton
 							rendered="#{salesReturnBean.itemsAvailableForReturn}"
 							actionListener="#{salesReturnBean.createSalesReturn()}"
-							value="Create Sales Return" update=":form-g" styleClass="q-btn" />
+							widgetVar="submitbtn"
+							value="Create Sales Return" update=":form-g" styleClass="q-btn" onclick="PF('submitbtn').disable();" oncomplete="PF('submitbtn').enable()" />
 					</div>
 				</h:form>
 				<br />

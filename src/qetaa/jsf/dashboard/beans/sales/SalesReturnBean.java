@@ -25,6 +25,7 @@ import qetaa.jsf.dashboard.model.sales.SalesPayment;
 import qetaa.jsf.dashboard.model.sales.SalesProduct;
 import qetaa.jsf.dashboard.model.sales.SalesReturn;
 import qetaa.jsf.dashboard.model.sales.SalesReturnProduct;
+import qetaa.jsf.dashboard.model.sales.SalesReturnWallet;
 import qetaa.jsf.dashboard.model.shipment.Courier;
 import qetaa.jsf.dashboard.model.shipment.Shipment;
 import qetaa.jsf.dashboard.model.shipment.ShipmentItem;
@@ -137,14 +138,17 @@ public class SalesReturnBean implements Serializable {
 				srp.setQuantity(srp.getNewQuantity());
 				srp.setSalesReturn(null);
 			}
-			Map<String, Object> map = new HashMap<String, Object>();
 			initSalesPayment();
-			map.put("salesReturn", salesReturn);
-			map.put("customerName", this.getSales().getCart().getCustomer().getFullName());
-			map.put("customerId", this.getSales().getCart().getCustomerId());
-			map.put("bankId", this.getSalesReturn().getBankId());
-			map.put("discountPercentage", getDiscountPercentage());
-			Response r2 = reqs.putSecuredRequest(AppConstants.PUT_NEW_SALES_RETURN, map);
+			
+			SalesReturnWallet srw = new SalesReturnWallet();
+			srw.setBankId(this.getSalesReturn().getBankId());
+			srw.setCustomerId(this.getSales().getCart().getCustomerId());
+			srw.setCustomerName(this.getSales().getCart().getCustomer().getFullName());
+			srw.setDiscountPercentage(this.getDiscountPercentage());
+			srw.setSalesReturn(this.salesReturn);
+			System.out.println(AppConstants.PUT_NEW_SALES_RETURN);
+			Response r2 = reqs.putSecuredRequest(AppConstants.PUT_NEW_SALES_RETURN, srw);
+			System.out.println(r2.getStatus());
 			if (r2.getStatus() == 201) {
 				initShipment();
 				Helper.redirect("sales-return?id=" + this.sales.getId());
