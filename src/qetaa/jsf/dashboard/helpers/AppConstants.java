@@ -568,4 +568,13 @@ public class AppConstants {
 		return INVOICE_SERVICE + "payables/vendor/" + id;
 	}
 	
+	public final static String getLocationCartsCount(long from, long to, int makeId, boolean archived, boolean ordered) {
+		return PUBLIC_LOCATION_SERVICE + "carts-count"
+		+ "/from/" + from
+		+ "/to/" + to
+		+ "/make/" + makeId
+		+ "/archived/" + archived
+		+ "/ordered/" + ordered;
+	}
+	
 }

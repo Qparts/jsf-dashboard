@@ -15,6 +15,8 @@ import qetaa.jsf.dashboard.beans.LoginBean;
 import qetaa.jsf.dashboard.beans.Requester;
 import qetaa.jsf.dashboard.helpers.AppConstants;
 import qetaa.jsf.dashboard.helpers.Helper;
+import qetaa.jsf.dashboard.model.cart.Cart;
+import qetaa.jsf.dashboard.model.customer.Customer;
 import qetaa.jsf.dashboard.model.sales.Sales;
 import qetaa.jsf.dashboard.model.sales.SalesPayment;
 
@@ -38,6 +40,7 @@ public class ReceivablesBean implements Serializable{
 		this.sales = new ArrayList<>();
 		this.selectedSales = new Sales();
 		initSales();
+		initVariables();
 	}
 	
 	
@@ -46,6 +49,74 @@ public class ReceivablesBean implements Serializable{
 		if(r.getStatus() == 200) {
 			sales = r.readEntity(new GenericType<List<Sales>>() {});
 		}
+	}
+	
+	
+	
+	
+	private List<Customer> initAllCustomers() {
+		Response r = reqs.postSecuredRequest(AppConstants.POST_ALL_CUSTOMERS_FROM_IDS, Helper.getCustomerIdsFromSales(sales));
+		if(r.getStatus() == 200) {
+			List<Customer> l = r.readEntity(new GenericType<List<Customer>>() {});
+			return l;
+		}
+		else {
+			return new ArrayList<>();
+		}
+	}
+	
+	private void initVariables() {
+		List<Customer> allCustomers = initAllCustomers();
+		Thread[] mainThreads = new Thread[sales.size()];
+		int index = 0;
+		for (Sales sale : sales) {
+			sale.setCart(new Cart());
+			sale.getCart().setCustomerId(sale.getCustomerId());
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					Thread[] threads = new Thread[1];
+					threads[0] = initCustomer(allCustomers, sale.getCart());
+					for (int i = 0; i < threads.length; i++)
+						try {
+							threads[i].start();
+							threads[i].join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();	
+						}
+				}
+			});
+			mainThreads[index] = t;
+			index++;
+		}
+		for (int i = 0; i < mainThreads.length; i++) {
+			try {
+				mainThreads[i].start();
+				mainThreads[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private Thread initCustomer(List<Customer> customers, Cart cart) {
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					for (Customer c : customers) {
+						if (c.getId() == cart.getCustomerId()) {
+							cart.setCustomer(c);
+							break;
+						}
+					}
+
+				} catch (Exception ex) {
+
+				}
+			}
+		});
+		return thread;
 	}
 	
 	public double totalOustanding() {

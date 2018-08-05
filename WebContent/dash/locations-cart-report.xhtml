@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>Locations Cart Report</title>
+	<ui:include src="/_includes/_dashboard_header" />
+	<script
+		src="https://maps.google.com/maps/api/js?key=AIzaSyC-igMTkS4R3Ex3TL24zjaFynwf5uIJmk8"
+		type="text/javascript"></script>
+</h:head>
+
+<h:body onload="initialize()">
+
+
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="62"
+			styleClass="q-dashboard-background" id="north">
+			<ui:include src="/_includes/top_dashboard" />
+		</p:layoutUnit>
+		<ui:include src="/_includes/side" />
+		<p:layoutUnit position="center">
+			<h:form id="form-g">
+				<p:growl id="error-growl" sticky="true"
+					rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+				<p:growl id="success-growl" sticky="true"
+					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+			</h:form>
+			<div align="center">
+				<h:outputText value="Cart Follow Up" styleClass="q-large-text" />
+			</div>
+			<div class="w3-row">
+				<div class="w3-twothird">
+					<h:form id="form">
+						<h:messages />
+						<h:panelGrid columns="2" cellpadding="5">
+							<p:outputLabel for="fromDate" value="From Date:" />
+							<p:calendar id="fromDate" value="#{locationsCartBean.from}"
+								required="true" mode="popup" pattern="yyyy-MM-dd" />
+
+							<p:outputLabel for="toDate" value="To Date:" />
+							<p:calendar id="toDate" value="#{locationsCartBean.to}"
+								required="true" mode="popup" pattern="yyyy-MM-dd" />
+
+							<p:outputLabel for="makeId" value="Make" />
+							<h:selectOneMenu id="makeId" value="#{locationsCartBean.makeId}">
+								<f:selectItem itemValue="#{0}" itemLabel="All" />
+								<f:selectItems value="#{vehicleBean.makes}" var="make"
+									itemLabel="#{make.name}" itemValue="#{make.id}" />
+							</h:selectOneMenu>
+							<p:outputLabel for="archived" value="Include Archived" />
+							<h:selectBooleanCheckbox value="#{locationsCartBean.archived}"
+								id="archived" />
+							<p:outputLabel for="ordered" value="Only Ordered" />
+							<h:selectBooleanCheckbox value="#{locationsCartBean.ordered}"
+								id="ordered" />
+						</h:panelGrid>
+
+						<h:commandButton value="Load Map Data"
+							actionListener="#{locationsCartBean.search()}" styleClass="q-btn" />
+					</h:form>
+				</div>
+				<div class="w3-third"></div>
+			</div>
+
+
+			<div align="center">
+				<h:panelGrid columns="2">
+					<p:commandButton onclick="initialize();" value="Top"
+						styleClass="q-btn" />
+					<f:verbatim>
+						<canvas id="myCanvas" width="150" height="20"
+							style="border: 1px solid #d3d3d3;">
+		            </canvas>
+					</f:verbatim>
+				</h:panelGrid>
+				<div id="map_canvas" style="width: 800px; height: 550px;"></div>
+			</div>
+
+
+
+			<h:outputScript>
+
+            var csum = #{locationsCartBean.jsonObject};
+
+            //<![CDATA[
+
+            var map;
+            var labels = '4';
+            var initialZoom = 4;
+            function infoCallback(infowindow, marker) {
+            return function () {
+                infowindow.open(map, marker);
+            };
+            }
+             
+            function CreateMarkerOfCities(region , regionSummaries){
+                    
+                    var markerOfRegions = new google.maps.Marker({
+                                    position: new google.maps.LatLng(region.latitude , region.longitude),
+                                    map: map,
+                                    label: regionSummaries.count.toString()
+
+                    });
+                    
+                    markerOfRegions.addListener('click', function () {
+                    
+                    var currentCountryLat = region.latitude;
+                        var currentCountryLong = region.longitude;
+                        var latlngofCountry = new google.maps.LatLng(currentCountryLat,currentCountryLong);
+                        var cityOptions = {
+                            zoom: region.mapZoom,
+                            center: latlngofCountry,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        };
+                        map = new google.maps.Map(document.getElementById("map_canvas"),
+                        cityOptions);
+                        
+                    for(var k = 0 ; k < region.cities.length ; k++){
+                         
+                        var cityName  = region.cities[k].nameAr;
+                    
+                        if (regionSummaries.citySummaries[k].count === null){
+                            var cityLabel =  '0';
+                        } else {
+                            var cityLabel =  regionSummaries.citySummaries[k].count.toString();
+                        }
+                        
+                        var markerOfCities = new google.maps.Marker({
+                                    position: new google.maps.LatLng(region.cities[k].latitude , region.cities[k].longitude),
+                                    map: map,
+                                    label: cityLabel
+
+                                }); 
+               
+                        var infowindow = new google.maps.InfoWindow({
+                        content: cityName
+                        });
+                        google.maps.event.addListener(markerOfCities, 'click', infoCallback(infowindow, markerOfCities));
+                
+                    }
+                    });
+                    
+                    return markerOfRegions;
+            }
+
+            function createCountryMarker(countrySummary){
+            
+            
+            
+                 
+                var countryLabel =  countrySummary.count.toString();
+                 
+                 
+                var markerCountry =  new google.maps.Marker({
+                        position: new google.maps.LatLng(countrySummary.country.latitude, countrySummary.country.longitude),
+                        map: map,
+                        label: countryLabel
+                });
+                  
+                markerCountry.addListener('click', function () {
+                
+                    var currentCountryLat = countrySummary.country.latitude;
+                    var currentCountryLong = countrySummary.country.longitude;
+                    var latlngofCountry = new google.maps.LatLng(currentCountryLat,currentCountryLong);
+                    var countryOptions = {
+                            zoom: countrySummary.country.mapZoom,
+                            center: latlngofCountry,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+                    
+                    map = new google.maps.Map(document.getElementById("map_canvas"),
+                    countryOptions);
+                        
+                    for(var j = 0 ; j < countrySummary.country.regions.length ; j++){
+                    
+                    //  create canvas
+                        var canvas = document.getElementById("myCanvas");
+                        var ctx=canvas.getContext("2d");
+                        ctx.font="15px Comic Sans MS";
+                        ctx.fillStyle = "black";
+                        ctx.textAlign = "center";
+                        ctx.fillText(countrySummary.country.nameAr, 75, 15);
+                        
+                        
+                        var regionLabel =  countrySummary.regionSummaries[j].count.toString();
+                        var markerOfRegions = new google.maps.Marker({
+                        position: new google.maps.LatLng(countrySummary.country.regions[j].latitude , countrySummary.country.regions[j].longitude),
+                        map: map,
+                        label: regionLabel
+
+                    });  
+                                
+                    var cityLabel = CreateMarkerOfCities(countrySummary.country.regions[j] , countrySummary.regionSummaries[j]);
+                }
+            });
+                          
+                    return markerCountry;
+        }
+            
+                    
+                    
+                    
+   
+            function initialize() {
+            
+            
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d")
+                context.clearRect(0,0,250, 250);
+            
+                var myCentreLat = csum.countrySummaries[0].country.latitude;
+                var myCentreLng = csum.countrySummaries[0].country.longitude;
+
+                latlng = new google.maps.LatLng(myCentreLat,myCentreLng);
+
+                myOptions = {
+                    zoom: initialZoom,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+                for(var i = 0 ; i < csum.countrySummaries.length ; i++){
+                    var countryMarker =createCountryMarker(csum.countrySummaries[i]);
+                }
+            }
+            
+            function viewRegions(){
+   
+                    for(var i = 0 ; i < csum.countrySummaries.length ; i++){
+                    var countryMarker =viewRegionOnly(csum.countrySummaries[i]);
+                }           
+            }
+            
+            function viewRegionOnly(countrySummary){
+            
+                for(var j = 0 ; j < countrySummary.country.regions.length ; j++){
+                        
+                    var regionLabel =  countrySummary.regionSummaries[j].count.toString();
+                    var markerOfRegions = new google.maps.Marker({
+                    position: new google.maps.LatLng(countrySummary.country.regions[j].latitude , countrySummary.country.regions[j].longitude),
+                    map: map,
+                    label: regionLabel
+
+                    });  
+                                
+                    var cityLabel = CreateMarkerOfCities(countrySummary.country.regions[j] , countrySummary.regionSummaries[j]);
+                }
+            }            
+            
+            //]]>
+			</h:outputScript>
+		</p:layoutUnit>
+	</p:layout>
+
+</h:body>
+</html>

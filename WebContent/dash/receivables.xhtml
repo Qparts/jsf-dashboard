@@ -64,6 +64,8 @@
 							<f:facet name="header">
 								<h:outputText value="Customer" />
 							</f:facet>
+							<h:outputText value="#{sales.cart.customer.fullName}" />
+													 
 							<h:outputLink rendered="false"
 								value="payables-vendor?vendor-id=#{purchase.vendorId}"
 								target="_blank" styleClass="w3-text-blue">
