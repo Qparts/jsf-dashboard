@@ -2,6 +2,8 @@ package qetaa.jsf.dashboard.model.location;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class City implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int id;
@@ -15,7 +17,10 @@ public class City implements Serializable{
 	private char customerStatus;
 	private char internalStatus;
 	
-	
+	@JsonIgnore
+	public String getFullName() {
+		return country.getName() + " - " + region.getName() + " - " + this.name; 
+	}
 	
 	public Region getRegion() {
 		return region;

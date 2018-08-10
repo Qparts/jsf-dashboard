@@ -33,6 +33,18 @@
 						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
 				</h:form>
 				<div>
+					<h:form id="form">
+						<h:panelGrid columns="2" styleClass="w3-table w3-striped">
+							<h:outputText value="Vehicle" />
+							<h:outputText
+								value="#{awaitingWalletBean.wallet.cart.modelYear.fullName}" />
+							<h:outputText value="Location" />
+							<h:outputText
+								value="#{cityBean.getCityFromId(awaitingWalletBean.wallet.cart.cityId).fullName}" />
+						</h:panelGrid>
+					</h:form>
+					<br />
+
 					<h:form id="form1">
 						<div class="w3-row w3-padding-8">
 							<div align="center" class="w3-half">
@@ -79,6 +91,12 @@
 							</h:column>
 							<h:column>
 								<f:facet name="header">
+									<h:outputText value="Item ID" />
+								</f:facet>
+								<h:outputText value="#{item.id}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
 									<h:outputText value="Product ID" />
 								</f:facet>
 								<h:outputText value="#{item.productId}" />
@@ -87,7 +105,7 @@
 								<f:facet name="header">
 									<h:outputText value="Desc." />
 								</f:facet>
-								<h:outputText value="#{item.itemDesc}" />
+								<h:outputText value="#{item.product.productNameCheck}" />
 							</h:column>
 							<h:column>
 								<f:facet name="header">
@@ -168,7 +186,8 @@
 									</h:outputText>
 									<br />
 									<h:outputText value="Discounts: " style="color:red" />
-									<h:outputText value="#{awaitingWalletBean.totalDiscounts}" style="color:red" >
+									<h:outputText value="#{awaitingWalletBean.totalDiscounts}"
+										style="color:red">
 										<f:convertNumber currencySymbol="SR " type="currency" />
 									</h:outputText>
 									<br />
@@ -180,6 +199,54 @@
 							</f:facet>
 						</h:dataTable>
 					</h:form>
+					<br />
+					<h:form id="form7">
+						<h:panelGrid columns="3">
+							<h:outputText value="New Pricing Vendor" />
+							<h:selectOneMenu value="#{awaitingWalletBean.newPricingVendorId}" required="true">
+								<f:selectItems value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}" var="vendor" itemValue="#{vendor.id}" itemLabel="#{vendor.name}"/>
+							</h:selectOneMenu>
+							<p:commandButton value="Add Vendor to Pricing List" actionListener="#{awaitingWalletBean.addNewPricingVendor()}" update=":form-g :form6" process="@form" styleClass="q-btn"/>
+						</h:panelGrid>
+					</h:form>
+					
+					<h:form id="form6">
+						<p:dataTable
+							value="#{awaitingWalletBean.wallet.productWalletItem}" var="item"
+							style="width:100%!important">
+							<p:column width="80">
+								<f:facet name="header">
+									<h:outputText value="Item" />
+								</f:facet>
+								<h:outputText value="#{item.id}" styleClass="q-bold" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Product Number" />
+								</f:facet>
+								<h:outputText value="#{item.product.productNumber}"
+									styleClass="q-bold" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Desc." />
+								</f:facet>
+								<h:outputText value="#{item.product.productNameCheck}"
+									styleClass="q-bold" />
+							</p:column>
+							<p:columns value="#{awaitingWalletBean.pricingVendors}"
+								var="vendor" columnIndexVar="i">
+								<f:facet name="header">
+									<h:outputText value="#{vendor.name}" />
+								</f:facet>
+								<h:inputText value="#{item.getWalletItemVendor(vendor.id).cost}" rendered="#{not (item.getWalletItemVendor(vendor.id) eq null)}" />
+							</p:columns>
+						</p:dataTable>
+						<div align="center">
+							<p:commandButton value="Save" styleClass="q-btn" actionListener="#{awaitingWalletBean.saveWalletItemVendors()}" update=":form-g @form" process="@form"/>
+						</div>
+					</h:form>
+
 					<br />
 					<h:form id="form3">
 						<h:panelGroup rendered="#{awaitingWalletBean.refundable}">
@@ -221,8 +288,7 @@
 									<f:ajax execute="@this"></f:ajax>
 								</h:selectOneMenu>
 								<br /> <br />
-								<p:commandButton update=":form-g"
-									widgetVar="submitRefund"
+								<p:commandButton update=":form-g" widgetVar="submitRefund"
 									onclick="PF('submitRefund').disable()"
 									actionListener="#{awaitingWalletBean.refundItems()}"
 									value="Refund" styleClass="q-btn" />
@@ -293,8 +359,7 @@
 									<f:ajax execute="@this" render="purchase-btn"></f:ajax>
 								</h:selectOneMenu>
 								<br /> <br />
-								<p:commandButton id="purchase-btn"
-									widgetVar="submitPurchaseBtn"
+								<p:commandButton id="purchase-btn" widgetVar="submitPurchaseBtn"
 									onclick="PF('submitPurchaseBtn').disable()"
 									actionListener="#{awaitingWalletBean.createPurchase()}"
 									update=":form-g" value="Create Purchase"

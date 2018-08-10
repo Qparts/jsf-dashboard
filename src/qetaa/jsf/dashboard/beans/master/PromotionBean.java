@@ -36,11 +36,6 @@ public class PromotionBean implements Serializable{
 		initProviders();
 	}
 	
-//	private void testCode() {
-	//	String link = "http://localhost:8081/service-qetaa-vendor/rest/promotion/generate-code";
-	//	Response r = reqs.postSecuredRequest(link, "7zzAVURGnEqKZ7ZA");
-		//System.out.println(r.getStatus());
-//	}
 	
 	private void initProviders() {
 		Response r = reqs.getSecuredRequest(AppConstants.GET_ALL_PROMOTION_PROVIDERS);

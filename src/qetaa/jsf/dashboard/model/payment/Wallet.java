@@ -1,6 +1,7 @@
 package qetaa.jsf.dashboard.model.payment;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +82,20 @@ public class Wallet implements Serializable{
 		default:
 			return 'R';
 		}
+	}
+	
+	@JsonIgnore
+	public List<WalletItem> getProductWalletItem(){
+		List<WalletItem> productItems = new ArrayList<>();
+		if(this.walletItems != null) {
+			for(WalletItem walletItem : walletItems) {
+				if(walletItem.getItemType() == 'P') {
+					productItems.add(walletItem);
+				}
+			}
+		}
+		
+		return productItems;
 	}
 
 	public List<WalletItem> getWalletItems() {

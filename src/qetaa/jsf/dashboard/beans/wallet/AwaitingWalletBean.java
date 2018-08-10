@@ -4,28 +4,36 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import qetaa.jsf.dashboard.beans.LoginBean;
 import qetaa.jsf.dashboard.beans.Requester;
 import qetaa.jsf.dashboard.beans.master.BanksBean;
+import qetaa.jsf.dashboard.beans.master.CitiesBean;
+import qetaa.jsf.dashboard.beans.master.VendorBean;
 import qetaa.jsf.dashboard.helpers.AppConstants;
 import qetaa.jsf.dashboard.helpers.Helper;
 import qetaa.jsf.dashboard.helpers.PojoRequester;
 import qetaa.jsf.dashboard.helpers.ThreadRunner;
 import qetaa.jsf.dashboard.model.cart.Cart;
+import qetaa.jsf.dashboard.model.location.City;
 import qetaa.jsf.dashboard.model.payment.Bank;
 import qetaa.jsf.dashboard.model.payment.Wallet;
 import qetaa.jsf.dashboard.model.payment.WalletItem;
+import qetaa.jsf.dashboard.model.payment.WalletItemVendor;
 import qetaa.jsf.dashboard.model.purchase.Purchase;
 import qetaa.jsf.dashboard.model.purchase.PurchaseProduct;
+import qetaa.jsf.dashboard.model.vendor.Vendor;
 
 @Named
 @ViewScoped
@@ -40,6 +48,9 @@ public class AwaitingWalletBean implements Serializable {
 	private boolean purchaseAvailable;
 	private PurchaseProduct purchaseProduct;
 	private WalletItem selectedWalletItem;
+	private List<Vendor> pricingVendors;
+	private int newPricingVendorId;
+	
 
 	@Inject
 	private Requester reqs;
@@ -47,6 +58,12 @@ public class AwaitingWalletBean implements Serializable {
 	private BanksBean bankBean;
 	@Inject
 	private LoginBean loginBean;
+	
+	@Inject 
+	private CitiesBean citiesBean;
+	
+	@Inject
+	private VendorBean vendorBean;
 
 	@PostConstruct
 	private void init() {
@@ -68,8 +85,80 @@ public class AwaitingWalletBean implements Serializable {
 				} catch (InterruptedException e) {
 				}
 			}
+		System.out.println("so far so good");
+		initPricingVendors();
+		System.out.println("vendors initted");
+		initWalletItemVendors();
+		System.out.println("wallet items created");
 		} catch (Exception ex) {
+			System.out.println("error occured");
+			ex.printStackTrace();
 			Helper.redirect("wallets-process");
+		}
+	}
+	
+	public void addNewPricingVendor() {
+		Vendor vendor = vendorBean.getVendorFromId(this.newPricingVendorId);
+		if(!pricingVendors.contains(vendor)) {
+			this.pricingVendors.add(vendor);
+			initWalletItemVendors();
+			Helper.addInfoMessage("new pricing vendor added");
+		}
+		else {
+			Helper.addErrorMessage("this vendor is already added");
+		}
+	}
+	
+	private void initWalletItemVendors() {
+		for(WalletItem walletItem : this.wallet.getProductWalletItem()) {
+			for(Vendor vendor : this.pricingVendors) {
+				if(walletItem.getWalletItemVendor(vendor.getId()) == null) {
+					WalletItemVendor wiv = new WalletItemVendor();
+					wiv.setCreatedBy(this.loginBean.getUserHolder().getUser().getId());
+					wiv.setVendorId(vendor.getId());
+					wiv.setWalletItemId(walletItem.getId());
+					wiv.setNewlyAdded(true);
+					walletItem.getWalletItemVendors().add(wiv);
+				}
+			}
+		}
+	}
+	
+	public void saveWalletItemVendors() {
+		Set<WalletItemVendor> wivs = new HashSet<>();
+		for(WalletItem walletItem : this.wallet.getProductWalletItem()) {
+			wivs.addAll(walletItem.getWalletItemVendors());
+		}
+		Response r = reqs.postSecuredRequest(AppConstants.POST_WALLET_ITEM_VENDOR, wivs);
+		if(r.getStatus() == 201) {
+			Helper.addInfoMessage("vendor prices updated");
+		}
+		else {
+			Helper.addErrorMessage("an error occured");
+		}
+	}
+	
+	private void initPricingVendors() {
+		this.pricingVendors = new ArrayList<>();
+		City city = citiesBean.getCityFromId(this.wallet.getCart().getCityId());
+		Response r = reqs.getSecuredRequest(AppConstants.getRegionVendors(city.getRegion().getId()));
+		if(r.getStatus() == 200) {
+			List<Vendor> regionVendors = r.readEntity(new GenericType<List<Vendor>>() {});
+			List<Vendor> makeVendors = vendorBean.getMakeVendors(wallet.getCart().getMakeId());
+			for(Vendor v : regionVendors) {
+				if(makeVendors.contains(v)) {
+					this.pricingVendors.add(v);
+				}
+			}
+		}
+		
+		for(WalletItem wi : this.wallet.getWalletItems()) {
+			for(WalletItemVendor wiv : wi.getWalletItemVendors()) {
+				Vendor v = vendorBean.getVendorFromId(wiv.getVendorId());
+				if(!pricingVendors.contains(v)) {
+					pricingVendors.add(v);
+				}
+			}
 		}
 	}
 
@@ -294,12 +383,16 @@ public class AwaitingWalletBean implements Serializable {
 		wallet = new Wallet();
 		Long id = Long.parseLong(param);
 		Response r = reqs.getSecuredRequest(AppConstants.getAwaitingWallet(id));
+		System.out.println(r.getStatus());
 		if (r.getStatus() == 200) {
 			wallet = r.readEntity(Wallet.class);
+			System.out.println("wallet was read successfully");
 			for (WalletItem walletItem : wallet.getWalletItems()) {
 				walletItem.setNewQuantity(walletItem.getQuantity());
 			}
+			System.out.println("done");
 		} else {
+			System.out.println("an error while initting wallet");
 			throw new Exception();
 		}
 	}
@@ -356,6 +449,7 @@ public class AwaitingWalletBean implements Serializable {
 		});
 		return thread;
 	}
+
 
 	public void editRefund() {
 		if (refund) {
@@ -455,5 +549,24 @@ public class AwaitingWalletBean implements Serializable {
 	public Purchase getPurchase() {
 		return this.purchase;
 	}
+
+	public List<Vendor> getPricingVendors() {
+		return pricingVendors;
+	}
+
+	public void setPricingVendors(List<Vendor> pricingVenodrs) {
+		this.pricingVendors = pricingVenodrs;
+	}
+
+	public int getNewPricingVendorId() {
+		return newPricingVendorId;
+	}
+
+	public void setNewPricingVendorId(int newPricingVendorId) {
+		this.newPricingVendorId = newPricingVendorId;
+	}
+	
+	
+	
 
 }

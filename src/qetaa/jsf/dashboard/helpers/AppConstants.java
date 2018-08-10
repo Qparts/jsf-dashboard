@@ -52,6 +52,8 @@ public class AppConstants {
 	public final static String POST_CREATE_COUNTRY = LOCATION_SERVICE + "country";
 	public final static String GET_ALL_CITIES = LOCATION_SERVICE + "all-cities";
 	public final static String GET_ALL_REGIONS = LOCATION_SERVICE + "all-regions";
+	public final static String GET_VENDORS_REGIONS = VENDOR_SERVICE + "regions-vendors";
+	public final static String POST_VENDOR_REGION = VENDOR_SERVICE + "vendor-region";
 	public final static String POST_CREATE_CITY = LOCATION_SERVICE + "city";
 	public final static String POST_CREATE_REGION = LOCATION_SERVICE + "region";
 	public final static String GET_ACTIVE_CITIES_INTERNAL = LOCATION_SERVICE + "active-cities-internal";
@@ -119,6 +121,8 @@ public class AppConstants {
 	public final static String PUT_FUND_WALLET = PAYMENT_SERVICE + "fund-wallet/wire-transfer";
 	public final static String POST_NEW_WALLET_REFUND = PAYMENT_SERVICE + "new-wallet/refund";
 	public final static String PUT_REFUND_WALLET = PAYMENT_SERVICE + "refund-wallet/wire-transfer";
+	public final static String POST_WALLET_ITEM_VENDOR = PAYMENT_SERVICE + "wallet-item-vendors";
+	
 	
 	public final static String GET_PROCESS_WALLETS = PAYMENT_SERVICE + "wallets/process";
 	public final static String PUT_CONFIRM_WIRE_TRANSFER = CART_SERVICE + "confirm-wire-transfer";
@@ -576,5 +580,14 @@ public class AppConstants {
 		+ "/archived/" + archived
 		+ "/ordered/" + ordered;
 	}
+	
+	public final static String getCountryRegions(int countryId) {
+		return LOCATION_SERVICE + "regions/country/" + countryId;
+	}
+	
+	public final static String getRegionVendors(int regionId) {
+		return VENDOR_SERVICE + "vendors/region/" + regionId;
+	}
+	
 	
 }

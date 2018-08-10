@@ -33,8 +33,9 @@
 						<p:menuitem value="Postponed" rendered="#{loginBean.hasAccess(act.pagePosponedSalesReport)}" outcome="/dash/postponed-sales" ajax="false" />
 						<p:menuitem value="No Vin Carts" rendered="#{loginBean.hasAccess(act.pageNoVin)}" outcome="/dash/no-vin-carts" ajax="false" />
 					</p:submenu>
-					<p:submenu label="Vendors" expanded="false" rendered="#{loginBean.hasAccessL([act.pagePromotionProviders, act.pageVendors])}">
+					<p:submenu label="Vendors" expanded="false" rendered="#{loginBean.hasAccessL([act.pageRegionsVendors, act.pagePromotionProviders, act.pageVendors])}">
 						<p:menuitem value="Vendors" rendered="#{loginBean.hasAccess(act.pageVendors)}" outcome="/dash/vendors" ajax="false" />
+						<p:menuitem value="Regions Vendors" rendered="#{loginBean.hasAccess(act.pageRegionsVendors)}" outcome="/dash/regions-vendors" ajax="false" />
 						<p:menuitem value="Join Request" rendered="#{loginBean.hasAccess(act.pageVendorJoinRequest)}" outcome="/dash/vendor-join" ajax="false" />
 						<p:menuitem value="Providers" rendered="#{loginBean.hasAccess(act.pagePromotionProviders)}" outcome="/dash/promotions" ajax="false" />
 					</p:submenu>
@@ -42,16 +43,19 @@
 						<p:menuitem value="Quotations" rendered="#{loginBean.hasAccess(act.pageQuotations)}" outcome="/dash/quotations" ajax="false" />
 						<p:menuitem value="Wallets Process" rendered="#{loginBean.hasAccess(act.pageWalletsProcess)}" outcome="/dash/wallets-process" ajax="false" />
 					</p:submenu>
-					<p:submenu label="Invoices" expanded="false" rendered="#{loginBean.hasAccessL([act.pagePayables, act.pageIncompletePurchases, act.pagePurchaseSearch, act.pageSalesSearch, act.pagePurchaseReturn, act.pageSalesReturn])}">
+					<p:submenu label="Invoices" expanded="false" rendered="#{loginBean.hasAccessL([act.pageReceivables, act.pagePayables, act.pageIncompletePurchases, act.pagePurchaseSearch, act.pageSalesSearch, act.pagePurchaseReturn, act.pageSalesReturn])}">
 						<p:menuitem value="Sales Search" rendered="#{loginBean.hasAccess(act.pageSalesSearch)}" outcome="/dash/sales-search" ajax="false"/>
 						<p:menuitem value="Purchase Search" rendered="#{loginBean.hasAccess(act.pagePurchaseSearch)}" outcome="/dash/purchase-search" ajax="false"/>
 						<p:menuitem value="Sales Return" rendered="#{loginBean.hasAccess(act.pageSalesReturn)}" outcome="/dash/sales-return-search" ajax="false"/>
 						<p:menuitem value="Purchase Return" rendered="#{loginBean.hasAccess(act.pagePurchaseReturn)}" outcome="/dash/purchase-return-search" ajax="false"/>
 						<p:menuitem value="Payables" rendered="#{loginBean.hasAccess(act.pagePayables)}" outcome="/dash/payables" ajax="false"/>
+						<p:menuitem value="Receivables" rendered="#{loginBean.hasAccess(act.pageReceivables)}" outcome="/dash/receivables" ajax="false"/>
 						<p:menuitem value="Incomplete Purchases" rendered="#{loginBean.hasAccess(act.pageIncompletePurchases)}" outcome="/dash/purchases-incomplete" ajax="false"/>
 					</p:submenu>
-					<p:submenu label="Reports" expanded="false" rendered="#{loginBean.hasAccessL([act.pageOverallActivity, act.pageHitReport, act.pageCartDetails, act.pageSearchCarts, act.pageWalletsReport, act.pageLostSalesReport, act.pageMakeOrdersReport, act.pageRegistrationReport, act.pageCustomerActivity])}">
+					<p:submenu label="Reports" expanded="false" rendered="#{loginBean.hasAccessL([act.pageShipmentsReport, act.pageInvoiceReport, act.pageOverallActivity, act.pageHitReport, act.pageCartDetails, act.pageSearchCarts, act.pageWalletsReport, act.pageLostSalesReport, act.pageMakeOrdersReport, act.pageRegistrationReport, act.pageCustomerActivity])}">
 						<p:menuitem value="Wallets Report" rendered="#{loginBean.hasAccess(act.pageWalletsReport)}" outcome="/dash/wallets-report" ajax="false" />
+						<p:menuitem value="Invoices Report" rendered="#{loginBean.hasAccess(act.pageInvoiceReport)}" outcome="/dash/sales-report2" ajax="false" />
+						<p:menuitem value="Shipments Report" rendered="#{loginBean.hasAccess(act.pageShipmentsReport)}" outcome="/dash/shipments-report" ajax="false" />
 						<p:menuitem value="Search Carts" rendered="#{loginBean.hasAccess(act.pageSearchCarts)}" outcome="/dash/search-carts" ajax="false" />
 						<p:menuitem value="Cart Details" rendered="#{loginBean.hasAccess(act.pageCartDetails)}" outcome="/dash/cart-details" ajax="false" />					
 						<p:menuitem value="Make Report" rendered="#{loginBean.hasAccess(act.pageMakeOrdersReport)}" outcome="/dash/make-orders" ajax="false" />

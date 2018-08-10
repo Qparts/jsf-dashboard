@@ -35,7 +35,6 @@ public class SalesReturnSearchBean implements Serializable{
 	
 	public void searchSales() {
 		Response r = reqs.getSecuredRequest(AppConstants.getSalesFromCartId(cartId));
-		System.out.println(r.getStatus());
 		if(r.getStatus() == 200) {
 			this.salesOrders = r.readEntity(new GenericType<List<Sales>>() {});
 			initCarts();

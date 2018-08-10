@@ -129,7 +129,6 @@ public class SalesSearchBean implements Serializable {
 			});
 			initCartVariables();
 		} else {
-			System.out.println(r.getStatus());
 			Helper.addErrorMessage("An error occured");
 		}
 	}

@@ -1,6 +1,7 @@
 package qetaa.jsf.dashboard.model.payment;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,6 +33,8 @@ public class WalletItem implements Serializable{
 	private String refundNote;
 	private Long purchasedItemId;
 	private Long soldItemId;
+	private List<WalletItemVendor> walletItemVendors; 
+	
 	@JsonIgnore
 	private boolean refund;
 	@JsonIgnore
@@ -41,6 +44,23 @@ public class WalletItem implements Serializable{
 	@JsonIgnore
 	private boolean shipmentSelection;
 	
+	
+	@JsonIgnore
+	public WalletItemVendor getWalletItemVendor(int vendorId) {
+		for(WalletItemVendor wiv : this.walletItemVendors) {
+			if(wiv.getVendorId() == vendorId) {
+				return wiv;
+			}
+		}
+		return null;
+	}
+	
+	public List<WalletItemVendor> getWalletItemVendors() {
+		return walletItemVendors;
+	}
+	public void setWalletItemVendors(List<WalletItemVendor> walletItemVendors) {
+		this.walletItemVendors = walletItemVendors;
+	}
 	
 	@JsonIgnore
 	public int[] getQuantityArrayForPurchase() {

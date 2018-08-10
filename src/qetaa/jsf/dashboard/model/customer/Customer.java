@@ -17,6 +17,7 @@ public class Customer implements Serializable {
 	private String mobile;
 	private Date created;
 	private int createdBy;
+	private String defaultLang;
 	
 	private List<LoyaltyPoints> loyaltyPoints;
 	private Integer countryId;
@@ -35,8 +36,17 @@ public class Customer implements Serializable {
 		return firstName + " " + lastName;
 	}
 	
+	
 
 	
+	public String getDefaultLang() {
+		return defaultLang;
+	}
+
+	public void setDefaultLang(String defaultLang) {
+		this.defaultLang = defaultLang;
+	}
+
 	public Integer getCountryId() {
 		return countryId;
 	}
