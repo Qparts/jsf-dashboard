@@ -21,6 +21,8 @@ public class PurchaseProduct implements Serializable{
 	private SalesProduct salesProduct;
 	@JsonIgnore
 	private boolean withVat;
+	@JsonIgnore
+	private boolean productChanged;
 	
 	@JsonIgnore
 	private Product product;
@@ -203,6 +205,14 @@ public class PurchaseProduct implements Serializable{
 		if (withVat != other.withVat)
 			return false;
 		return true;
+	}
+
+	public boolean isProductChanged() {
+		return productChanged;
+	}
+
+	public void setProductChanged(boolean productChanged) {
+		this.productChanged = productChanged;
 	}
 	
 	

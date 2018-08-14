@@ -15,7 +15,8 @@ public class QuotationItem implements Serializable {
 	private long quotationId;
 	private int quantity;
 	private int createdBy;
-	private String itemDesc, itemDescAr;
+	private String itemDesc;
+	private String itemDescAr;
 	private Date created;
 	private char status;
 	@JsonIgnore

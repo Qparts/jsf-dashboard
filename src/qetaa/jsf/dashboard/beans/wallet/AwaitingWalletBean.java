@@ -26,6 +26,7 @@ import qetaa.jsf.dashboard.helpers.Helper;
 import qetaa.jsf.dashboard.helpers.PojoRequester;
 import qetaa.jsf.dashboard.helpers.ThreadRunner;
 import qetaa.jsf.dashboard.model.cart.Cart;
+import qetaa.jsf.dashboard.model.cart.CartReview;
 import qetaa.jsf.dashboard.model.location.City;
 import qetaa.jsf.dashboard.model.payment.Bank;
 import qetaa.jsf.dashboard.model.payment.Wallet;
@@ -50,7 +51,7 @@ public class AwaitingWalletBean implements Serializable {
 	private WalletItem selectedWalletItem;
 	private List<Vendor> pricingVendors;
 	private int newPricingVendorId;
-	
+	private CartReview review;
 
 	@Inject
 	private Requester reqs;
@@ -58,15 +59,16 @@ public class AwaitingWalletBean implements Serializable {
 	private BanksBean bankBean;
 	@Inject
 	private LoginBean loginBean;
-	
-	@Inject 
+
+	@Inject
 	private CitiesBean citiesBean;
-	
+
 	@Inject
 	private VendorBean vendorBean;
 
 	@PostConstruct
 	private void init() {
+		this.review = new CartReview();
 		purchase = new Purchase();
 		purchase.setPurchaseProducts(new ArrayList<>());
 		selectedWalletItem = new WalletItem();
@@ -85,34 +87,45 @@ public class AwaitingWalletBean implements Serializable {
 				} catch (InterruptedException e) {
 				}
 			}
-		System.out.println("so far so good");
-		initPricingVendors();
-		System.out.println("vendors initted");
-		initWalletItemVendors();
-		System.out.println("wallet items created");
+			initCartVariables();
+			initPricingVendors();
+			initWalletItemVendors();
 		} catch (Exception ex) {
-			System.out.println("error occured");
 			ex.printStackTrace();
 			Helper.redirect("wallets-process");
 		}
 	}
-	
+
+	private void initCartVariables() {
+		String header = reqs.getSecurityHeader();
+		Thread[] threads = new Thread[3];
+		threads[0] = ThreadRunner.initAddress(wallet.getCart(), header);
+		threads[1] = ThreadRunner.initReviews(wallet.getCart(), header);
+		threads[2] = ThreadRunner.initPromoCode(wallet.getCart(), header);
+		for (int i = 0; i < threads.length; i++) {
+			try {
+				threads[i].start();
+				threads[i].join();
+			} catch (InterruptedException e) {
+			}
+		}
+	}
+
 	public void addNewPricingVendor() {
 		Vendor vendor = vendorBean.getVendorFromId(this.newPricingVendorId);
-		if(!pricingVendors.contains(vendor)) {
+		if (!pricingVendors.contains(vendor)) {
 			this.pricingVendors.add(vendor);
 			initWalletItemVendors();
 			Helper.addInfoMessage("new pricing vendor added");
-		}
-		else {
+		} else {
 			Helper.addErrorMessage("this vendor is already added");
 		}
 	}
-	
+
 	private void initWalletItemVendors() {
-		for(WalletItem walletItem : this.wallet.getProductWalletItem()) {
-			for(Vendor vendor : this.pricingVendors) {
-				if(walletItem.getWalletItemVendor(vendor.getId()) == null) {
+		for (WalletItem walletItem : this.wallet.getProductWalletItem()) {
+			for (Vendor vendor : this.pricingVendors) {
+				if (walletItem.getWalletItemVendor(vendor.getId()) == null) {
 					WalletItemVendor wiv = new WalletItemVendor();
 					wiv.setCreatedBy(this.loginBean.getUserHolder().getUser().getId());
 					wiv.setVendorId(vendor.getId());
@@ -123,39 +136,39 @@ public class AwaitingWalletBean implements Serializable {
 			}
 		}
 	}
-	
+
 	public void saveWalletItemVendors() {
 		Set<WalletItemVendor> wivs = new HashSet<>();
-		for(WalletItem walletItem : this.wallet.getProductWalletItem()) {
+		for (WalletItem walletItem : this.wallet.getProductWalletItem()) {
 			wivs.addAll(walletItem.getWalletItemVendors());
 		}
 		Response r = reqs.postSecuredRequest(AppConstants.POST_WALLET_ITEM_VENDOR, wivs);
-		if(r.getStatus() == 201) {
+		if (r.getStatus() == 201) {
 			Helper.addInfoMessage("vendor prices updated");
-		}
-		else {
+		} else {
 			Helper.addErrorMessage("an error occured");
 		}
 	}
-	
+
 	private void initPricingVendors() {
 		this.pricingVendors = new ArrayList<>();
 		City city = citiesBean.getCityFromId(this.wallet.getCart().getCityId());
 		Response r = reqs.getSecuredRequest(AppConstants.getRegionVendors(city.getRegion().getId()));
-		if(r.getStatus() == 200) {
-			List<Vendor> regionVendors = r.readEntity(new GenericType<List<Vendor>>() {});
+		if (r.getStatus() == 200) {
+			List<Vendor> regionVendors = r.readEntity(new GenericType<List<Vendor>>() {
+			});
 			List<Vendor> makeVendors = vendorBean.getMakeVendors(wallet.getCart().getMakeId());
-			for(Vendor v : regionVendors) {
-				if(makeVendors.contains(v)) {
+			for (Vendor v : regionVendors) {
+				if (makeVendors.contains(v)) {
 					this.pricingVendors.add(v);
 				}
 			}
 		}
-		
-		for(WalletItem wi : this.wallet.getWalletItems()) {
-			for(WalletItemVendor wiv : wi.getWalletItemVendors()) {
+
+		for (WalletItem wi : this.wallet.getWalletItems()) {
+			for (WalletItemVendor wiv : wi.getWalletItemVendors()) {
 				Vendor v = vendorBean.getVendorFromId(wiv.getVendorId());
-				if(!pricingVendors.contains(v)) {
+				if (!pricingVendors.contains(v)) {
 					pricingVendors.add(v);
 				}
 			}
@@ -183,7 +196,7 @@ public class AwaitingWalletBean implements Serializable {
 			purchase.setCustomerId(wallet.getCustomerId());
 			purchase.setDueDate(new Date());
 			purchase.setMakeId(wallet.getCart().getMakeId());
-			purchase.setPaymentStatus('I');//incomplete
+			purchase.setPaymentStatus('I');// incomplete
 			purchase.setCreated(new Date());
 			purchase.setPurchasePayments(new ArrayList<>());
 			purchase.setTransactionType('T');
@@ -372,7 +385,7 @@ public class AwaitingWalletBean implements Serializable {
 		double total = 0;
 		if (wallet.getWalletItems() != null) {
 			for (WalletItem wi : wallet.getWalletItems()) {
-				double sum = wi.getUnitSalesNetWv() * (wi.getItemType() == 'P'  ? wi.getQuantity() : 1);
+				double sum = wi.getUnitSalesNetWv() * (wi.getItemType() == 'P' ? wi.getQuantity() : 1);
 				total = total + sum;
 			}
 		}
@@ -383,16 +396,12 @@ public class AwaitingWalletBean implements Serializable {
 		wallet = new Wallet();
 		Long id = Long.parseLong(param);
 		Response r = reqs.getSecuredRequest(AppConstants.getAwaitingWallet(id));
-		System.out.println(r.getStatus());
 		if (r.getStatus() == 200) {
 			wallet = r.readEntity(Wallet.class);
-			System.out.println("wallet was read successfully");
 			for (WalletItem walletItem : wallet.getWalletItems()) {
 				walletItem.setNewQuantity(walletItem.getQuantity());
 			}
-			System.out.println("done");
 		} else {
-			System.out.println("an error while initting wallet");
 			throw new Exception();
 		}
 	}
@@ -450,7 +459,6 @@ public class AwaitingWalletBean implements Serializable {
 		return thread;
 	}
 
-
 	public void editRefund() {
 		if (refund) {
 			for (WalletItem wi : wallet.getWalletItems()) {
@@ -503,6 +511,23 @@ public class AwaitingWalletBean implements Serializable {
 			purchaseProduct = new PurchaseProduct();
 		} else {
 			Helper.addErrorMessage("Product already added");
+		}
+	}
+
+	private void prepareCartReview() {
+		review.setStage(6);
+		review.setCartId(this.wallet.getCart().getId());
+		review.setReviewerId(this.loginBean.getUserHolder().getUser().getId());
+		review.setStatus(review.getStatusFromActionValue());
+	}
+
+	public void submitReview() {
+		prepareCartReview();
+		Response r = reqs.postSecuredRequest(AppConstants.POST_FOLLOW_UP_REVIEW, this.review);
+		if (r.getStatus() == 200) {
+			Helper.redirect("wallet-awaiting?wallet=" + this.wallet.getId());
+		} else {
+			Helper.addErrorMessage("An error occured");
 		}
 	}
 
@@ -565,8 +590,13 @@ public class AwaitingWalletBean implements Serializable {
 	public void setNewPricingVendorId(int newPricingVendorId) {
 		this.newPricingVendorId = newPricingVendorId;
 	}
-	
-	
-	
+
+	public CartReview getReview() {
+		return review;
+	}
+
+	public void setReview(CartReview review) {
+		this.review = review;
+	}
 
 }

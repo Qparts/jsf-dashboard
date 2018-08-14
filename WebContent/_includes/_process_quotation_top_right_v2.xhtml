@@ -211,12 +211,11 @@
 							<f:ajax render="table" execute="table" />
 						</h:commandButton>
 						<div class="w3-padding-8">
-							<h:commandButton
-								rendered="#{(quotation.status eq 'N' and quotationBean.cart.status eq 'N') or (quotation.manuallyAdded)}"
+							<h:commandButton 
+								rendered="false"
 								styleClass="q-btn" value="Send all to Vendors"
 								actionListener="#{quotationBean.submitQuotationOrder(quotation)}" />
-								<br/>
-								<br/>
+								
 							<h:commandButton
 								rendered="#{(quotation.status eq 'N' and quotationBean.cart.status eq 'N') or (quotation.manuallyAdded)}"
 								styleClass="q-btn" value="Send all to Finders"

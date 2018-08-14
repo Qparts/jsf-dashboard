@@ -39,10 +39,13 @@
 									<h:outputText value="Cart# #{cart.id}" />
 								</div>
 								<div class="w3-row">
-									<div class="w3-half q-bold" align="left">
+									<div class="w3-third q-bold" align="left">
 										<h:outputText value="#{cart.modelYear.fullName}" />
 									</div>
-									<div class="w3-half q-bold" align="right">
+									<div class="w3-third q-bold" align="center">
+										<h:outputText value="#{cityBean.getCityFromId(cart.cityId).fullName}" />
+									</div>
+									<div class="w3-third q-bold" align="right">
 										<h:outputText value="#{cart.vin}" />
 									</div>
 								</div>
@@ -63,7 +66,6 @@
 													disabled="#{qi.notAvailable}">
 													<f:ajax render="@form" execute="@this" />
 												</h:selectBooleanCheckbox>
-
 											</h:column>
 											<h:column>
 												<f:facet name="header">

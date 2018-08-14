@@ -34,14 +34,133 @@
 				</h:form>
 				<div>
 					<h:form id="form">
-						<h:panelGrid columns="2" styleClass="w3-table w3-striped">
-							<h:outputText value="Vehicle" />
-							<h:outputText
-								value="#{awaitingWalletBean.wallet.cart.modelYear.fullName}" />
-							<h:outputText value="Location" />
-							<h:outputText
-								value="#{cityBean.getCityFromId(awaitingWalletBean.wallet.cart.cityId).fullName}" />
-						</h:panelGrid>
+						<p:panel toggleable="true" header="Cart Info" collapsed="false"
+							toggleSpeed="100">
+
+							<div class="w3-row">
+								<div class="w3-third w3-container">
+									<div class="w3-card-2 w3-padding-8 w3-light-grey"
+										align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Cart ID" />
+											<h:inputText value="#{awaitingWalletBean.wallet.cart.id}"
+												readonly="true" />
+											<h:outputText value="Cart Date" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.created}"
+												readonly="true">
+												<f:convertDateTime type="date" />
+											</h:inputText>
+											<h:outputText value="Vehicle" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.modelYear.fullName}"
+												readonly="true" />
+											<h:outputText value="VIN" />
+											<h:inputText value="#{awaitingWalletBean.wallet.cart.vin}"
+												readonly="true" />
+										</h:panelGrid>
+									</div>
+								</div>
+								<div class="w3-third w3-container">
+									<div class="w3-card-2 w3-padding-8 w3-light-grey"
+										align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Customer ID" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.customerId}"
+												readonly="true" />
+											<h:outputText value="Name" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.customer.fullName}"
+												readonly="true" />
+											<h:outputText value="Mobile" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.customer.mobile}"
+												readonly="true" />
+											<h:outputText value="Email" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.customer.email}"
+												readonly="true" />
+											<h:outputText value="Loyalty Points" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.customer.totalLoyaltyPoints}"
+												readonly="true" />
+										</h:panelGrid>
+									</div>
+								</div>
+								<div class="w3-third">
+									<div class="w3-card-2 w3-padding-8 w3-light-grey"
+										align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Address" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.address.line1}"
+												readonly="true" />
+											<h:outputText value="" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.address.line2}"
+												readonly="true" />
+											<h:outputText value="Country" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.address.city.country.name}"
+												readonly="true" />
+											<h:outputText value="City" />
+											<h:inputText
+												value="#{awaitingWalletBean.wallet.cart.address.city.region.name} - #{awaitingWalletBean.wallet.cart.address.city.name}"
+												readonly="true" />
+										</h:panelGrid>
+									</div>
+								</div>
+							</div>
+						</p:panel>
+					</h:form>
+					<h:form>
+						<br />
+						<p:panel toggleable="true" header="Reviews" collapsed="false"
+							toggleSpeed="100">
+							<ui:repeat var="review"
+								value="#{awaitingWalletBean.wallet.cart.reviews}">
+								<h:outputText value="#{review.created}" styleClass="q-bold"
+									style="color:#2dacd1!important;">
+									<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
+								</h:outputText>
+								<h:outputText value=" #{review.reviewer.firstName}: "
+									styleClass="q-bold" style="color:#2dacd1!important;" />
+								<h:outputText dir="rtl" value=" #{review.reviewText}" />
+								<br />
+								<br />
+							</ui:repeat>
+
+							<p:commandButton value="+ Add Review" styleClass="q-btn"
+								oncomplete="PF('reviewDlgwv').show()" />
+						</p:panel>
+					</h:form>
+
+					<h:form id="new-review-form">
+						<p:dialog styleClass="q-dialog" header="New Review"
+							widgetVar="reviewDlgwv">
+							<div align="center">
+								<h:outputText value="Action" />
+								<br />
+								<h:selectOneMenu value="#{awaitingWalletBean.review.actionValue}"
+									required="true" requiredMessage="Select action">
+									<f:selectItem itemValue="B" itemLabel="General" />
+								</h:selectOneMenu>
+								<div class="w3-padding-12">
+									<h:outputText value="Comments" />
+									<br />
+									<h:inputTextarea required="true"
+										requiredMessage="Enter comments before submitting"
+										value="#{awaitingWalletBean.review.reviewText}" cols="70" rows="3" />
+								</div>
+								<div>
+									<p:commandButton value="Submit" styleClass="q-btn"
+										actionListener="#{awaitingWalletBean.submitReview()}"
+										process="@form" ajax="false">
+									</p:commandButton>
+								</div>
+							</div>
+						</p:dialog>
 					</h:form>
 					<br />
 
@@ -203,13 +322,19 @@
 					<h:form id="form7">
 						<h:panelGrid columns="3">
 							<h:outputText value="New Pricing Vendor" />
-							<h:selectOneMenu value="#{awaitingWalletBean.newPricingVendorId}" required="true">
-								<f:selectItems value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}" var="vendor" itemValue="#{vendor.id}" itemLabel="#{vendor.name}"/>
+							<h:selectOneMenu value="#{awaitingWalletBean.newPricingVendorId}"
+								required="true">
+								<f:selectItems
+									value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}"
+									var="vendor" itemValue="#{vendor.id}"
+									itemLabel="#{vendor.name}" />
 							</h:selectOneMenu>
-							<p:commandButton value="Add Vendor to Pricing List" actionListener="#{awaitingWalletBean.addNewPricingVendor()}" update=":form-g :form6" process="@form" styleClass="q-btn"/>
+							<p:commandButton value="Add Vendor to Pricing List"
+								actionListener="#{awaitingWalletBean.addNewPricingVendor()}"
+								update=":form-g :form6" process="@form" styleClass="q-btn" />
 						</h:panelGrid>
 					</h:form>
-					
+
 					<h:form id="form6">
 						<p:dataTable
 							value="#{awaitingWalletBean.wallet.productWalletItem}" var="item"
@@ -239,11 +364,14 @@
 								<f:facet name="header">
 									<h:outputText value="#{vendor.name}" />
 								</f:facet>
-								<h:inputText value="#{item.getWalletItemVendor(vendor.id).cost}" rendered="#{not (item.getWalletItemVendor(vendor.id) eq null)}" />
+								<h:inputText value="#{item.getWalletItemVendor(vendor.id).cost}"
+									rendered="#{not (item.getWalletItemVendor(vendor.id) eq null)}" />
 							</p:columns>
 						</p:dataTable>
 						<div align="center">
-							<p:commandButton value="Save" styleClass="q-btn" actionListener="#{awaitingWalletBean.saveWalletItemVendors()}" update=":form-g @form" process="@form"/>
+							<p:commandButton value="Save" styleClass="q-btn"
+								actionListener="#{awaitingWalletBean.saveWalletItemVendors()}"
+								update=":form-g @form" process="@form" />
 						</div>
 					</h:form>
 

@@ -1,6 +1,8 @@
 package qetaa.jsf.dashboard.beans.purchase;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -14,6 +16,7 @@ import qetaa.jsf.dashboard.helpers.AppConstants;
 import qetaa.jsf.dashboard.helpers.Helper;
 import qetaa.jsf.dashboard.helpers.ThreadRunner;
 import qetaa.jsf.dashboard.model.cart.Cart;
+import qetaa.jsf.dashboard.model.product.Product;
 import qetaa.jsf.dashboard.model.purchase.Purchase;
 import qetaa.jsf.dashboard.model.purchase.PurchaseProduct;
 import qetaa.jsf.dashboard.model.purchase.PurchaseReturnProduct;
@@ -25,6 +28,7 @@ public class IncompletePurchaseBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Purchase purchase;
+	private Product newProduct;
 	private PurchaseProduct selectedPurchaseProduct;
 	private double price;
 
@@ -36,6 +40,7 @@ public class IncompletePurchaseBean implements Serializable {
 	@PostConstruct
 	private void init() {
 		try {
+			newProduct = new Product();
 			selectedPurchaseProduct = new PurchaseProduct();
 			String id = Helper.getParam("id");
 			initPurchase(id);
@@ -46,33 +51,66 @@ public class IncompletePurchaseBean implements Serializable {
 			Helper.redirect("purchases-incomplete");
 		}
 	}
-	
+
+	public void findProduct() {
+		Response r = reqs.getSecuredRequest(AppConstants.getProduct(this.newProduct.getId()));
+		if (r.getStatus() == 200) {
+			Product product = r.readEntity(Product.class);
+			this.selectedPurchaseProduct.setProduct(product);
+			this.selectedPurchaseProduct.setProductChanged(true);
+			this.selectedPurchaseProduct.setProductId(product.getId());
+			Helper.addInfoMessage("Product Replaced");
+		} else {
+			Helper.addErrorMessage("An error occured");
+		}
+	}
+
+	private boolean updateChangedProducts() {
+		List<PurchaseProduct> pps = new ArrayList<>();
+		for (PurchaseProduct pp : this.purchase.getPurchaseProducts()) {
+			if (pp.isProductChanged()) {
+				pps.add(pp);
+			}
+		}
+		Response r = reqs.putSecuredRequest(AppConstants.PUT_REPLACE_PURCHASE_PRODUCT, pps);
+		if (r.getStatus() == 201) {
+			return true;
+		}
+		return false;
+
+	}
+
 	public void updatePurchase() {
-		if(ready()) {
-			purchase.setCompletedBy(loginBean.getUserHolder().getUser().getId());
-			Response r = reqs.putSecuredRequest(AppConstants.PUT_COMPLETE_PURCHASE, purchase);
-			if(r.getStatus() == 201) {
-				Helper.redirect("purchases-incomplete");
+		if (ready()) {
+			// update purchase products changed first
+			if (updateChangedProducts()) {
+				purchase.setCompletedBy(loginBean.getUserHolder().getUser().getId());
+				Response r = reqs.putSecuredRequest(AppConstants.PUT_COMPLETE_PURCHASE, purchase);
+				if (r.getStatus() == 201) {
+					Helper.redirect("purchases-incomplete");
+				} else {
+					Helper.addErrorMessage("An error occured");
+				}
 			}
 			else {
 				Helper.addErrorMessage("An error occured");
 			}
-		}else {
+		} else {
 			Helper.addErrorMessage("Enter all costs");
 		}
 	}
-	
+
 	private boolean ready() {
 		boolean ready = true;
-		for(PurchaseProduct pp : purchase.getPurchaseProducts()) {
-			if(pp.getUnitCost() == null) {
+		for (PurchaseProduct pp : purchase.getPurchaseProducts()) {
+			if (pp.getUnitCost() == null) {
 				ready = false;
 				break;
 			}
 		}
 		return ready;
 	}
-	
+
 	private void initCart() throws Exception {
 		purchase.setCart(new Cart());
 		Response r = reqs.getSecuredRequest(AppConstants.getCart(purchase.getCartId()));
@@ -82,7 +120,7 @@ public class IncompletePurchaseBean implements Serializable {
 			throw new Exception();
 		}
 	}
-	
+
 	private void initVariables() {
 		String header = reqs.getSecurityHeader();
 		Thread[] threads = new Thread[4];
@@ -108,14 +146,14 @@ public class IncompletePurchaseBean implements Serializable {
 			throw new Exception();
 		}
 	}
-	
-	
+
 	private Thread initProducts(String header) {
 		Thread thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					Thread[] threads = new Thread[purchase.getPurchaseProducts().size() + purchase.getPurchaseReturnProducts().size()];
+					Thread[] threads = new Thread[purchase.getPurchaseProducts().size()
+							+ purchase.getPurchaseReturnProducts().size()];
 					int index = 0;
 					for (PurchaseProduct sp : purchase.getPurchaseProducts()) {
 						threads[index] = ThreadRunner.initProduct(sp, header);
@@ -123,8 +161,8 @@ public class IncompletePurchaseBean implements Serializable {
 						threads[index].join();
 						index++;
 					}
-					
-					for(PurchaseReturnProduct srp : purchase.getPurchaseReturnProducts()) {
+
+					for (PurchaseReturnProduct srp : purchase.getPurchaseReturnProducts()) {
 						threads[index] = ThreadRunner.initProduct(srp, header);
 						threads[index].start();
 						threads[index].join();
@@ -138,18 +176,22 @@ public class IncompletePurchaseBean implements Serializable {
 		});
 		return thread;
 	}
-	
-	
+
 	public void updatePrice() {
-		if(selectedPurchaseProduct.isWithVat()) {
+		if (selectedPurchaseProduct.isWithVat()) {
 			selectedPurchaseProduct.setUnitCostWv(price);
 			selectedPurchaseProduct.setUnitCost(price / 1.05);
-		}
-		else {
+		} else {
 			selectedPurchaseProduct.setUnitCost(price);
 			selectedPurchaseProduct.setUnitCostWv(price * 1.05);
 		}
 		price = 0;
+	}
+
+	public void chooseSelectedPurchaseProduct(PurchaseProduct pp) {
+		this.selectedPurchaseProduct = pp;
+		this.newProduct = pp.getProduct();
+
 	}
 
 	public PurchaseProduct getSelectedPurchaseProduct() {
@@ -175,7 +217,13 @@ public class IncompletePurchaseBean implements Serializable {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	
-	
+
+	public Product getNewProduct() {
+		return newProduct;
+	}
+
+	public void setNewProduct(Product newProduct) {
+		this.newProduct = newProduct;
+	}
 
 }

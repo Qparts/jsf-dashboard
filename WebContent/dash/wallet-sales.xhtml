@@ -32,6 +32,138 @@
 					<p:growl id="success-growl"
 						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
 				</h:form>
+				
+				<h:form id="form">
+						<p:panel toggleable="true" header="Cart Info" collapsed="false"
+							toggleSpeed="100">
+
+							<div class="w3-row">
+								<div class="w3-third w3-container">
+									<div class="w3-card-2 w3-padding-8 w3-light-grey"
+										align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Cart ID" />
+											<h:inputText value="#{salesWalletBean.wallet.cart.id}"
+												readonly="true" />
+											<h:outputText value="Cart Date" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.created}"
+												readonly="true">
+												<f:convertDateTime type="date" />
+											</h:inputText>
+											<h:outputText value="Vehicle" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.modelYear.fullName}"
+												readonly="true" />
+											<h:outputText value="VIN" />
+											<h:inputText value="#{salesWalletBean.wallet.cart.vin}"
+												readonly="true" />
+										</h:panelGrid>
+									</div>
+								</div>
+								<div class="w3-third w3-container">
+									<div class="w3-card-2 w3-padding-8 w3-light-grey"
+										align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Customer ID" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.customerId}"
+												readonly="true" />
+											<h:outputText value="Name" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.customer.fullName}"
+												readonly="true" />
+											<h:outputText value="Mobile" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.customer.mobile}"
+												readonly="true" />
+											<h:outputText value="Email" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.customer.email}"
+												readonly="true" />
+											<h:outputText value="Loyalty Points" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.customer.totalLoyaltyPoints}"
+												readonly="true" />
+										</h:panelGrid>
+									</div>
+								</div>
+								<div class="w3-third">
+									<div class="w3-card-2 w3-padding-8 w3-light-grey"
+										align="center">
+										<h:panelGrid columns="2">
+											<h:outputText value="Address" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.address.line1}"
+												readonly="true" />
+											<h:outputText value="" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.address.line2}"
+												readonly="true" />
+											<h:outputText value="Country" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.address.city.country.name}"
+												readonly="true" />
+											<h:outputText value="City" />
+											<h:inputText
+												value="#{salesWalletBean.wallet.cart.address.city.region.name} - #{salesWalletBean.wallet.cart.address.city.name}"
+												readonly="true" />
+										</h:panelGrid>
+									</div>
+								</div>
+							</div>
+						</p:panel>
+					</h:form>
+					<h:form>
+						<br />
+						<p:panel toggleable="true" header="Reviews" collapsed="false"
+							toggleSpeed="100">
+							<ui:repeat var="review"
+								value="#{salesWalletBean.wallet.cart.reviews}">
+								<h:outputText value="#{review.created}" styleClass="q-bold"
+									style="color:#2dacd1!important;">
+									<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
+								</h:outputText>
+								<h:outputText value=" #{review.reviewer.firstName}: "
+									styleClass="q-bold" style="color:#2dacd1!important;" />
+								<h:outputText dir="rtl" value=" #{review.reviewText}" />
+								<br />
+								<br />
+							</ui:repeat>
+
+							<p:commandButton value="+ Add Review" styleClass="q-btn"
+								oncomplete="PF('reviewDlgwv').show()" />
+						</p:panel>
+					</h:form>
+
+					<h:form id="new-review-form">
+						<p:dialog styleClass="q-dialog" header="New Review"
+							widgetVar="reviewDlgwv">
+							<div align="center">
+								<h:outputText value="Action" />
+								<br />
+								<h:selectOneMenu value="#{salesWalletBean.review.actionValue}"
+									required="true" requiredMessage="Select action">
+									<f:selectItem itemValue="B" itemLabel="General" />
+								</h:selectOneMenu>
+								<div class="w3-padding-12">
+									<h:outputText value="Comments" />
+									<br />
+									<h:inputTextarea required="true"
+										requiredMessage="Enter comments before submitting"
+										value="#{salesWalletBean.review.reviewText}" cols="70" rows="3" />
+								</div>
+								<div>
+									<p:commandButton value="Submit" styleClass="q-btn"
+										actionListener="#{salesWalletBean.submitReview()}"
+										process="@form" ajax="false">
+									</p:commandButton>
+								</div>
+							</div>
+						</p:dialog>
+					</h:form>
+					<br />
+				
 				<div>
 					<h:form id="form2">
 						<h:dataTable value="#{salesWalletBean.wallet.walletItems}"

@@ -31,26 +31,30 @@
 					<p:growl id="success-growl"
 						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
 				</h:form>
-				
+
 				<div class="w3-row">
 					<div class="w3-third w3-container">
 						<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
 							<h:panelGrid columns="2">
 								<h:outputText value="Cart ID" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.id}" readonly="true" />
+								<h:inputText value="#{incompletePurchaseBean.purchase.cart.id}"
+									readonly="true" />
 								<h:outputText value="Cart Date" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.created}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.created}"
 									readonly="true">
 									<f:convertDateTime type="date" />
 								</h:inputText>
 								<h:outputText value="Vehicle" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.modelYear.fullName}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.modelYear.fullName}"
 									readonly="true" />
 								<h:outputText value="VIN" />
 								<h:inputText value="#{incompletePurchaseBean.purchase.cart.vin}"
 									readonly="true" />
 								<h:outputText value="Delivery Fees" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.deliveryFees}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.deliveryFees}"
 									readonly="true" />
 							</h:panelGrid>
 						</div>
@@ -59,18 +63,22 @@
 						<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
 							<h:panelGrid columns="2">
 								<h:outputText value="Customer ID" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.customerId}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.customerId}"
 									readonly="true" />
 								<h:outputText value="Name" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.customer.fullName}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.customer.fullName}"
 									readonly="true" />
 								<h:outputText value="Mobile" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.customer.mobile}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.customer.mobile}"
 									readonly="true" />
 								<h:outputText value="Email" />
-								<h:inputText value="#{incompletePurchaseBean.purchase.cart.customer.email}"
+								<h:inputText
+									value="#{incompletePurchaseBean.purchase.cart.customer.email}"
 									readonly="true" />
-								
+
 							</h:panelGrid>
 						</div>
 					</div>
@@ -85,8 +93,8 @@
 						</div>
 					</div>
 				</div>
-				
-				<br/>
+
+				<br />
 				<div>
 					<h:form id="form2">
 						<h:dataTable
@@ -164,12 +172,22 @@
 								<f:facet name="header">
 									<h:outputText value="Net Profit" />
 								</f:facet>
-								<h:outputText value="#{(pp.salesProduct.unitSalesWv * pp.quantity) - (pp.unitCostWv * pp.quantity)}"
+								<h:outputText
+									value="#{(pp.salesProduct.unitSalesWv * pp.quantity) - (pp.unitCostWv * pp.quantity)}"
 									style="color:#{(pp.salesProduct.unitSalesWv * pp.quantity - pp.unitCostWv * pp.quantity gt 0) ? 'green' : 'red'}">
 									<f:convertNumber type="currency" currencySymbol=" " />
 								</h:outputText>
 							</h:column>
-							
+
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Edit" />
+								</f:facet>
+								<p:commandButton
+									actionListener="#{incompletePurchaseBean.chooseSelectedPurchaseProduct(pp)}"
+									update=":form4" process="@this" value="Edit" styleClass="q-btn"
+									oncomplete="PF('dlg2wv').show()" />
+							</h:column>
 							<h:column>
 								<f:facet name="header">
 									<h:outputText value="Update" />
@@ -182,33 +200,67 @@
 							<f:facet name="footer">
 								<div align="center" class="q-bold">
 									<h:panelGrid columns="2">
-									<h:outputText value="Total Cost" />
-									<h:outputText value="#{incompletePurchaseBean.purchase.totalCost}">
-										<f:convertNumber type="currency" currencySymbol="SR " />
-									</h:outputText>
-									
-									<h:outputText value="VAT" />
-									<h:outputText value="#{incompletePurchaseBean.purchase.totalCostWv - incompletePurchaseBean.purchase.totalCost}">
-										<f:convertNumber type="currency" currencySymbol="SR " />
-									</h:outputText>
-									
-									<h:outputText value="Net Cost" />
-									<h:outputText value="#{incompletePurchaseBean.purchase.totalCostWv }">
-										<f:convertNumber type="currency" currencySymbol="SR " />
-									</h:outputText>
+										<h:outputText value="Total Cost" />
+										<h:outputText
+											value="#{incompletePurchaseBean.purchase.totalCost}">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+
+										<h:outputText value="VAT" />
+										<h:outputText
+											value="#{incompletePurchaseBean.purchase.totalCostWv - incompletePurchaseBean.purchase.totalCost}">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
+
+										<h:outputText value="Net Cost" />
+										<h:outputText
+											value="#{incompletePurchaseBean.purchase.totalCostWv }">
+											<f:convertNumber type="currency" currencySymbol="SR " />
+										</h:outputText>
 									</h:panelGrid>
 								</div>
 							</f:facet>
 						</h:dataTable>
-						<br/>
+						<br />
 						<div align="center">
 							<h:outputText value="Invoice Date" />
-							<br/>
-							<p:calendar mode="inline" required="true" value="#{incompletePurchaseBean.purchase.purchaseDate}" process="@this"/>
-							<br/>
-							<br/>
-							<p:commandButton value="Update" styleClass="q-btn" actionListener="#{incompletePurchaseBean.updatePurchase()}" update=":form-g" />
+							<br />
+							<p:calendar mode="inline" required="true"
+								value="#{incompletePurchaseBean.purchase.purchaseDate}"
+								process="@this" />
+							<br /> <br />
+							<p:commandButton value="Update" styleClass="q-btn"
+								actionListener="#{incompletePurchaseBean.updatePurchase()}"
+								update=":form-g" />
 						</div>
+					</h:form>
+					<h:form id="form4">
+						<p:dialog id="dlg2" widgetVar="dlg2wv" styleClass="q-dialog"
+							header="Edit Purchase">
+							<h:panelGrid columns="2" id="editProductPanel"
+								styleClass="w3-table w3-striped w3-border">
+								<h:outputText value="Product ID" />
+								<h:inputText id="productId"
+									value="#{incompletePurchaseBean.newProduct.id}" />
+								<h:outputText value="Product Name" />
+								<h:outputText
+									value="#{incompletePurchaseBean.newProduct.productNameCheck}" />
+								<h:outputText value="Product Number" />
+								<h:outputText
+									value="#{incompletePurchaseBean.newProduct.productNumber}" />
+								<h:outputText value="Quantity" />
+								<h:outputText
+									value="#{incompletePurchaseBean.selectedPurchaseProduct.quantity}" />
+
+							</h:panelGrid>
+							<div align="center">
+								<p:commandButton value="Find Product"
+									styleClass="q-btn"
+									update=":form-g :form4 :form2"
+									actionListener="#{incompletePurchaseBean.findProduct()}" />
+								<br/>
+							</div>
+						</p:dialog>
 					</h:form>
 					<h:form id="form3">
 						<p:dialog id="dlg" widgetVar="dlgwv" styleClass="q-dialog"
@@ -237,8 +289,8 @@
 								<h:outputText value="Unit Cost" />
 								<h:inputText value="#{incompletePurchaseBean.price}"
 									required="true" requiredMessage="Please enter Price">
-										<f:ajax execute="@this"></f:ajax>
-									</h:inputText>
+									<f:ajax execute="@this"></f:ajax>
+								</h:inputText>
 							</h:panelGrid>
 							<br />
 							<div align="center">

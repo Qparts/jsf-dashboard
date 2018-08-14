@@ -122,6 +122,7 @@ public class AppConstants {
 	public final static String POST_NEW_WALLET_REFUND = PAYMENT_SERVICE + "new-wallet/refund";
 	public final static String PUT_REFUND_WALLET = PAYMENT_SERVICE + "refund-wallet/wire-transfer";
 	public final static String POST_WALLET_ITEM_VENDOR = PAYMENT_SERVICE + "wallet-item-vendors";
+	public final static String PUT_REPLACE_PURCHASE_PRODUCT = INVOICE_SERVICE + "replace-purchase-product";
 	
 	
 	public final static String GET_PROCESS_WALLETS = PAYMENT_SERVICE + "wallets/process";

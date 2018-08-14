@@ -1,13 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui" 
-	xmlns:o="http://omnifaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://java.sun.com/jstl/core">
 
 <h:head>
-	<title>Quotation Request</title>
+	<title>Process Quotation V2</title>
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
@@ -30,9 +30,25 @@
 				<p:growl id="success-growl"
 					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
 			</h:form>
+			<div class="w3-section">
+				<div class="w3-row-padding" style="margin: 0 -16px">
+					<div class="w3-half">
+						<ui:include src="/_includes/_process_quotation_top_left" />
+					</div>
+					<div class="w3-half">
+						<ui:include src="/_includes/_process_quotation_top_right_v2.xhtml" />
+					</div>
+					<ui:include src="/_includes/_process_quotation_vendor_dialog" />
+					<ui:include src="/_includes/_process_quotation_full_response_dialog" />
+					<ui:include src="/_includes/_process_quotation_approved_dialog.xhtml" />
+					<ui:include
+						src="/_includes/_process_quotation_manual_vendor_dialog" />
+				</div>
+			</div>
 		</p:layoutUnit>
 	</p:layout>
-
-
 </h:body>
+
+
+
 </html>

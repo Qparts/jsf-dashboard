@@ -527,7 +527,7 @@ public class QuotationBean implements Serializable {
 		if (ok) {
 			Response r = reqs.postSecuredRequest(AppConstants.POST_QUOTATION_FOR_FINDERS, quotation);
 			if (r.getStatus() == 200) {
-				Helper.redirect("process_quotation?cart-id=" + this.cart.getId());
+				Helper.redirect("quotation-request?cart-id=" + this.cart.getId());
 			} else {
 				Helper.addErrorMessage("An error occured");
 			}

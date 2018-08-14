@@ -17,7 +17,9 @@ import qetaa.jsf.dashboard.beans.Requester;
 import qetaa.jsf.dashboard.helpers.AppConstants;
 import qetaa.jsf.dashboard.helpers.Helper;
 import qetaa.jsf.dashboard.helpers.PojoRequester;
+import qetaa.jsf.dashboard.helpers.ThreadRunner;
 import qetaa.jsf.dashboard.model.cart.Cart;
+import qetaa.jsf.dashboard.model.cart.CartReview;
 import qetaa.jsf.dashboard.model.payment.Wallet;
 import qetaa.jsf.dashboard.model.payment.WalletItem;
 import qetaa.jsf.dashboard.model.product.Product;
@@ -35,6 +37,7 @@ public class SalesWalletBean implements Serializable {
 	private Wallet wallet;
 	private List<Purchase> purchases;
 	private Sales sales;
+	private CartReview review;
 
 	@Inject
 	private Requester reqs;
@@ -43,6 +46,7 @@ public class SalesWalletBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
+		review = new CartReview();
 		sales = new Sales();
 		sales.setSalesProducts(new ArrayList<>());
 		purchases = new ArrayList<>();
@@ -60,9 +64,42 @@ public class SalesWalletBean implements Serializable {
 				ts[i].join();
 			}
 			initSales();
+			initCartVariables();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			// Helper.redirect("wallets-process");
+		}
+	}
+	
+	private void initCartVariables() {
+		String header = reqs.getSecurityHeader();
+		Thread[] threads = new Thread[3];
+		threads[0] = ThreadRunner.initAddress(wallet.getCart(), header);
+		threads[1] = ThreadRunner.initReviews(wallet.getCart(), header);
+		threads[2] = ThreadRunner.initPromoCode(wallet.getCart(), header);
+		for (int i = 0; i < threads.length; i++) {
+			try {
+				threads[i].start();
+				threads[i].join();
+			} catch (InterruptedException e) {
+			}
+		}
+	}
+	
+	private void prepareCartReview() {
+		review.setStage(7);
+		review.setCartId(this.wallet.getCart().getId());
+		review.setReviewerId(this.loginBean.getUserHolder().getUser().getId());
+		review.setStatus(review.getStatusFromActionValue());
+	}
+
+	public void submitReview() {
+		prepareCartReview();
+		Response r = reqs.postSecuredRequest(AppConstants.POST_FOLLOW_UP_REVIEW, this.review);
+		if (r.getStatus() == 200) {
+			Helper.redirect("wallet-sales?wallet=" + this.wallet.getId());
+		} else {
+			Helper.addErrorMessage("An error occured");
 		}
 	}
 	
@@ -329,5 +366,15 @@ public class SalesWalletBean implements Serializable {
 	public void setSales(Sales sales) {
 		this.sales = sales;
 	}
+
+	public CartReview getReview() {
+		return review;
+	}
+
+	public void setReview(CartReview review) {
+		this.review = review;
+	}
+	
+	
 
 }
