@@ -126,6 +126,9 @@
 								</h:outputText>
 								<h:outputText value=" #{review.reviewer.firstName}: "
 									styleClass="q-bold" style="color:#2dacd1!important;" />
+								<h:outputText
+									value=" (#{review.visibleToCustomer ? 'visible' : 'hidden'}) : "
+									style="color:#2dacd1!important;" styleClass="q-bold" />
 								<h:outputText dir="rtl" value=" #{review.reviewText}" />
 								<br />
 								<br />
@@ -142,16 +145,24 @@
 							<div align="center">
 								<h:outputText value="Action" />
 								<br />
-								<h:selectOneMenu value="#{awaitingWalletBean.review.actionValue}"
+								<h:selectOneMenu
+									value="#{awaitingWalletBean.review.actionValue}"
 									required="true" requiredMessage="Select action">
 									<f:selectItem itemValue="B" itemLabel="General" />
 								</h:selectOneMenu>
+								<br/>
+								<br/>
+								<h:outputText value="Visible to Customer" />
+								<br/>
+								<h:selectBooleanCheckbox value="#{awaitingWalletBean.review.visibleToCustomer}" />
+								<br/>
 								<div class="w3-padding-12">
 									<h:outputText value="Comments" />
 									<br />
 									<h:inputTextarea required="true"
 										requiredMessage="Enter comments before submitting"
-										value="#{awaitingWalletBean.review.reviewText}" cols="70" rows="3" />
+										value="#{awaitingWalletBean.review.reviewText}" cols="70"
+										rows="3" />
 								</div>
 								<div>
 									<p:commandButton value="Submit" styleClass="q-btn"

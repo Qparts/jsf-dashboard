@@ -138,8 +138,7 @@
 									<br />
 									<p:commandButton value="Fund Wallet"
 										widgetVar="SubmitFundWallet"
-										onclick="PF('SubmitFundWallet').disable()"
-										styleClass="q-btn"
+										onclick="PF('SubmitFundWallet').disable()" styleClass="q-btn"
 										update=":form-g"
 										actionListener="#{wiretransferBean.fundWallet()}" />
 								</h:form>
@@ -162,7 +161,8 @@
 						<div class="scroll-div-150">
 							<h:dataTable styleClass="w3-table w3-striped w3-border"
 								headerClass="w3-light-grey w3-border"
-								value="#{wiretransferBean.wire.cart.partsItemsApproved}" var="approved">
+								value="#{wiretransferBean.wire.cart.partsItemsApproved}"
+								var="approved">
 								<f:facet name="header">
 									<div align="center">Parts Order</div>
 								</f:facet>
@@ -190,7 +190,8 @@
 									<f:facet name="header">
 										Gross Price
 									</f:facet>
-									<h:outputText value="#{approved.salesPrice * apporved.approvedQuantity}">
+									<h:outputText
+										value="#{approved.salesPrice * apporved.approvedQuantity}">
 										<f:convertNumber type="currency" currencySymbol="SR " />
 									</h:outputText>
 								</h:column>
@@ -205,7 +206,8 @@
 									<f:convertNumber type="currency" currencySymbol="SR " />
 								</h:outputText>
 								<h:outputText value="Parts Total: " />
-								<h:outputText value="#{wiretransferBean.wire.cart.partsItemsApprovedTotalSales}">
+								<h:outputText
+									value="#{wiretransferBean.wire.cart.partsItemsApprovedTotalSales}">
 									<f:convertNumber type="currency" currencySymbol="SR " />
 								</h:outputText>
 								<h:outputText value="VAT: " />
@@ -300,6 +302,13 @@
 										<h:outputText value="N/A"
 											rendered="#{review.actionValue eq 'O'}" />
 									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Visible" />
+										</f:facet>
+										<h:selectBooleanCheckbox value="#{review.visibleToCustomer}"
+											disabled="true" />
+									</h:column>
 								</h:dataTable>
 							</div>
 						</div>
@@ -314,7 +323,11 @@
 											itemLabel="--Select Action--" />
 										<f:selectItem itemValue="B" itemLabel="General" />
 									</h:selectOneMenu>
+									<br /> <br />
+									<h:outputText value="Visible to Customer" />
 									<br />
+									<h:selectBooleanCheckbox
+										value="#{wiretransferBean.cartReview.visibleToCustomer}" />
 								</div>
 								<div class="w3-padding-12">
 									<h:outputText value="Comments" />

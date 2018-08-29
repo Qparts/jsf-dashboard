@@ -154,7 +154,6 @@
 
 							<!-- The Close Button -->
 							<span class="close">&times;</span>
-
 							<!-- Modal Content (The Image) -->
 							<img class="modal-content" id="img01" />
 							<!-- Modal Caption (Image Text) -->
@@ -225,6 +224,12 @@
 										<h:outputText value="N/A"
 											rendered="#{review.actionValue eq 'O'}" />
 									</h:column>
+									<h:column>
+										<f:facet name="header">
+											Visible
+										</f:facet>
+										<h:selectBooleanCheckbox value="#{review.visibleToCustomer}" disabled="true" />
+									</h:column>
 								</h:dataTable>
 							</div>
 						</div>
@@ -242,6 +247,11 @@
 										<f:ajax execute="@this" render=":form-g" />
 									</h:selectOneMenu>
 									<br />
+								</div>
+								<div class="w3-padding-12">
+								<h:outputText value="Visible To Customer" />
+								<br/>
+								<h:selectBooleanCheckbox value="#{novincartBean.cartReview.visibleToCustomer}" />
 								</div>
 								<div class="w3-padding-12">
 									<h:outputText value="Comments" />
@@ -357,7 +367,7 @@ to {
 }
 </style>
 
-<script>
+			<script>
 //<![CDATA[
 // Get the modal
 var modal = document.getElementById('myModal');

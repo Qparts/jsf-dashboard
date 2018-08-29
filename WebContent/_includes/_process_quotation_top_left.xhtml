@@ -122,6 +122,8 @@
 				</h:outputText>
 				<h:outputText value=" #{review.reviewer.firstName} : "
 					style="color:#2dacd1!important;" styleClass="q-bold" />
+				<h:outputText value=" (#{review.visibleToCustomer ? 'visible' : 'hidden'}) : "
+					style="color:#2dacd1!important;" styleClass="q-bold" />
 				<h:outputText dir="rtl" value=" #{review.reviewText}" />
 				<br />
 				<br />
@@ -146,6 +148,12 @@
 						<f:selectItem itemValue="B" itemLabel="General" />
 						<f:selectItem itemValue="X" itemLabel="Archive" />
 					</h:selectOneMenu>
+					<br/>
+					<br/>
+					<h:outputText value="Visible To Customer" />
+					<br/>
+					<h:selectBooleanCheckbox value="#{quotationBean.review.visibleToCustomer}" />
+					<br/>
 					<div class="w3-padding-12">
 						<h:outputText value="Comments" />
 						<br />

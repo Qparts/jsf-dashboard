@@ -276,6 +276,13 @@
 										<h:outputText value="N/A"
 											rendered="#{review.actionValue eq 'O'}" />
 									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Visible" />
+										</f:facet>
+										<h:selectBooleanCheckbox value="#{review.visibleToCustomer}"
+											disabled="true" />
+									</h:column>
 								</h:dataTable>
 							</div>
 						</div>
@@ -299,7 +306,11 @@
 										<f:selectItem itemValue="O" itemLabel="Other and Close" />
 										<f:ajax execute="@this" render="more-action :form-g" />
 									</h:selectOneMenu>
+									<br /> <br />
+									<h:outputText value="Visible to Customer" />
 									<br />
+									<h:selectBooleanCheckbox
+										value="#{followUpBean.cartReview.visibleToCustomer}" />
 									<h:panelGroup id="more-action">
 										<h:panelGroup
 											rendered="#{followUpBean.cartReview.actionValue == 'F'}">
@@ -494,9 +505,12 @@
 												value="#{followUpBean.cart.vatPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}">
 												<f:convertNumber type="currency" currencySymbol="SR " />
 											</h:outputText>
-											<h:outputText value="Promotion Discount: " rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"/>
-											<h:outputText rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
-												value="#{followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}" style="color:red" >
+											<h:outputText value="Promotion Discount: "
+												rendered="#{followUpBean.cart.promoCodeObject.discountPromo}" />
+											<h:outputText
+												rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
+												value="#{followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}"
+												style="color:red">
 												<f:convertNumber type="currency" currencySymbol="SR " />
 											</h:outputText>
 											<h:outputText value="Total: " />
@@ -504,8 +518,10 @@
 												value="#{followUpBean.cart.vatPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees) + followUpBean.cart.deliveryFees + followUpBean.partsOrder.newTotalPartsPrice}">
 												<f:convertNumber type="currency" currencySymbol="SR " />
 											</h:outputText>
-											<h:outputText value="Total After Discount: " rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"/>
-											<h:outputText rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
+											<h:outputText value="Total After Discount: "
+												rendered="#{followUpBean.cart.promoCodeObject.discountPromo}" />
+											<h:outputText
+												rendered="#{followUpBean.cart.promoCodeObject.discountPromo}"
 												value="#{followUpBean.cart.vatPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees) + followUpBean.cart.deliveryFees + followUpBean.partsOrder.newTotalPartsPrice - followUpBean.cart.promoCodeObject.discountPercentage * (followUpBean.partsOrder.newTotalPartsPrice + followUpBean.cart.deliveryFees)}">
 												<f:convertNumber type="currency" currencySymbol="SR " />
 											</h:outputText>
@@ -515,23 +531,28 @@
 								<h:panelGroup id="promo-panel">
 									<h:panelGrid columns="2">
 										<h:outputText value="Promo Code" />
-										<h:inputText id="in" value="#{followUpBean.promCodeString}" style="width:100px;" disabled="#{followUpBean.cart.promoCodeObject.discountPromo}"/>
+										<h:inputText id="in" value="#{followUpBean.promCodeString}"
+											style="width:100px;"
+											disabled="#{followUpBean.cart.promoCodeObject.discountPromo}" />
 									</h:panelGrid>
-									<h:commandLink value="Verify" rendered="#{not followUpBean.cart.promoCodeObject.discountPromo}" actionListener="#{followUpBean.verifyPromCode()}">
+									<h:commandLink value="Verify"
+										rendered="#{not followUpBean.cart.promoCodeObject.discountPromo}"
+										actionListener="#{followUpBean.verifyPromCode()}">
 										<f:ajax execute="in @this"
-									render="footer-price promo-panel msgs"></f:ajax>
+											render="footer-price promo-panel msgs"></f:ajax>
 									</h:commandLink>
-									<p:messages id="msgs"/>
+									<p:messages id="msgs" />
 								</h:panelGroup>
-								<br/>
+								<br />
 								<div>
 									<h:panelGrid columns="2">
 										<h:outputText value="Payment Type" />
 										<h:selectOneMenu value="#{followUpBean.paymentMethod}">
-											<f:selectItem noSelectionOption="true" itemLabel="--Select Payment Method--"/>
-											<f:selectItem itemValue="#{'W'}" itemLabel="Wire Transfer"/>
-											<f:selectItem itemValue="#{'T'}" itemLabel="Credit Sales"/>
-											<f:selectItem itemValue="#{'D'}" itemLabel="Cash On Delivery"/>
+											<f:selectItem noSelectionOption="true"
+												itemLabel="--Select Payment Method--" />
+											<f:selectItem itemValue="#{'W'}" itemLabel="Wire Transfer" />
+											<f:selectItem itemValue="#{'T'}" itemLabel="Credit Sales" />
+											<f:selectItem itemValue="#{'D'}" itemLabel="Cash On Delivery" />
 										</h:selectOneMenu>
 									</h:panelGrid>
 								</div>
