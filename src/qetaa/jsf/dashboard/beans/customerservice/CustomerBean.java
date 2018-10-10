@@ -50,6 +50,7 @@ public class CustomerBean implements Serializable {
 	private List<City> cities;
 	private long lastOrderId;
 	private List<Country> countries;
+	private String sms;
 
 	@Inject 
 	private LoginBean loginBean;
@@ -65,8 +66,22 @@ public class CustomerBean implements Serializable {
 		initQuantityArray();
 		initCountries();
 	}
+	
+	public void sendSmsToCustomer() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("customerId", this.selectedCustomer.getId());
+		map.put("sms", sms);
+		Response r = reqs.postSecuredRequest(AppConstants.POST_MANUAL_SMS, map);
+		if(r.getStatus() == 201) {
+			Helper.addInfoMessage("SMS Sent");
+			this.setSelectedCustomer(new Customer());
+		}else {
+			Helper.addErrorMessage("An error occured");
+		}
+	}
 
 	private void init() {
+		sms = "";
 		cart = new Cart();
 		cart.setCartItems(new ArrayList<>());
 		addItem();
@@ -346,6 +361,7 @@ public class CustomerBean implements Serializable {
 	}
 
 	public void setSelectedCustomer(Customer selectedCustomer) {
+		sms = "";
 		this.selectedCustomer = selectedCustomer;
 	}
 
@@ -437,4 +453,13 @@ public class CustomerBean implements Serializable {
 		this.countries = countries;
 	}
 
+	public String getSms() {
+		return sms;
+	}
+
+	public void setSms(String sms) {
+		this.sms = sms;
+	}
+
+	
 }

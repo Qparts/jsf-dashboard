@@ -1,0 +1,229 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+	<h:panelGroup id="left">
+		<p:panel toggleable="true" header="Cart Information" collapsed="false"
+			toggleSpeed="100">
+			<h:panelGrid columns="2">
+				<h:panelGroup>
+					<div align="center">
+						<h:outputText value="General" styleClass="q-bold" />
+					</div>
+				</h:panelGroup>
+				<h:panelGroup>
+					<div align="center">
+						<h:outputText value="Customer" styleClass="q-bold" />
+					</div>
+				</h:panelGroup>
+				<h:panelGrid columns="2">
+					<h:outputText value="Cart ID" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.id}" />
+					<h:outputText value="Date" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.created}">
+						<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+					</h:inputText>
+					<h:outputText value="Vehicle" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.modelYear.fullName}" />
+					<h:outputText value="VIN" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.vin}" />
+					<h:outputText value="City" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.city.region.name} - #{quotationBean.cart.city.name}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<h:outputText value="ID" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.customer.id}" />
+					<h:outputText value="Name" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.customer.firstName} #{quotationBean.cart.customer.lastName}" />
+					<h:outputText value="Mobile" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.customer.mobile}" />
+					<h:outputText value="Email" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.customer.email}" />
+
+					<h:outputText value="Loyalty" />
+					<h:inputText readonly="true" styleClass="w3-text-grey"
+						value="#{quotationBean.cart.customer.totalLoyaltyPoints}" />
+				</h:panelGrid>
+			</h:panelGrid>
+			<h:form>
+				<div align="center">
+					<p:commandButton action="#{quotationBean.initVehicleEdit()}"
+						value="Edit Cart" oncomplete="PF('ecdlg').show()"
+						styleClass="q-btn" update=":edit-cart-form" />
+				</div>
+			</h:form>
+			<br />
+			<h:dataTable styleClass="w3-table w3-striped w3-border"
+				value="#{quotationBean.cart.cartItems}" var="item"
+				headerClass="w3-light-grey w3-border-bottom">
+				<f:facet name="header">
+					<div align="center">Cart Items</div>
+				</f:facet>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Item Name" />
+					</f:facet>
+					<h:outputText value="#{item.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<div align="center">
+							<h:outputText value="Quantity" />
+						</div>
+					</f:facet>
+					<div align="center">
+						<h:outputText value="#{item.quantity}" />
+					</div>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<div align="center">
+							<h:outputText value="Created" />
+						</div>
+					</f:facet>
+					<div align="center">
+						<h:outputText value="#{item.created}">
+							<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+						</h:outputText>
+					</div>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<div align="center">
+							<h:outputText value="Created By" />
+						</div>
+					</f:facet>
+					<div align="center">
+						<h:outputText value="Customer" rendered="#{item.createdBy eq 0}" />
+						<h:outputText value="User" rendered="#{item.createdBy != 0}" />
+					</div>
+				</h:column>
+			</h:dataTable>
+		</p:panel>
+		<br />
+		<p:panel toggleable="true" header="Cart Reviews" collapsed="false"
+			toggleSpeed="100">
+			<ui:repeat value="#{quotationBean.reviews}" var="review">
+				<h:outputText value="#{review.created}" styleClass="q-bold"
+					style="color:#2dacd1!important;">
+					<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+				</h:outputText>
+				<h:outputText value=" #{review.reviewer.firstName} : "
+					style="color:#2dacd1!important;" styleClass="q-bold" />
+				<h:outputText value=" (#{review.visibleToCustomer ? 'visible' : 'hidden'}) : "
+					style="color:#2dacd1!important;" styleClass="q-bold" />
+				<h:outputText dir="rtl" value=" #{review.reviewText}" />
+				<br />
+				<br />
+			</ui:repeat>
+			<h:form>
+				<div align="center">
+					<p:commandButton value="+ Add Review" styleClass="q-btn"
+						oncomplete="PF('reviewDlgwv').show()" />
+				</div>
+			</h:form>
+		</p:panel>
+		<h:form id="new-review-form">
+			<p:dialog styleClass="q-dialog" header="New Review"
+				widgetVar="reviewDlgwv">
+				<div align="center">
+					<h:outputText value="Action" />
+					<br />
+					<h:selectOneMenu value="#{quotationBean.review.actionValue}"
+						required="true" requiredMessage="Select action">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="--Select Action--" />
+						<f:selectItem itemValue="B" itemLabel="General" />
+						<f:selectItem itemValue="X" itemLabel="Archive" />
+					</h:selectOneMenu>
+					<br/>
+					<br/>
+					<h:outputText value="Visible To Customer" />
+					<br/>
+					<h:selectBooleanCheckbox value="#{quotationBean.review.visibleToCustomer}" />
+					<br/>
+					<div class="w3-padding-12">
+						<h:outputText value="Comments" />
+						<br />
+						<h:inputTextarea required="true"
+							requiredMessage="Enter comments before submitting"
+							value="#{quotationBean.review.reviewText}" cols="70" rows="3" />
+					</div>
+					<div>
+						<p:commandButton value="Submit" styleClass="q-btn"
+							actionListener="#{quotationBean.submitReview()}" process="@form"
+							ajax="false">
+						</p:commandButton>
+					</div>
+				</div>
+			</p:dialog>
+		</h:form>
+
+		<div align="center" class="w3-padding-24">
+			
+			<br />
+
+			<h:form id="edit-cart-form">
+				<p:dialog id="ecdlg" widgetVar="ecdlg" styleClass="q-dialog"
+					header="Edit Cart Information">
+					<h:panelGrid columns="3">
+						<h:outputText value="VIN" />
+						<p:spacer height="1" width="50"></p:spacer>
+						<h:inputText value="#{quotationBean.cart.vin}"
+							validatorMessage="Invalid VIN" a:placeHolder="#{lex.vin}"
+							a:maxlength="17" style="text-transform: uppercase;" />
+						<h:outputText value="City" />
+						<p:spacer height="1" width="50"></p:spacer>
+						<h:selectOneMenu value="#{quotationBean.cart.cityId}">
+							<f:selectItems
+								value="#{countryBean.getCountry(quotationBean.cart.customer.countryId).cities}"
+								var="city" itemLabel="#{city.name}" itemValue="#{city.id}" />
+						</h:selectOneMenu>
+						<h:outputText value="Make" />
+						<p:spacer height="1" width="50"></p:spacer>
+						<h:selectOneMenu value="#{quotationBean.selectedMakeId}">
+							<f:selectItems value="#{vehicleBean.makes}" var="make"
+								itemLabel="#{make.name}" itemValue="#{make.id}"></f:selectItems>
+							<f:ajax listener="#{quotationBean.chooseMake()}" execute="@this"
+								render="model-select"></f:ajax>
+						</h:selectOneMenu>
+
+						<h:outputText value="Model" />
+						<p:spacer height="1" width="50"></p:spacer>
+						<h:selectOneMenu value="#{quotationBean.selectedModelId}"
+							id="model-select">
+							<f:selectItems value="#{quotationBean.selectedMake.models}"
+								var="model" itemLabel="#{model.name}" itemValue="#{model.id}"></f:selectItems>
+							<f:ajax listener="#{quotationBean.chooseModel()}" execute="@this"
+								render="year-select"></f:ajax>
+						</h:selectOneMenu>
+						<h:outputText value="Model Year" />
+						<p:spacer height="1" width="50"></p:spacer>
+						<h:selectOneMenu value="#{quotationBean.selectedModelYearId}"
+							id="year-select">
+							<f:selectItems value="#{quotationBean.selectedModel.modelYears}"
+								var="year" itemLabel="#{year.year}" itemValue="#{year.id}"></f:selectItems>
+							<f:ajax listener="#{quotationBean.chooseModelYear()}"
+								execute="@this"></f:ajax>
+						</h:selectOneMenu>
+					</h:panelGrid>
+					<p:commandButton value="Save Changes"
+						actionListener="#{quotationBean.editCart()}" styleClass="q-btn"></p:commandButton>
+				</p:dialog>
+			</h:form>
+
+		</div>
+	</h:panelGroup>
+</ui:composition>

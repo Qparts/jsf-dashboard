@@ -146,9 +146,7 @@ public class SalesReturnBean implements Serializable {
 			srw.setCustomerName(this.getSales().getCart().getCustomer().getFullName());
 			srw.setDiscountPercentage(this.getDiscountPercentage());
 			srw.setSalesReturn(this.salesReturn);
-			System.out.println(AppConstants.PUT_NEW_SALES_RETURN);
 			Response r2 = reqs.putSecuredRequest(AppConstants.PUT_NEW_SALES_RETURN, srw);
-			System.out.println(r2.getStatus());
 			if (r2.getStatus() == 201) {
 				initShipment();
 				Helper.redirect("sales-return?id=" + this.sales.getId());

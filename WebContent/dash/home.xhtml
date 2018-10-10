@@ -11,13 +11,8 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
+		<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
 			<div class="w3-container">
 				<div align="center" class="w3-padding-8">
 					<h:outputText
@@ -80,7 +75,7 @@
 						<h:panelGroup
 							rendered="#{loginBean.hasAccess(act.pageQuotationMonitor)}"
 							styleClass="w3-quarter">
-							<h:outputLink value="quotations-monitoring" styleClass="q-no-decoration">
+							<h:outputLink value="quotations" styleClass="q-no-decoration">
 								<div class="w3-panel q-panel" align="center">
 									<br />
 									<p>
@@ -108,58 +103,6 @@
 							</h:outputLink>
 						</h:panelGroup>
 
-						<h:panelGroup rendered="#{loginBean.hasAccess(act.pageAssign)}"
-							styleClass="w3-quarter">
-							<h:outputLink value="/dashboard/dash/assign-quotations"
-								styleClass="q-no-decoration">
-								<div class="w3-panel q-panel" align="center">
-									<br />
-									<p>
-										<h:outputText value="Unassigned Quotations"
-											styleClass="q-med-text" />
-										<br />
-										<h:outputText value="#{notificationBean.unassigned}"
-											styleClass="q-med-text" />
-									</p>
-								</div>
-							</h:outputLink>
-						</h:panelGroup>
-
-						<h:panelGroup
-							rendered="#{loginBean.hasAccess(act.pagePartsCollection)}"
-							styleClass="w3-quarter">
-							<h:outputLink value="parts-collection"
-								styleClass="q-no-decoration">
-								<div class="w3-panel q-panel" align="center">
-									<br />
-									<p>
-										<h:outputText value="Items to be collected"
-											styleClass="q-med-text" />
-										<br />
-										<h:outputText value="#{notificationBean.collection}"
-											styleClass="q-med-text" />
-									</p>
-								</div>
-							</h:outputLink>
-						</h:panelGroup>
-
-						<h:panelGroup
-							rendered="#{loginBean.hasAccess(act.pagePartsCollection)}"
-							styleClass="w3-quarter">
-							<h:outputLink value="parts-collection"
-								styleClass="q-no-decoration">
-								<div class="w3-panel q-panel" align="center">
-									<br />
-									<p>
-										<h:outputText value="Items to be received"
-											styleClass="q-med-text" />
-										<br />
-										<h:outputText value="#{notificationBean.receival}"
-											styleClass="q-med-text" />
-									</p>
-								</div>
-							</h:outputLink>
-						</h:panelGroup>
 						
 							<h:panelGroup
 							rendered="#{loginBean.hasAccess(act.pageVendorJoinRequest)}"
@@ -182,7 +125,5 @@
 				</div>
 
 			</div>
-		</p:layoutUnit>
-	</p:layout>
 </h:body>
 </html>

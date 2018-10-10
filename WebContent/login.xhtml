@@ -13,14 +13,12 @@
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css?family=Raleway" />
 	<h:outputStylesheet library="css" name="dashboard.css" />
-	<h:outputStylesheet library="css" name="w3.css" />
-	<h:outputStylesheet library="css" name="bootstrap.css" />
-	<h:outputStylesheet library="css" name="style.css" />
-	<h:outputStylesheet library="css" name="page.css" />
-	<h:outputStylesheet library="css" name="hover.css" />
-	<h:outputStylesheet library="css" name="bootstrap-rtl.css" />
-	<h:outputScript library="js" name="bootstrap.min.js" />
-	<h:outputStylesheet library="css" name="design.css" />
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+	<link rel="stylesheet"
+		href="https://www.w3schools.com/lib/w3-colors-camo.css" />
+	<meta charset="UTF-8" name="viewport"
+		content="width=device-width, initial-scale=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 </h:head>
 <h:body>
 	<ui:include src="/_includes/_customer_top" />
@@ -33,23 +31,32 @@
 				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
 		</h:form>
 		<h:form>
-			<div class="w3-card-2" style="width: 400px">
-				<div class="w3-padding-12"></div>
-				<h:panelGrid columns="1" style="width:300px" styleClass="w3-center">
-					<h:inputText value="#{loginBean.username}"
-						a:placeholder="username" required="true"
-						requiredMessage="Enter user name" styleClass="w3-input w3-border" />
-					<div class="w3-padding-8"></div>
-					<h:inputSecret value="#{loginBean.password}"
-						a:placeholder="password" required="true"
-						requiredMessage="Enter Password" styleClass="w3-input w3-border" />
-					<div class="w3-padding-8"></div>
-					<h:commandButton value="Login"
-						actionListener="#{loginBean.login()}"
-						styleClass="w3-btn q-btn-orange"></h:commandButton>
-					<div class="w3-padding-8"></div>
-				</h:panelGrid>
-				<div class="w3-padding-12"></div>
+			<div class="w3-row">
+				<div class="w3-col w3-hide-medium w3-hide-small l4" style="visibility:hidden;">
+					<h:outputText value="test"/>
+				</div>
+				<div class="w3-col m12 l4">
+					<div class="w3-card-2">
+						<div class="w3-padding-16 w3-panel w3-camo-dark-grey">
+							<h:outputText value="Dashboard Login" />
+						</div>
+						<h:panelGrid columns="1" styleClass="w3-center">
+							<h:inputText value="#{loginBean.username}"
+								a:placeholder="username" required="true"
+								requiredMessage="Enter user name"
+								styleClass="w3-input w3-border" />
+							<div class="w3-padding-8"></div>
+							<h:inputSecret value="#{loginBean.password}"
+								a:placeholder="password" required="true"
+								requiredMessage="Enter Password" styleClass="w3-input w3-border" />
+							<div class="w3-padding-8"></div>
+							<h:commandButton value="Login"
+								actionListener="#{loginBean.login()}"
+								styleClass="w3-btn w3-camo-dark-grey" style="width:100%"></h:commandButton>
+							<div class="w3-padding-16"></div>
+						</h:panelGrid>
+					</div>
+				</div>
 			</div>
 		</h:form>
 	</div>

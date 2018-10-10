@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import qetaa.jsf.dashboard.model.user.User;
-
 public class Quotation implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private long id;
@@ -17,15 +15,12 @@ public class Quotation implements Serializable {
 	private int createdBy;
 	private List<QuotationItem> quotationItems;
 	
-	
 	@JsonIgnore
 	private Cart cart;
 	
 	@JsonIgnore
 	private boolean isManuallyAdded;
 
-	@JsonIgnore
-	private User createdByObject;
 
 	@JsonIgnore
 	public boolean allResponsesNotAvailable() {
@@ -158,13 +153,4 @@ public class Quotation implements Serializable {
 			return false;
 		return true;
 	}
-
-	public User getCreatedByObject() {
-		return createdByObject;
-	}
-
-	public void setCreatedByObject(User craetedByObject) {
-		this.createdByObject = craetedByObject;
-	}
-
 }

@@ -37,8 +37,17 @@ public class Cart implements Serializable {
 	private ModelYear modelYear;
 	private Customer customer;
 	private List<Quotation> quotations;
+	private Long customerVehicleId;
+	private List<CartReview> reviews;
+	private List<ApprovedQuotationItem> approvedItems;
+	private CartAssignment activeAssignment;
 	
-	
+	public CartAssignment getActiveAssignment() {
+		return activeAssignment;
+	}
+	public void setActiveAssignment(CartAssignment activeAssignment) {
+		this.activeAssignment = activeAssignment;
+	}
 	
 	@JsonIgnore
 	private City city;
@@ -46,15 +55,17 @@ public class Cart implements Serializable {
 	private CustomerAddress address;
 	@JsonIgnore
 	private List<PartCollectionItem> collections;
-	private List<ApprovedQuotationItem> approvedItems;
 	@JsonIgnore
 	private List<PartsOrderItemApproved> partsItemsApproved;
 	@JsonIgnore
 	private PartsOrder partsOrder;
-	private List<CartReview> reviews;
 	@JsonIgnore
 	private PromotionCode promoCodeObject;
-
+	@JsonIgnore
+	private CartReview newReview = new CartReview();
+	
+	
+	
 	@JsonIgnore
 	public double getPartsItemsApprovedTotalSales() {
 		if (null != partsItemsApproved) {
@@ -109,6 +120,17 @@ public class Cart implements Serializable {
 				if(qitem.getStatus() == 'W' || qitem.getStatus() == 'N') {
 					qis.add(qitem);
 				}
+			}
+		}
+		return qis;
+	}
+	
+	@JsonIgnore
+	public List<QuotationItem> getAllQuotationItems(){
+		List<QuotationItem> qis = new ArrayList<>();
+		for(Quotation q : quotations) {
+			for(QuotationItem qitem : q.getQuotationItems()) {
+				qis.add(qitem);
 			}
 		}
 		return qis;
@@ -362,6 +384,23 @@ public class Cart implements Serializable {
 	public void setQuotations(List<Quotation> quotations) {
 		this.quotations = quotations;
 	}
+
+	public Long getCustomerVehicleId() {
+		return customerVehicleId;
+	}
+
+	public void setCustomerVehicleId(Long customerVehicleId) {
+		this.customerVehicleId = customerVehicleId;
+	}
+
+	public CartReview getNewReview() {
+		return newReview;
+	}
+
+	public void setNewReview(CartReview newReview) {
+		this.newReview = newReview;
+	}
+	
 	
 	
 	

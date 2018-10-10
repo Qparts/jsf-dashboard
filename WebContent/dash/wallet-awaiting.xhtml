@@ -12,504 +12,643 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
-			<div class="w3-container">
-				<div align="center" class="w3-padding-8">
-					<h:outputText value="Awaiting Wallet - Cart# "
-						styleClass="q-large-text" />
-					<h:outputText value="#{awaitingWalletBean.wallet.cartId}"
-						styleClass="q-large-text" />
-				</div>
-				<h:form id="form-g">
-					<p:growl id="error-growl"
-						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
-					<p:growl id="success-growl"
-						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
-				</h:form>
-				<div>
-					<h:form id="form">
-						<p:panel toggleable="true" header="Cart Info" collapsed="false"
-							toggleSpeed="100">
+	<h:outputText
+		value="#{loginBean.checkAccessRedirectHome(act.pageWalletAwaiting)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<div class="w3-container">
+		<div align="center" class="w3-padding-8">
+			<h:outputText value="Awaiting Wallet - Cart# "
+				styleClass="q-large-text" />
+			<h:outputText value="#{awaitingWalletBean.wallet.cartId}"
+				styleClass="q-large-text" />
+		</div>
+		<h:form id="form-g">
+			<p:growl id="error-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<div>
+			<h:form id="form">
+				<p:panel toggleable="true" header="Cart Info" collapsed="false"
+					toggleSpeed="100">
 
-							<div class="w3-row">
-								<div class="w3-third w3-container">
-									<div class="w3-card-2 w3-padding-8 w3-light-grey"
-										align="center">
-										<h:panelGrid columns="2">
-											<h:outputText value="Cart ID" />
-											<h:inputText value="#{awaitingWalletBean.wallet.cart.id}"
-												readonly="true" />
-											<h:outputText value="Cart Date" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.created}"
-												readonly="true">
-												<f:convertDateTime type="date" />
-											</h:inputText>
-											<h:outputText value="Vehicle" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.modelYear.fullName}"
-												readonly="true" />
-											<h:outputText value="VIN" />
-											<h:inputText value="#{awaitingWalletBean.wallet.cart.vin}"
-												readonly="true" />
-										</h:panelGrid>
-									</div>
-								</div>
-								<div class="w3-third w3-container">
-									<div class="w3-card-2 w3-padding-8 w3-light-grey"
-										align="center">
-										<h:panelGrid columns="2">
-											<h:outputText value="Customer ID" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.customerId}"
-												readonly="true" />
-											<h:outputText value="Name" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.customer.fullName}"
-												readonly="true" />
-											<h:outputText value="Mobile" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.customer.mobile}"
-												readonly="true" />
-											<h:outputText value="Email" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.customer.email}"
-												readonly="true" />
-											<h:outputText value="Loyalty Points" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.customer.totalLoyaltyPoints}"
-												readonly="true" />
-										</h:panelGrid>
-									</div>
-								</div>
-								<div class="w3-third">
-									<div class="w3-card-2 w3-padding-8 w3-light-grey"
-										align="center">
-										<h:panelGrid columns="2">
-											<h:outputText value="Address" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.address.line1}"
-												readonly="true" />
-											<h:outputText value="" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.address.line2}"
-												readonly="true" />
-											<h:outputText value="Country" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.address.city.country.name}"
-												readonly="true" />
-											<h:outputText value="City" />
-											<h:inputText
-												value="#{awaitingWalletBean.wallet.cart.address.city.region.name} - #{awaitingWalletBean.wallet.cart.address.city.name}"
-												readonly="true" />
-										</h:panelGrid>
-									</div>
-								</div>
-							</div>
-						</p:panel>
-					</h:form>
-					<h:form>
-						<br />
-						<p:panel toggleable="true" header="Reviews" collapsed="false"
-							toggleSpeed="100">
-							<ui:repeat var="review"
-								value="#{awaitingWalletBean.wallet.cart.reviews}">
-								<h:outputText value="#{review.created}" styleClass="q-bold"
-									style="color:#2dacd1!important;">
-									<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
-								</h:outputText>
-								<h:outputText value=" #{review.reviewer.firstName}: "
-									styleClass="q-bold" style="color:#2dacd1!important;" />
-								<h:outputText
-									value=" (#{review.visibleToCustomer ? 'visible' : 'hidden'}) : "
-									style="color:#2dacd1!important;" styleClass="q-bold" />
-								<h:outputText dir="rtl" value=" #{review.reviewText}" />
-								<br />
-								<br />
-							</ui:repeat>
-
-							<p:commandButton value="+ Add Review" styleClass="q-btn"
-								oncomplete="PF('reviewDlgwv').show()" />
-						</p:panel>
-					</h:form>
-
-					<h:form id="new-review-form">
-						<p:dialog styleClass="q-dialog" header="New Review"
-							widgetVar="reviewDlgwv">
-							<div align="center">
-								<h:outputText value="Action" />
-								<br />
-								<h:selectOneMenu
-									value="#{awaitingWalletBean.review.actionValue}"
-									required="true" requiredMessage="Select action">
-									<f:selectItem itemValue="B" itemLabel="General" />
-								</h:selectOneMenu>
-								<br/>
-								<br/>
-								<h:outputText value="Visible to Customer" />
-								<br/>
-								<h:selectBooleanCheckbox value="#{awaitingWalletBean.review.visibleToCustomer}" />
-								<br/>
-								<div class="w3-padding-12">
-									<h:outputText value="Comments" />
-									<br />
-									<h:inputTextarea required="true"
-										requiredMessage="Enter comments before submitting"
-										value="#{awaitingWalletBean.review.reviewText}" cols="70"
-										rows="3" />
-								</div>
-								<div>
-									<p:commandButton value="Submit" styleClass="q-btn"
-										actionListener="#{awaitingWalletBean.submitReview()}"
-										process="@form" ajax="false">
-									</p:commandButton>
-								</div>
-							</div>
-						</p:dialog>
-					</h:form>
-					<br />
-
-					<h:form id="form1">
-						<div class="w3-row w3-padding-8">
-							<div align="center" class="w3-half">
-								<p:commandButton
-									value="#{awaitingWalletBean.refund ? 'Cancel Refund' : 'Refund'}"
-									actionListener="#{awaitingWalletBean.editRefund()}"
-									update="@form :form2 :form3" styleClass="q-btn-red"
-									disabled="#{awaitingWalletBean.purchaseAvailable}" />
-							</div>
-							<div align="center" class="w3-half">
-								<p:commandButton
-									value="#{awaitingWalletBean.purchaseAvailable ? 'Cancel Purchase' : 'Purchase'}"
-									actionListener="#{awaitingWalletBean.editPurchase()}"
-									update="@form :form2 :form3 :form4 :form5"
-									styleClass="q-btn-green"
-									disabled="#{awaitingWalletBean.refund}" />
-
+					<div class="w3-row">
+						<div class="w3-third w3-container">
+							<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
+								<h:panelGrid columns="2">
+									<h:outputText value="Cart ID" />
+									<h:inputText value="#{awaitingWalletBean.wallet.cart.id}"
+										readonly="true" />
+									<h:outputText value="Cart Date" />
+									<h:inputText value="#{awaitingWalletBean.wallet.cart.created}"
+										readonly="true">
+										<f:convertDateTime type="date" />
+									</h:inputText>
+									<h:outputText value="Vehicle" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.modelYear.fullName}"
+										readonly="true" />
+									<h:outputText value="VIN" />
+									<h:inputText value="#{awaitingWalletBean.wallet.cart.vin}"
+										readonly="true" />
+								</h:panelGrid>
 							</div>
 						</div>
-					</h:form>
-					<h:form id="form2">
-						<h:dataTable value="#{awaitingWalletBean.wallet.walletItems}"
-							var="item" styleClass="w3-table w3-striped w3-border"
-							headerClass="w3-light-grey w3-border-bottom"
-							footerClass="w3-light-grey w3-border-top">
-							<h:column rendered="#{awaitingWalletBean.refund}">
-								<f:facet name="header">
-									<h:outputText value="Refund" />
-								</f:facet>
-								<h:selectBooleanCheckbox value="#{item.refund}"
-									rendered="#{item.status eq 'A'}">
-									<f:ajax execute="@this" render=":form3" />
-								</h:selectBooleanCheckbox>
-							</h:column>
-							<h:column rendered="#{awaitingWalletBean.purchaseAvailable}">
-								<f:facet name="header">
-									<h:outputText value="Purchase" />
-								</f:facet>
-								<h:selectBooleanCheckbox value="#{item.purchase}"
-									rendered="#{item.status eq 'A' and item.itemType eq 'P'}">
-									<f:ajax execute="@this" render=":form4 :form5" />
-								</h:selectBooleanCheckbox>
-								<br />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Item ID" />
-								</f:facet>
-								<h:outputText value="#{item.id}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Product ID" />
-								</f:facet>
-								<h:outputText value="#{item.productId}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Desc." />
-								</f:facet>
-								<h:outputText value="#{item.product.productNameCheck}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Item Number" />
-								</f:facet>
-								<h:outputText value="#{item.itemNumber}" />
-							</h:column>
-							<h:column style="width:100px">
-								<f:facet name="header">
-									<h:outputText value="Type" />
-								</f:facet>
-								<h:outputText value="Product" rendered="#{item.itemType eq 'P'}" />
-								<h:outputText value="Delivery"
-									rendered="#{item.itemType eq 'D'}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Status" />
-								</f:facet>
-								<h:outputText rendered="#{item.status eq 'A'}" value="Awaiting"
-									styleClass="w3-tag w3-orange w3-text-white" />
-								<h:outputText rendered="#{item.status eq 'R'}" value="Refunded"
-									styleClass="w3-tag w3-red" />
-								<h:outputText rendered="#{item.status eq 'P'}" value="Purchased"
-									styleClass="w3-tag w3-green" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Unit Quote" />
-								</f:facet>
-								<h:outputText value="#{item.unitQuotedCost}">
-									<f:convertNumber currencySymbol="SR " type="currency" />
-								</h:outputText>
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Unit Sales" />
-								</f:facet>
-								<h:outputText value="#{item.unitSales}">
-									<f:convertNumber currencySymbol="SR " type="currency" />
-								</h:outputText>
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Quantity" />
-								</f:facet>
-								<h:outputText value="#{item.quantity}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Stock Quantity" />
-								</f:facet>
-								<h:outputText value="#{item.product.stockQuantity}" />
-							</h:column>
-							<h:column>
-								<f:facet name="header">
-									<h:outputText value="Gross Sales" />
-								</f:facet>
-								<h:outputText value="#{item.unitSales * item.quantity}">
-									<f:convertNumber currencySymbol="SR " type="currency" />
-								</h:outputText>
-							</h:column>
-							<f:facet name="footer">
-								<div align="center" class="q-bold">
-									<h:outputText value="Total Products: " />
-									<h:outputText value="#{awaitingWalletBean.totalProductsSales}">
-										<f:convertNumber currencySymbol="SR " type="currency" />
-									</h:outputText>
-									<br />
-									<h:outputText value="Delivery: " />
-									<h:outputText value="#{awaitingWalletBean.delivery}">
-										<f:convertNumber currencySymbol="SR " type="currency" />
-									</h:outputText>
-									<br />
-									<h:outputText value="VAT: " />
-									<h:outputText value="#{awaitingWalletBean.totalVat}">
-										<f:convertNumber currencySymbol="SR " type="currency" />
-									</h:outputText>
-									<br />
-									<h:outputText value="Discounts: " style="color:red" />
-									<h:outputText value="#{awaitingWalletBean.totalDiscounts}"
-										style="color:red">
-										<f:convertNumber currencySymbol="SR " type="currency" />
-									</h:outputText>
-									<br />
-									<h:outputText value="Net Total: " />
-									<h:outputText value="#{awaitingWalletBean.totalNet}">
-										<f:convertNumber currencySymbol="SR " type="currency" />
-									</h:outputText>
-								</div>
+						<div class="w3-third w3-container">
+							<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
+								<h:panelGrid columns="2">
+									<h:outputText value="Customer ID" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.customerId}"
+										readonly="true" />
+									<h:outputText value="Name" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.customer.fullName}"
+										readonly="true" />
+									<h:outputText value="Mobile" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.customer.mobile}"
+										readonly="true" />
+									<h:outputText value="Email" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.customer.email}"
+										readonly="true" />
+									<h:outputText value="Loyalty Points" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.customer.totalLoyaltyPoints}"
+										readonly="true" />
+								</h:panelGrid>
+							</div>
+						</div>
+						<div class="w3-third">
+							<div class="w3-card-2 w3-padding-8 w3-light-grey" align="center">
+								<h:panelGrid columns="2">
+									<h:outputText value="Address" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.address.line1}"
+										readonly="true" />
+									<h:outputText value="" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.address.line2}"
+										readonly="true" />
+									<h:outputText value="Country" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.address.city.country.name}"
+										readonly="true" />
+									<h:outputText value="City" />
+									<h:inputText
+										value="#{awaitingWalletBean.wallet.cart.address.city.region.name} - #{awaitingWalletBean.wallet.cart.address.city.name}"
+										readonly="true" />
+								</h:panelGrid>
+							</div>
+						</div>
+					</div>
+				</p:panel>
+			</h:form>
+			<h:form>
+				<br />
+				<p:panel toggleable="true" header="Reviews" collapsed="false"
+					toggleSpeed="100">
+					<ui:repeat var="review"
+						value="#{awaitingWalletBean.wallet.cart.reviews}">
+						<h:outputText value="#{review.created}" styleClass="q-bold"
+							style="color:#2dacd1!important;">
+							<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
+						</h:outputText>
+						<h:outputText value=" #{review.reviewer.firstName}: "
+							styleClass="q-bold" style="color:#2dacd1!important;" />
+						<h:outputText
+							value=" (#{review.visibleToCustomer ? 'visible' : 'hidden'}) : "
+							style="color:#2dacd1!important;" styleClass="q-bold" />
+						<h:outputText dir="rtl" value=" #{review.reviewText}" />
+						<br />
+						<br />
+					</ui:repeat>
+
+					<p:commandButton value="+ Add Review" styleClass="q-btn"
+						oncomplete="PF('reviewDlgwv').show()" />
+				</p:panel>
+			</h:form>
+
+			<h:form id="new-review-form">
+				<p:dialog styleClass="q-dialog" header="New Review"
+					widgetVar="reviewDlgwv">
+					<div align="center">
+						<h:outputText value="Action" />
+						<br />
+						<h:selectOneMenu value="#{awaitingWalletBean.review.actionValue}"
+							required="true" requiredMessage="Select action">
+							<f:selectItem itemValue="B" itemLabel="General" />
+						</h:selectOneMenu>
+						<br /> <br />
+						<h:outputText value="Visible to Customer" />
+						<br />
+						<h:selectBooleanCheckbox
+							value="#{awaitingWalletBean.review.visibleToCustomer}" />
+						<br />
+						<div class="w3-padding-12">
+							<h:outputText value="Comments" />
+							<br />
+							<h:inputTextarea required="true"
+								requiredMessage="Enter comments before submitting"
+								value="#{awaitingWalletBean.review.reviewText}" cols="70"
+								rows="3" />
+						</div>
+						<div>
+							<p:commandButton value="Submit" styleClass="q-btn"
+								actionListener="#{awaitingWalletBean.submitReview()}"
+								process="@form" ajax="false">
+							</p:commandButton>
+						</div>
+					</div>
+				</p:dialog>
+			</h:form>
+			<br />
+
+			<h:form id="form1">
+				<div class="w3-row w3-padding-8">
+					<div align="center" class="w3-third">
+						<p:commandButton
+							value="#{awaitingWalletBean.refund ? 'Cancel Refund' : 'Refund'}"
+							actionListener="#{awaitingWalletBean.editRefund()}"
+							update="@form :form2 :form3" styleClass="q-btn-red"
+							disabled="#{awaitingWalletBean.purchaseAvailable or awaitingWalletBean.quotationAvailable}" />
+					</div>
+					<div align="center" class="w3-third">
+						<p:commandButton
+							value="#{awaitingWalletBean.quotationAvailable ? 'Cancel Quotation' : 'Quotation'}"
+							actionListener="#{awaitingWalletBean.editQuotation()}"
+							update="@form :form2 :form3 :form9" styleClass="q-btn-indigo"
+							disabled="#{awaitingWalletBean.purchaseAvailable or awaitingWalletBean.refund}" />
+					</div>
+					<div align="center" class="w3-third">
+						<p:commandButton
+							value="#{awaitingWalletBean.purchaseAvailable ? 'Cancel Purchase' : 'Purchase'}"
+							actionListener="#{awaitingWalletBean.editPurchase()}"
+							update="@form :form2 :form3 :form4 :form5"
+							styleClass="q-btn-green" disabled="#{awaitingWalletBean.refund or awaitingWalletBean.quotationAvailable}" />
+
+					</div>
+				</div>
+			</h:form>
+			<h:form id="form2">
+				<h:dataTable value="#{awaitingWalletBean.wallet.walletItems}"
+					var="item" styleClass="w3-table w3-striped w3-border"
+					headerClass="w3-light-grey w3-border-bottom"
+					footerClass="w3-light-grey w3-border-top">
+					<h:column rendered="#{awaitingWalletBean.refund}">
+						<f:facet name="header">
+							<h:outputText value="Refund" />
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{item.refund}"
+							rendered="#{item.status eq 'A'}">
+							<f:ajax execute="@this" render=":form3" />
+						</h:selectBooleanCheckbox>
+					</h:column>
+					<h:column rendered="#{awaitingWalletBean.quotationAvailable}">
+						<f:facet name="header">
+							<h:outputText value="Quote" />
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{item.quotation}"
+							rendered="#{item.itemType eq 'P'}">
+							<f:ajax execute="@this" render=":form9" />
+						</h:selectBooleanCheckbox>
+					</h:column>
+					<h:column rendered="#{awaitingWalletBean.purchaseAvailable}">
+						<f:facet name="header">
+							<h:outputText value="Purchase" />
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{item.purchase}"
+							rendered="#{item.status eq 'A' and item.itemType eq 'P'}">
+							<f:ajax execute="@this" render=":form4 :form5" />
+						</h:selectBooleanCheckbox>
+						<br />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Item ID" />
+						</f:facet>
+						<h:outputText value="#{item.id}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Product ID" />
+						</f:facet>
+						<h:outputText value="#{item.productId}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Desc." />
+						</f:facet>
+						<h:outputText value="#{item.product.productNameCheck}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Item Number" />
+						</f:facet>
+						<h:outputText value="#{item.itemNumber}" />
+					</h:column>
+					<h:column style="width:100px">
+						<f:facet name="header">
+							<h:outputText value="Type" />
+						</f:facet>
+						<h:outputText value="Product" rendered="#{item.itemType eq 'P'}" />
+						<h:outputText value="Delivery" rendered="#{item.itemType eq 'D'}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Status" />
+						</f:facet>
+						<h:outputText rendered="#{item.status eq 'A'}" value="Awaiting"
+							styleClass="w3-tag w3-orange w3-text-white" />
+						<h:outputText rendered="#{item.status eq 'R'}" value="Refunded"
+							styleClass="w3-tag w3-red" />
+						<h:outputText rendered="#{item.status eq 'P'}" value="Purchased"
+							styleClass="w3-tag w3-green" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Unit Quote" />
+						</f:facet>
+						<h:outputText value="#{item.unitQuotedCost}">
+							<f:convertNumber currencySymbol="SR " type="currency" />
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Unit Sales" />
+						</f:facet>
+						<h:outputText value="#{item.unitSales}">
+							<f:convertNumber currencySymbol="SR " type="currency" />
+						</h:outputText>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Quantity" />
+						</f:facet>
+						<h:outputText value="#{item.quantity}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Stock Quantity" />
+						</f:facet>
+						<h:outputText value="#{item.product.stockQuantity}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="Gross Sales" />
+						</f:facet>
+						<h:outputText value="#{item.unitSales * item.quantity}">
+							<f:convertNumber currencySymbol="SR " type="currency" />
+						</h:outputText>
+					</h:column>
+					<h:column
+						rendered="#{loginBean.hasAccess(act.actionChangeWalletPrice)}">
+						<f:facet name="header">
+							<h:outputText value="Alter" />
+						</f:facet>
+						<p:commandButton
+							rendered="#{item.status eq 'A' and item.itemType eq 'P'}"
+							value="Alter" styleClass="q-btn" update=":form8"
+							oncomplete="PF('dlg8wv').show()"
+							actionListener="#{awaitingWalletBean.setSelectedWalletItem(item)}" />
+					</h:column>
+					<f:facet name="footer">
+						<div align="center" class="q-bold">
+							<h:outputText value="Total Products: " />
+							<h:outputText value="#{awaitingWalletBean.totalProductsSales}">
+								<f:convertNumber currencySymbol="SR " type="currency" />
+							</h:outputText>
+							<br />
+							<h:outputText value="Delivery: " />
+							<h:outputText value="#{awaitingWalletBean.delivery}">
+								<f:convertNumber currencySymbol="SR " type="currency" />
+							</h:outputText>
+							<br />
+							<h:outputText value="VAT: " />
+							<h:outputText value="#{awaitingWalletBean.totalVat}">
+								<f:convertNumber currencySymbol="SR " type="currency" />
+							</h:outputText>
+							<br />
+							<h:outputText value="Discounts: " style="color:red" />
+							<h:outputText value="#{awaitingWalletBean.totalDiscounts}"
+								style="color:red">
+								<f:convertNumber currencySymbol="SR " type="currency" />
+							</h:outputText>
+							<br />
+							<h:outputText value="Net Total: " />
+							<h:outputText value="#{awaitingWalletBean.totalNet}">
+								<f:convertNumber currencySymbol="SR " type="currency" />
+							</h:outputText>
+						</div>
+					</f:facet>
+				</h:dataTable>
+			</h:form>
+			<br />
+			<h:form id="form8">
+				<p:dialog styleClass="q-dialog" id="dlg8" widgetVar="dlg8wv"
+					header="Alter Purchase Item">
+					<h:panelGrid columns="2" styleClass="w3-table w3-striped">
+						<h:outputText value="Product ID" />
+						<h:outputText
+							value="#{awaitingWalletBean.selectedWalletItem.product.id}" />
+						<h:outputText value="Item Number" />
+						<h:outputText
+							value="#{awaitingWalletBean.selectedWalletItem.itemNumber}" />
+						<h:outputText value="Item Name" />
+						<h:outputText
+							value="#{awaitingWalletBean.selectedWalletItem.product.productNameCheck}" />
+						<h:outputText value="Unit Sales Price" />
+						<h:outputText
+							value="#{awaitingWalletBean.selectedWalletItem.unitSales}" />
+						<h:outputText value="Unit VAT" />
+						<h:outputText
+							value="#{awaitingWalletBean.selectedWalletItem.unitSalesWv - awaitingWalletBean.selectedWalletItem.unitSales}">
+							<f:convertNumber type="currency" currencySymbol="SR " />
+						</h:outputText>
+						<h:outputText value="Quantity" />
+						<h:outputText
+							value="#{awaitingWalletBean.selectedWalletItem.quantity}" />
+						<h:outputText value="New Unit Price (Without VAT)" />
+						<h:inputText
+							value="#{awaitingWalletBean.selectedWalletItem.newPrice}" />
+					</h:panelGrid>
+					<div align="center">
+						<p:commandButton value="Update Price" update=":form-g"
+							actionListener="#{awaitingWalletBean.updateWalletITem()}"
+							styleClass="q-btn" />
+					</div>
+				</p:dialog>
+			</h:form>
+			
+			<h:form id="form9">
+				<h:panelGroup rendered="#{awaitingWalletBean.quotable}">
+					<h:dataTable value="#{awaitingWalletBean.selectedQuotableItems}" var="item" styleClass="w3-table w3-striped w3-border"
+					headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Product ID" />
 							</f:facet>
+							<h:outputText value="#{item.product.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Desc." />
+							</f:facet>
+							<h:outputText value="#{item.product.productNameCheck}" />
+						</h:column>
+						<h:column>
+						<f:facet name="header">
+								<h:outputText value="Item Number" />
+							</f:facet>
+							<h:outputText value="#{item.itemNumber}" />
+						</h:column>
+						<h:column>
+							<h:selectOneMenu value="#{item.newQuantity}"
+								rendered="#{item.itemType eq 'P'}">
+								<f:selectItems value="#{item.quantityArray}" var="q"
+									itemValue="#{q}" itemLabel="#{q}" />
+								<f:ajax execute="@this"></f:ajax>
+							</h:selectOneMenu>
+						</h:column>
+					</h:dataTable>
+					
+					<div align="center">
+						<br />
+						<p:commandButton update=":form-g" widgetVar="submitQuotation"
+							onclick="PF('submitQuotation').disable()"
+							actionListener="#{awaitingWalletBean.createQuotation()}"
+							value="Submit Quotation" styleClass="q-btn" />
+					</div>
+					
+				</h:panelGroup>
+			</h:form>
+			<br/>
+
+			<p:panel toggleable="true" header="Pricing Vendor" collapsed="false"
+				toggleSpeed="100">
+				<h:form id="form7">
+					<h:panelGrid columns="3">
+						<h:outputText value="New Pricing Vendor" />
+						<h:selectOneMenu value="#{awaitingWalletBean.newPricingVendorId}"
+							required="true">
+							<f:selectItems
+								value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}"
+								var="vendor" itemValue="#{vendor.id}" itemLabel="#{vendor.name}" />
+						</h:selectOneMenu>
+						<p:commandButton value="Add Vendor to Pricing List"
+							actionListener="#{awaitingWalletBean.addNewPricingVendor()}"
+							update=":form-g :form6" process="@form" styleClass="q-btn" />
+					</h:panelGrid>
+				</h:form>
+
+				<h:form id="form6">
+					<p:dataTable value="#{awaitingWalletBean.wallet.productWalletItem}"
+						var="item" style="width:100%!important">
+						<p:column width="80">
+							<f:facet name="header">
+								<h:outputText value="Item" />
+							</f:facet>
+							<h:outputText value="#{item.id}" styleClass="q-bold" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Product Number" />
+							</f:facet>
+							<h:outputText value="#{item.product.productNumber}"
+								styleClass="q-bold" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Desc." />
+							</f:facet>
+							<h:outputText value="#{item.product.productNameCheck}"
+								styleClass="q-bold" />
+						</p:column>
+						<p:columns value="#{awaitingWalletBean.pricingVendors}"
+							var="vendor" columnIndexVar="i">
+							<f:facet name="header">
+								<h:outputText value="#{vendor.name}" />
+							</f:facet>
+							<h:inputText value="#{item.getWalletItemVendor(vendor.id).cost}"
+								rendered="#{not (item.getWalletItemVendor(vendor.id) eq null)}" />
+						</p:columns>
+					</p:dataTable>
+					<div align="center">
+						<p:commandButton value="Save" styleClass="q-btn"
+							actionListener="#{awaitingWalletBean.saveWalletItemVendors()}"
+							update=":form-g @form" process="@form" />
+					</div>
+				</h:form>
+			</p:panel>
+			<br/>
+			<p:panel toggleable="true" header="Wallet Quotations" collapsed="false"
+				toggleSpeed="100" rendered="#{awaitingWalletBean.wallet.walletQuotations.size() gt 0}">
+					<h:form>
+						<h:dataTable value="#{awaitingWalletBean.wallet.walletQuotations}" var="wq" styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="ID" />
+								</f:facet>
+								<h:outputText value="#{wq.id}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Created" />
+								</f:facet>
+								<h:outputText value="#{wq.created}">
+									<f:convertDateTime type="date"/>
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Download" />
+								</f:facet>
+								<p:commandButton value="Download Quotation" ajax="false"
+									onclick="PrimeFaces.monitorDownload(start, stop);"
+									icon="ui-icon-arrowthick-1-s" styleClass="q-btn">
+									<p:fileDownload
+										value="#{awaitingWalletBean.getPdfQuotation(wq.id)}" />
+											</p:commandButton>
+							</h:column>
 						</h:dataTable>
 					</h:form>
-					<br />
-					<h:form id="form7">
-						<h:panelGrid columns="3">
-							<h:outputText value="New Pricing Vendor" />
-							<h:selectOneMenu value="#{awaitingWalletBean.newPricingVendorId}"
-								required="true">
-								<f:selectItems
-									value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}"
-									var="vendor" itemValue="#{vendor.id}"
-									itemLabel="#{vendor.name}" />
+				</p:panel>
+			<br />
+			<h:form id="form3">
+				<h:panelGroup rendered="#{awaitingWalletBean.refundable}">
+					<h:dataTable value="#{awaitingWalletBean.selectedRefundItems}"
+						var="item" styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-border-bottom w3-light-grey">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Product ID" />
+							</f:facet>
+							<h:outputText value="#{item.product.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Desc." />
+							</f:facet>
+							<h:outputText value="#{item.itemDesc}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Product" />
+							</f:facet>
+							<h:outputText value="#{item.itemNumber}" />
+						</h:column>
+						<h:column>
+							<h:selectOneMenu value="#{item.newQuantity}"
+								rendered="#{item.itemType eq 'P'}">
+								<f:selectItems value="#{item.quantityArray}" var="q"
+									itemValue="#{q}" itemLabel="#{q}" />
+								<f:ajax execute="@this"></f:ajax>
 							</h:selectOneMenu>
-							<p:commandButton value="Add Vendor to Pricing List"
-								actionListener="#{awaitingWalletBean.addNewPricingVendor()}"
-								update=":form-g :form6" process="@form" styleClass="q-btn" />
-						</h:panelGrid>
-					</h:form>
+						</h:column>
+					</h:dataTable>
 
-					<h:form id="form6">
-						<p:dataTable
-							value="#{awaitingWalletBean.wallet.productWalletItem}" var="item"
-							style="width:100%!important">
-							<p:column width="80">
-								<f:facet name="header">
-									<h:outputText value="Item" />
-								</f:facet>
-								<h:outputText value="#{item.id}" styleClass="q-bold" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">
-									<h:outputText value="Product Number" />
-								</f:facet>
-								<h:outputText value="#{item.product.productNumber}"
-									styleClass="q-bold" />
-							</p:column>
-							<p:column>
-								<f:facet name="header">
-									<h:outputText value="Desc." />
-								</f:facet>
-								<h:outputText value="#{item.product.productNameCheck}"
-									styleClass="q-bold" />
-							</p:column>
-							<p:columns value="#{awaitingWalletBean.pricingVendors}"
-								var="vendor" columnIndexVar="i">
-								<f:facet name="header">
-									<h:outputText value="#{vendor.name}" />
-								</f:facet>
-								<h:inputText value="#{item.getWalletItemVendor(vendor.id).cost}"
-									rendered="#{not (item.getWalletItemVendor(vendor.id) eq null)}" />
-							</p:columns>
-						</p:dataTable>
-						<div align="center">
-							<p:commandButton value="Save" styleClass="q-btn"
-								actionListener="#{awaitingWalletBean.saveWalletItemVendors()}"
-								update=":form-g @form" process="@form" />
-						</div>
-					</h:form>
+					<div align="center">
+						<h:selectOneMenu value="#{awaitingWalletBean.bankId}"
+							required="true" requiredMessage="Select Bank">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="--Select Bank--" />
+							<f:selectItems value="#{banksBean.banks}" var="bank"
+								itemValue="#{bank.bankId}" itemLabel="#{bank.name}"></f:selectItems>
+							<f:ajax execute="@this"></f:ajax>
+						</h:selectOneMenu>
+						<br /> <br />
+						<p:commandButton update=":form-g" widgetVar="submitRefund"
+							onclick="PF('submitRefund').disable()"
+							actionListener="#{awaitingWalletBean.refundItems()}"
+							value="Refund" styleClass="q-btn" />
+					</div>
+				</h:panelGroup>
+			</h:form>
 
-					<br />
-					<h:form id="form3">
-						<h:panelGroup rendered="#{awaitingWalletBean.refundable}">
-							<h:dataTable value="#{awaitingWalletBean.selectedRefundItems}"
-								var="item" styleClass="w3-table w3-striped w3-border"
-								headerClass="w3-border-bottom w3-light-grey">
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Product ID" />
-									</f:facet>
-									<h:outputText value="#{item.product.id}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Desc." />
-									</f:facet>
-									<h:outputText value="#{item.itemDesc}" />
-								</h:column>
-								<h:column>
-									<h:outputText value="#{item.itemNumber}" />
-								</h:column>
-								<h:column>
-									<h:selectOneMenu value="#{item.newQuantity}"
-										rendered="#{item.itemType eq 'P'}">
-										<f:selectItems value="#{item.quantityArray}" var="q"
-											itemValue="#{q}" itemLabel="#{q}" />
-										<f:ajax execute="@this"></f:ajax>
-									</h:selectOneMenu>
-								</h:column>
-							</h:dataTable>
 
+			<h:form id="form4">
+				<br />
+				<h:panelGroup rendered="#{awaitingWalletBean.purchaseAvailable}">
+					<h:dataTable value="#{awaitingWalletBean.selectedPurchaseItems}"
+						var="wi" styleClass="w3-table w3-striped w3-border"
+						headerClass="w3-light-grey w3-border-bottom"
+						footerClass="w3-light-grey w3-border-top">
+
+						<f:facet name="header">
 							<div align="center">
-								<h:selectOneMenu value="#{awaitingWalletBean.bankId}"
-									required="true" requiredMessage="Select Bank">
-									<f:selectItem noSelectionOption="true"
-										itemLabel="--Select Bank--" />
-									<f:selectItems value="#{banksBean.banks}" var="bank"
-										itemValue="#{bank.bankId}" itemLabel="#{bank.name}"></f:selectItems>
-									<f:ajax execute="@this"></f:ajax>
-								</h:selectOneMenu>
-								<br /> <br />
-								<p:commandButton update=":form-g" widgetVar="submitRefund"
-									onclick="PF('submitRefund').disable()"
-									actionListener="#{awaitingWalletBean.refundItems()}"
-									value="Refund" styleClass="q-btn" />
+								<h:outputText value="Purchase Items" />
 							</div>
-						</h:panelGroup>
-					</h:form>
+						</f:facet>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Product ID" />
+							</f:facet>
+							<h:outputText value="#{wi.productId}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Desc." />
+							</f:facet>
+							<h:outputText value="#{wi.itemDesc}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Number" />
+							</f:facet>
+							<h:outputText value="#{wi.product.productNumber}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Quantity" />
+							</f:facet>
+							<h:selectOneMenu value="#{wi.newQuantity}">
+								<f:selectItems value="#{wi.quantityArray}" var="q"
+									itemValue="#{q}" itemLabel="#{q}" />
+								<f:ajax execute="@this" />
+							</h:selectOneMenu>
+						</h:column>
+					</h:dataTable>
+					<br />
 
+				</h:panelGroup>
+			</h:form>
+			<h:form id="form5">
+				<h:panelGroup rendered="#{awaitingWalletBean.purchaseAvailable}">
 
-					<h:form id="form4">
+					<div align="center" class="w3-padding-8">
+						<h:outputText value="Vendor" />
+						<h:selectOneMenu value="#{awaitingWalletBean.purchase.vendorId}"
+							required="true" requiredMessage="Select Vendor">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="--Select Vendor--" />
+							<f:selectItems
+								value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}"
+								var="vendor" itemLabel="#{vendor.name}" itemValue="#{vendor.id}" />
+							<f:ajax execute="@this" render="purchase-btn"></f:ajax>
+						</h:selectOneMenu>
+						<br /> <br />
+						<p:commandButton id="purchase-btn" widgetVar="submitPurchaseBtn"
+							onclick="PF('submitPurchaseBtn').disable()"
+							actionListener="#{awaitingWalletBean.createPurchase()}"
+							update=":form-g" value="Create Purchase"
+							disabled="#{awaitingWalletBean.selectedPurchaseItems.size() eq 0 or awaitingWalletBean.purchase.vendorId eq 0}"
+							styleClass="q-btn" />
+					</div>
+				</h:panelGroup>
+			</h:form>
+			
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+						closable="false" resizable="false" showHeader="false"
+						style="z-index:99999">
+						<h:outputText value="Downloading..." />
 						<br />
-						<h:panelGroup rendered="#{awaitingWalletBean.purchaseAvailable}">
-							<h:dataTable value="#{awaitingWalletBean.selectedPurchaseItems}"
-								var="wi" styleClass="w3-table w3-striped w3-border"
-								headerClass="w3-light-grey w3-border-bottom"
-								footerClass="w3-light-grey w3-border-top">
-
-								<f:facet name="header">
-									<div align="center">
-										<h:outputText value="Purchase Items" />
-									</div>
-								</f:facet>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Product ID" />
-									</f:facet>
-									<h:outputText value="#{wi.productId}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Desc." />
-									</f:facet>
-									<h:outputText value="#{wi.itemDesc}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Number" />
-									</f:facet>
-									<h:outputText value="#{wi.product.productNumber}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Quantity" />
-									</f:facet>
-									<h:selectOneMenu value="#{wi.newQuantity}">
-										<f:selectItems value="#{wi.quantityArray}" var="q"
-											itemValue="#{q}" itemLabel="#{q}" />
-										<f:ajax execute="@this" />
-									</h:selectOneMenu>
-								</h:column>
-							</h:dataTable>
-							<br />
-
-						</h:panelGroup>
-					</h:form>
-					<h:form id="form5">
-						<h:panelGroup rendered="#{awaitingWalletBean.purchaseAvailable}">
-
-							<div align="center" class="w3-padding-8">
-								<h:outputText value="Vendor" />
-								<h:selectOneMenu value="#{awaitingWalletBean.purchase.vendorId}"
-									required="true" requiredMessage="Select Vendor">
-									<f:selectItem noSelectionOption="true"
-										itemLabel="--Select Vendor--" />
-									<f:selectItems
-										value="#{vendorBean.getMakeVendors(awaitingWalletBean.wallet.cart.makeId)}"
-										var="vendor" itemLabel="#{vendor.name}"
-										itemValue="#{vendor.id}" />
-									<f:ajax execute="@this" render="purchase-btn"></f:ajax>
-								</h:selectOneMenu>
-								<br /> <br />
-								<p:commandButton id="purchase-btn" widgetVar="submitPurchaseBtn"
-									onclick="PF('submitPurchaseBtn').disable()"
-									actionListener="#{awaitingWalletBean.createPurchase()}"
-									update=":form-g" value="Create Purchase"
-									disabled="#{awaitingWalletBean.selectedPurchaseItems.size() eq 0 or awaitingWalletBean.purchase.vendorId eq 0}"
-									styleClass="q-btn" />
-							</div>
-						</h:panelGroup>
-					</h:form>
-				</div>
-			</div>
-		</p:layoutUnit>
-	</p:layout>
+						<p:graphicImage name="/images/ajax-loader.gif" />
+					</p:dialog>
+		</div>
+	</div>
 </h:body>
 </html>

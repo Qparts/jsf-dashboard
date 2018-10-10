@@ -11,392 +11,385 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
-			<h:form id="form-g">
-				<p:growl id="error-growl" sticky="true"
-					rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
-				<p:growl id="success-growl" sticky="true"
-					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+	<h:outputText
+		value="#{loginBean.checkAccessRedirectHome(act.pageWire)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<div class="w3-container">
+		<h:form id="form-g">
+			<p:growl id="error-growl" sticky="true"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl" sticky="true"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<div align="center">
+			<h:form>
+				<h:outputText
+					value="Cart # #{wiretransferBean.wire.cartId} Wire Transfer"
+					styleClass="q-large-text" />
 			</h:form>
-			<div align="center">
-				<h:form>
-					<h:outputText
-						value="Cart # #{wiretransferBean.wire.cartId} Wire Transfer"
-						styleClass="q-large-text" />
-				</h:form>
-			</div>
-			<div>
-				<div class="w3-row">
-					<div class="w3-half">
-						<h:panelGrid columns="3">
-							<h:panelGrid columns="2">
-								<h:outputLabel value="Cart ID" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.cart.id}" />
-								<h:outputLabel value="Cart Date" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.cart.created}">
-									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
-								</h:inputText>
-								<h:outputLabel value="Request Date" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.created}">
-									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
-								</h:inputText>
-								<h:outputLabel value="Vehicle" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value=" #{wiretransferBean.wire.cart.modelYear.fullName}" />
-								<h:outputLabel styleClass="q-bold" value="City" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.cart.city.region.name} - #{wiretransferBean.wire.cart.city.name}" />
-							</h:panelGrid>
-							<p:spacer width="50" />
-							<h:panelGrid columns="2">
-								<h:outputLabel styleClass="q-bold" value="ID" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.customer.id}" />
-								<h:outputLabel styleClass="q-bold" value="Name" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.customer.firstName} #{wiretransferBean.wire.customer.lastName}" />
-								<h:outputLabel styleClass="q-bold" value="Mobile" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.customer.mobile}" />
-								<h:outputLabel styleClass="q-bold" value="Email" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.customer.email}" />
-								<h:outputLabel styleClass="q-bold" value="Loyalty" />
-								<h:inputText readonly="true"
-									value="#{wiretransferBean.wire.customer.totalLoyaltyPoints}" />
-							</h:panelGrid>
+		</div>
+		<div>
+			<div class="w3-row">
+				<div class="w3-col s12 m12 l6">
+					<div class="w3-col s12 m6 w3-border">
+						<h:panelGrid columns="2">
+							<h:outputLabel value="Cart ID" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.cart.id}" />
+							<h:outputLabel value="Cart Date" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.cart.created}">
+								<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+							</h:inputText>
+							<h:outputLabel value="Request Date" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.created}">
+								<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+							</h:inputText>
+							<h:outputLabel value="Vehicle" styleClass="q-bold" />
+							<h:inputText readonly="true"
+								value=" #{wiretransferBean.wire.cart.modelYear.fullName}" />
+							<h:outputLabel styleClass="q-bold" value="City" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.cart.city.region.name} - #{wiretransferBean.wire.cart.city.name}" />
 						</h:panelGrid>
-						<div class="scroll-div-150">
-							<h:dataTable value="#{followUpBean.hitGroups}" var="hit"
-								rendered="false" styleClass="w3-table w3-striped w3-border"
-								headerClass="w3-border w3-light-grey">
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Device" />
-									</f:facet>
-									<h:outputText value="#{hit.firstActivity.device}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Date" />
-									</f:facet>
-									<h:outputText value="#{hit.firstActivity.created}">
-										<f:convertDateTime type="date" />
-									</h:outputText>
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Started" />
-									</f:facet>
-									<h:outputText value="#{hit.firstActivity.created}">
-										<f:convertDateTime pattern="HH:mm" />
-									</h:outputText>
-								</h:column>
-								<h:column>
-									<f:facet name="header">
-										<h:outputText value="Duration" />
-									</f:facet>
-									<h:outputText value="#{hit.duration}">
-										<f:convertDateTime pattern="mm:ss" />
-									</h:outputText>
-								</h:column>
-								<p:column headerText="Details">
-									<div align="center">
-										<p:commandLink ajax="true" update=":form-hit"
-											actionListener="#{followUpBean.setSelectedHitGroup(hit)}"
-											onclick="PF('dlgwv').hide()" oncomplete="PF('dlgwv').show()">
-											<p:ajax update=":form-hit"></p:ajax>
-											<i class="fa fa-search-plus"></i>
-										</p:commandLink>
-									</div>
-								</p:column>
-							</h:dataTable>
-						</div>
-
-						<div>
-							<div align="center" class="w3-half">
-								<br />
-								<h:form>
-									<h:outputText value="Bank" />
-									<br />
-									<h:selectOneMenu value="#{wiretransferBean.bankId}"
-										required="true" requiredMessage="Select Bank">
-										<f:selectItem noSelectionOption="true" itemLabel="Select Bank" />
-										<f:selectItems value="#{banksBean.activeBanks}" var="bank"
-											itemLabel="#{bank.name}" itemValue="#{bank.bankId}"></f:selectItems>
-									</h:selectOneMenu>
-									<br />
-									<br />
-									<p:commandButton value="Fund Wallet"
-										widgetVar="SubmitFundWallet"
-										onclick="PF('SubmitFundWallet').disable()" styleClass="q-btn"
-										update=":form-g"
-										actionListener="#{wiretransferBean.fundWallet()}" />
-								</h:form>
-							</div>
-							<br /> <br />
-
-
-							<div align="center" class="w3-half">
-								<h:form>
-									<p:commandButton ajax="false" id="cancel"
-										value="Cencel Transfer" styleClass="q-btn-red"
-										update="@all :form-g"
-										actionListener="#{wiretransferBean.deleteWireTransfer()}" />
-								</h:form>
-							</div>
-						</div>
-
 					</div>
-					<div class="w3-half">
-						<div class="scroll-div-150">
-							<h:dataTable styleClass="w3-table w3-striped w3-border"
-								headerClass="w3-light-grey w3-border"
-								value="#{wiretransferBean.wire.cart.partsItemsApproved}"
-								var="approved">
+					<div class="w3-col s12 m6 w3-border">
+						<h:panelGrid columns="2">
+							<h:outputLabel styleClass="q-bold" value="ID" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.customer.id}" />
+							<h:outputLabel styleClass="q-bold" value="Name" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.customer.firstName} #{wiretransferBean.wire.customer.lastName}" />
+							<h:outputLabel styleClass="q-bold" value="Mobile" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.customer.mobile}" />
+							<h:outputLabel styleClass="q-bold" value="Email" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.customer.email}" />
+							<h:outputLabel styleClass="q-bold" value="Loyalty" />
+							<h:inputText readonly="true"
+								value="#{wiretransferBean.wire.customer.totalLoyaltyPoints}" />
+						</h:panelGrid>
+					</div>
+					<div class="scroll-div-150">
+						<h:dataTable value="#{followUpBean.hitGroups}" var="hit"
+							rendered="false" styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-border w3-light-grey">
+							<h:column>
 								<f:facet name="header">
-									<div align="center">Parts Order</div>
+									<h:outputText value="Device" />
 								</f:facet>
-								<h:column headerClass="w3-border-bottom w3-light-grey">
-									<f:facet name="header">
+								<h:outputText value="#{hit.firstActivity.device}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Date" />
+								</f:facet>
+								<h:outputText value="#{hit.firstActivity.created}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Started" />
+								</f:facet>
+								<h:outputText value="#{hit.firstActivity.created}">
+									<f:convertDateTime pattern="HH:mm" />
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Duration" />
+								</f:facet>
+								<h:outputText value="#{hit.duration}">
+									<f:convertDateTime pattern="mm:ss" />
+								</h:outputText>
+							</h:column>
+							<p:column headerText="Details">
+								<div align="center">
+									<p:commandLink ajax="true" update=":form-hit"
+										actionListener="#{followUpBean.setSelectedHitGroup(hit)}"
+										onclick="PF('dlgwv').hide()" oncomplete="PF('dlgwv').show()">
+										<p:ajax update=":form-hit"></p:ajax>
+										<i class="fa fa-search-plus"></i>
+									</p:commandLink>
+								</div>
+							</p:column>
+						</h:dataTable>
+					</div>
+
+					<div>
+						<div align="center" class="w3-half">
+							<br />
+							<h:form>
+								<h:outputText value="Bank" />
+								<br />
+								<h:selectOneMenu value="#{wiretransferBean.bankId}"
+									required="true" requiredMessage="Select Bank">
+									<f:selectItem noSelectionOption="true" itemLabel="Select Bank" />
+									<f:selectItems value="#{banksBean.activeBanks}" var="bank"
+										itemLabel="#{bank.name}" itemValue="#{bank.bankId}"></f:selectItems>
+								</h:selectOneMenu>
+								<br />
+								<br />
+								<p:commandButton value="Fund Wallet"
+									widgetVar="SubmitFundWallet"
+									onclick="PF('SubmitFundWallet').disable()" styleClass="q-btn"
+									update=":form-g"
+									actionListener="#{wiretransferBean.fundWallet()}" />
+							</h:form>
+						</div>
+						<br /> <br />
+
+
+						<div align="center" class="w3-half">
+							<h:form>
+								<p:commandButton ajax="false" id="cancel"
+									value="Cencel Transfer" styleClass="q-btn-red"
+									update="@all :form-g"
+									actionListener="#{wiretransferBean.deleteWireTransfer()}" />
+							</h:form>
+						</div>
+					</div>
+
+				</div>
+				<div class="w3-col s12 m12 l6">
+					<div class="scroll-div-150">
+						<h:dataTable styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border"
+							value="#{wiretransferBean.wire.cart.partsItemsApproved}"
+							var="approved">
+							<f:facet name="header">
+								<div align="center">Parts Order</div>
+							</f:facet>
+							<h:column headerClass="w3-border-bottom w3-light-grey">
+								<f:facet name="header">
 										Desc.
 									</f:facet>
-									<h:outputText value="#{approved.itemDesc}" />
-								</h:column>
-								<h:column headerClass="w3-border-bottom w3-light-grey">
-									<f:facet name="header">
+								<h:outputText value="#{approved.itemDesc}" />
+							</h:column>
+							<h:column headerClass="w3-border-bottom w3-light-grey">
+								<f:facet name="header">
 										Quantity
 									</f:facet>
-									<h:outputText value="#{approved.approvedQuantity}" />
-								</h:column>
-								<h:column headerClass="w3-border-bottom w3-light-grey">
-									<f:facet name="header">
+								<h:outputText value="#{approved.approvedQuantity}" />
+							</h:column>
+							<h:column headerClass="w3-border-bottom w3-light-grey">
+								<f:facet name="header">
 										Unit Price
 									</f:facet>
-									<h:outputText value="#{approved.salesPrice}">
-										<f:convertNumber type="currency" currencySymbol="SR " />
-									</h:outputText>
-								</h:column>
-								<h:column headerClass="w3-border-bottom w3-light-grey">
-									<f:facet name="header">
+								<h:outputText value="#{approved.salesPrice}">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+							</h:column>
+							<h:column headerClass="w3-border-bottom w3-light-grey">
+								<f:facet name="header">
 										Gross Price
 									</f:facet>
-									<h:outputText
-										value="#{approved.salesPrice * apporved.approvedQuantity}">
-										<f:convertNumber type="currency" currencySymbol="SR " />
+								<h:outputText
+									value="#{approved.salesPrice * apporved.approvedQuantity}">
+									<f:convertNumber type="currency" currencySymbol="SR " />
+								</h:outputText>
+							</h:column>
+						</h:dataTable>
+					</div>
+					<br />
+
+					<div align="center">
+						<h:panelGrid columns="2">
+							<h:outputText value="Delivery Cost: " />
+							<h:outputText value="#{wiretransferBean.wire.cart.deliveryFees}">
+								<f:convertNumber type="currency" currencySymbol="SR " />
+							</h:outputText>
+							<h:outputText value="Parts Total: " />
+							<h:outputText
+								value="#{wiretransferBean.wire.cart.partsItemsApprovedTotalSales}">
+								<f:convertNumber type="currency" currencySymbol="SR " />
+							</h:outputText>
+							<h:outputText value="VAT: " />
+							<h:outputText
+								value="#{wiretransferBean.wire.cart.vatPercentage * (wiretransferBean.wire.cart.partsItemsApprovedTotalSales + wiretransferBean.wire.cart.deliveryFees)}">
+								<f:convertNumber type="currency" currencySymbol="SR " />
+							</h:outputText>
+							<h:outputText value="Promotion Discount: "
+								rendered="#{wiretransferBean.wire.cart.promoCodeObject.discountPromo}" />
+							<h:outputText
+								value="#{wiretransferBean.wire.cart.promoCodeObject.discountPercentage * (wiretransferBean.wire.cart.partsItemsApprovedTotalSales + wiretransferBean.wire.cart.deliveryFees)}"
+								rendered="#{wiretransferBean.wire.cart.promoCodeObject.discountPromo}"
+								style="color:red">
+								<f:convertNumber type="currency" currencySymbol="SR " />
+							</h:outputText>
+							<h:outputText value="Total Transfer Amount:" />
+							<h:outputText value="#{wiretransferBean.wire.amount}"
+								styleClass="q-large-text">
+								<f:convertNumber type="currency" currencySymbol="SR " />
+							</h:outputText>
+						</h:panelGrid>
+						<br />
+						<h:outputText value="Loyalty Points Value: " style="color:green"
+							styleClass="q-bold" />
+						<h:outputText value="#{wiretransferBean.wire.newLoyaltyPoints}"
+							style="color:green" styleClass="q-bold">
+							<f:convertNumber integerOnly="true" />
+						</h:outputText>
+					</div>
+				</div>
+			</div>
+			<br />
+			<div align="center">
+				<h:panelGroup>
+					<div>
+						<div>
+							<h:dataTable value="#{wiretransferBean.wire.cart.reviews}"
+								var="review" styleClass="w3-table w3-striped w3-border"
+								headerClass="w3-light-grey w3-border-bottom">
+								<f:facet name="header">
+									<div align="center">Reviews</div>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">
+										Date
+									</f:facet>
+									<h:outputText value="#{review.created}">
+										<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
 									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										Reviewer
+									</f:facet>
+									<h:outputText
+										value="#{usersBean.getUserFromId(review.reviewerId).firstName}">
+										<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+									</h:outputText>
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										Text
+									</f:facet>
+									<h:outputText value="#{review.reviewText}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										Action
+									</f:facet>
+									<h:outputText value="#{review.actionValueString}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+											More Action
+										</f:facet>
+									<h:outputText value="N/A"
+										rendered="#{review.actionValue eq 'A'}" />
+									<h:outputText value="N/A"
+										rendered="#{review.actionValue eq 'B'}" />
+									<h:outputText value="#{review.alternativePrice}"
+										rendered="#{review.actionValue eq 'C'}" />
+									<h:outputText value="N/A"
+										rendered="#{review.actionValue eq 'D'}" />
+									<h:outputText value="#{review.reminderDate}"
+										rendered="#{review.actionValue eq 'E'}">
+										<f:convertDateTime pattern="dd-MMM-yyyy" />
+									</h:outputText>
+									<h:outputText value="#{review.boughtFrom}"
+										rendered="#{review.actionValue eq 'F'}" />
+									<h:outputText value="N/A"
+										rendered="#{review.actionValue eq 'G'}" />
+									<h:outputText value="N/A"
+										rendered="#{review.actionValue eq 'O'}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Visible" />
+									</f:facet>
+									<h:selectBooleanCheckbox value="#{review.visibleToCustomer}"
+										disabled="true" />
 								</h:column>
 							</h:dataTable>
 						</div>
-						<br />
-
-						<div align="center">
-							<h:panelGrid columns="2">
-								<h:outputText value="Delivery Cost: " />
-								<h:outputText value="#{wiretransferBean.wire.cart.deliveryFees}">
-									<f:convertNumber type="currency" currencySymbol="SR " />
-								</h:outputText>
-								<h:outputText value="Parts Total: " />
-								<h:outputText
-									value="#{wiretransferBean.wire.cart.partsItemsApprovedTotalSales}">
-									<f:convertNumber type="currency" currencySymbol="SR " />
-								</h:outputText>
-								<h:outputText value="VAT: " />
-								<h:outputText
-									value="#{wiretransferBean.wire.cart.vatPercentage * (wiretransferBean.wire.cart.partsItemsApprovedTotalSales + wiretransferBean.wire.cart.deliveryFees)}">
-									<f:convertNumber type="currency" currencySymbol="SR " />
-								</h:outputText>
-								<h:outputText value="Promotion Discount: "
-									rendered="#{wiretransferBean.wire.cart.promoCodeObject.discountPromo}" />
-								<h:outputText
-									value="#{wiretransferBean.wire.cart.promoCodeObject.discountPercentage * (wiretransferBean.wire.cart.partsItemsApprovedTotalSales + wiretransferBean.wire.cart.deliveryFees)}"
-									rendered="#{wiretransferBean.wire.cart.promoCodeObject.discountPromo}"
-									style="color:red">
-									<f:convertNumber type="currency" currencySymbol="SR " />
-								</h:outputText>
-								<h:outputText value="Total Transfer Amount:" />
-								<h:outputText value="#{wiretransferBean.wire.amount}"
-									styleClass="q-large-text">
-									<f:convertNumber type="currency" currencySymbol="SR " />
-								</h:outputText>
-							</h:panelGrid>
-							<br />
-							<h:outputText value="Loyalty Points Value: " style="color:green"
-								styleClass="q-bold" />
-							<h:outputText value="#{wiretransferBean.wire.newLoyaltyPoints}"
-								style="color:green" styleClass="q-bold">
-								<f:convertNumber integerOnly="true" />
-							</h:outputText>
-						</div>
 					</div>
-				</div>
-				<br />
-				<div align="center">
-					<h:panelGroup>
+					<h:form id="form1">
+						<div class="w3-row">
+							<div class="w3-padding-12">
+								<h:outputText value="Action" />
+								<br />
+								<h:selectOneMenu id="select-action"
+									value="#{wiretransferBean.cartReview.actionValue}">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="--Select Action--" />
+									<f:selectItem itemValue="B" itemLabel="General" />
+								</h:selectOneMenu>
+								<br /> <br />
+								<h:outputText value="Visible to Customer" />
+								<br />
+								<h:selectBooleanCheckbox
+									value="#{wiretransferBean.cartReview.visibleToCustomer}" />
+							</div>
+							<div class="w3-padding-12">
+								<h:outputText value="Comments" />
+								<br />
+								<h:inputTextarea required="true"
+									requiredMessage="Enter comments before submitting"
+									value="#{wiretransferBean.cartReview.reviewText}" cols="70"
+									rows="3" />
+							</div>
+						</div>
+
 						<div>
-							<div>
-								<h:dataTable value="#{wiretransferBean.wire.cart.reviews}"
-									var="review" styleClass="w3-table w3-striped w3-border"
-									headerClass="w3-light-grey w3-border-bottom">
+							<p:commandButton value="Submit" styleClass="q-btn"
+								actionListener="#{wiretransferBean.submitReview()}"
+								process="@form" ajax="false">
+							</p:commandButton>
+						</div>
+					</h:form>
+
+					<h:form id="form-hit" rendered="false">
+						<p:dialog widgetVar="dlgwv" styleClass="q-dialog"
+							header="Hit Activity Details">
+
+							<div class="scroll-div-400">
+								<h:dataTable id="table"
+									value="#{followUpBean.selectedHitGroup.tailingActicities}"
+									var="hit" styleClass="w3-table w3-striped w3-border"
+									headerClass="w3-light-grey w3-border-bottom"
+									footerClass="w3-light-grey w3-border-top" binding="#{table}">
 									<f:facet name="header">
-										<div align="center">Reviews</div>
+										<div align="center">
+											<h:outputText value="Hit Activities" />
+										</div>
 									</f:facet>
 									<h:column>
 										<f:facet name="header">
-										Date
-									</f:facet>
-										<h:outputText value="#{review.created}">
-											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
-										</h:outputText>
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-										Reviewer
-									</f:facet>
-										<h:outputText
-											value="#{usersBean.getUserFromId(review.reviewerId).firstName}">
-											<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
-										</h:outputText>
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-										Text
-									</f:facet>
-										<h:outputText value="#{review.reviewText}" />
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-										Action
-									</f:facet>
-										<h:outputText value="#{review.actionValueString}" />
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-											More Action
+											<h:outputText value="#" />
 										</f:facet>
-										<h:outputText value="N/A"
-											rendered="#{review.actionValue eq 'A'}" />
-										<h:outputText value="N/A"
-											rendered="#{review.actionValue eq 'B'}" />
-										<h:outputText value="#{review.alternativePrice}"
-											rendered="#{review.actionValue eq 'C'}" />
-										<h:outputText value="N/A"
-											rendered="#{review.actionValue eq 'D'}" />
-										<h:outputText value="#{review.reminderDate}"
-											rendered="#{review.actionValue eq 'E'}">
-											<f:convertDateTime pattern="dd-MMM-yyyy" />
-										</h:outputText>
-										<h:outputText value="#{review.boughtFrom}"
-											rendered="#{review.actionValue eq 'F'}" />
-										<h:outputText value="N/A"
-											rendered="#{review.actionValue eq 'G'}" />
-										<h:outputText value="N/A"
-											rendered="#{review.actionValue eq 'O'}" />
+										<h:outputText value="#{table.rowIndex + 1}" />
 									</h:column>
 									<h:column>
 										<f:facet name="header">
-											<h:outputText value="Visible" />
+											<h:outputText value="Timestamp" />
 										</f:facet>
-										<h:selectBooleanCheckbox value="#{review.visibleToCustomer}"
-											disabled="true" />
+										<h:outputText value="#{hit.created}">
+											<f:convertDateTime pattern="dd-MMM-yy HH:mm" />
+										</h:outputText>
+									</h:column>
+									<h:column>
+										<f:facet name="header">
+											<h:outputText value="Desc" />
+										</f:facet>
+										<h:outputText value="#{hit.activityDes}">
+										</h:outputText>
 									</h:column>
 								</h:dataTable>
 							</div>
-						</div>
-						<h:form id="form1">
-							<div class="w3-row">
-								<div class="w3-padding-12">
-									<h:outputText value="Action" />
-									<br />
-									<h:selectOneMenu id="select-action"
-										value="#{wiretransferBean.cartReview.actionValue}">
-										<f:selectItem noSelectionOption="true"
-											itemLabel="--Select Action--" />
-										<f:selectItem itemValue="B" itemLabel="General" />
-									</h:selectOneMenu>
-									<br /> <br />
-									<h:outputText value="Visible to Customer" />
-									<br />
-									<h:selectBooleanCheckbox
-										value="#{wiretransferBean.cartReview.visibleToCustomer}" />
-								</div>
-								<div class="w3-padding-12">
-									<h:outputText value="Comments" />
-									<br />
-									<h:inputTextarea required="true"
-										requiredMessage="Enter comments before submitting"
-										value="#{wiretransferBean.cartReview.reviewText}" cols="70"
-										rows="3" />
-								</div>
-							</div>
 
-							<div>
-								<p:commandButton value="Submit" styleClass="q-btn"
-									actionListener="#{wiretransferBean.submitReview()}"
-									process="@form" ajax="false">
-								</p:commandButton>
-							</div>
-						</h:form>
-
-						<h:form id="form-hit" rendered="false">
-							<p:dialog widgetVar="dlgwv" styleClass="q-dialog"
-								header="Hit Activity Details">
-
-								<div class="scroll-div-400">
-									<h:dataTable id="table"
-										value="#{followUpBean.selectedHitGroup.tailingActicities}"
-										var="hit" styleClass="w3-table w3-striped w3-border"
-										headerClass="w3-light-grey w3-border-bottom"
-										footerClass="w3-light-grey w3-border-top" binding="#{table}">
-										<f:facet name="header">
-											<div align="center">
-												<h:outputText value="Hit Activities" />
-											</div>
-										</f:facet>
-										<h:column>
-											<f:facet name="header">
-												<h:outputText value="#" />
-											</f:facet>
-											<h:outputText value="#{table.rowIndex + 1}" />
-										</h:column>
-										<h:column>
-											<f:facet name="header">
-												<h:outputText value="Timestamp" />
-											</f:facet>
-											<h:outputText value="#{hit.created}">
-												<f:convertDateTime pattern="dd-MMM-yy HH:mm" />
-											</h:outputText>
-										</h:column>
-										<h:column>
-											<f:facet name="header">
-												<h:outputText value="Desc" />
-											</f:facet>
-											<h:outputText value="#{hit.activityDes}">
-											</h:outputText>
-										</h:column>
-									</h:dataTable>
-								</div>
-
-							</p:dialog>
-						</h:form>
-					</h:panelGroup>
-				</div>
-
+						</p:dialog>
+					</h:form>
+				</h:panelGroup>
 			</div>
-
-
-
-
-		</p:layoutUnit>
-	</p:layout>
+		</div>
+	</div>
 </h:body>
 </html>

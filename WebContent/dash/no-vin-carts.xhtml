@@ -12,193 +12,185 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
-			<div class="w3-container">
-				<div align="center" class="w3-padding-8">
-					<h:outputText value="No Vin Carts" styleClass="q-large-text" />
-				</div>
-				<h:form id="form-g">
-					<p:growl id="error-growl"
-						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
-					<p:growl id="success-growl"
-						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
-				</h:form>
-				<h:form>
-					<h:dataTable value="#{novincartsBean.carts}" var="cart"
-						styleClass="w3-table w3-striped w3-border"
-						headerClass="w3-light-grey w3-border-bottom">
-						<h:column style="width:100px">
-							<f:facet name="header">
-								<h:outputText value="CART#" />
-							</f:facet>
-							<h:outputText value="#{cart.id}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Date" />
-							</f:facet>
-							<h:outputText value="#{cart.created}">
-								<f:convertDateTime type="date" />
-							</h:outputText>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Time" />
-							</f:facet>
-							<h:outputText value="#{cart.created}">
-								<f:convertDateTime pattern="HH:mm" />
-							</h:outputText>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Customer ID" />
-							</f:facet>
-							<h:outputText
-								value="#{cart.customer.id}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Customer" />
-							</f:facet>
-							<h:outputText
-								value="#{cart.customer.firstName} #{cart.customer.lastName}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Loyalty Points" />
-							</f:facet>
-							<h:outputText value="#{cart.customer.totalLoyaltyPoints}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Image" />
-							</f:facet>
-							<h:panelGroup rendered="#{cart.vinImage}">
-							<span >
-								<i class="fa fa-image"></i>
-							</span>
-							</h:panelGroup>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Last Review" />
-							</f:facet>
-							<div>
-								<h:outputText
-									value="#{cart.reviews.get(cart.reviews.size() -1).reviewText}"
-									rendered="#{cart.reviews.size() gt 0}" />
-							</div>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Details" />
-							</f:facet>
-							<div align="center">
-								<p:commandLink process="@this" update=":form1"
-									actionListener="#{novincartsBean.setSelectedCart(cart)}"
-									oncomplete="PF('dlgwv1').show()">
-									<i class="fa fa-search-plus"></i>
-								</p:commandLink>
-							</div>
-						</h:column>
-					</h:dataTable>
-				</h:form>
-				<h:form id="form1">
-					<p:dialog styleClass="q-dialog" header="Quotation Order" id="dlg1"
-						widgetVar="dlgwv1" width="700">
-						<h:panelGrid columns="3">
-							<h:panelGrid columns="2">
-								<h:outputLabel value="Cart ID" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.id}" />
-								<h:outputLabel value="Date" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.created}">
-									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
-								</h:inputText>
-								<h:outputLabel styleClass="q-bold" value="City" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.city.region.name} - #{novincartsBean.selectedCart.city.name}" />
-								<h:outputText value="Loyalty Points" styleClass="q-bold" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.customer.totalLoyaltyPoints}" />
-							</h:panelGrid>
-							<p:spacer width="50" />
-							<h:panelGrid columns="2">
-								<h:outputLabel styleClass="q-bold" value="Customer ID" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.customerId}" />
-								<h:outputLabel styleClass="q-bold" value="Name" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.customer.firstName} #{novincartsBean.selectedCart.customer.lastName}" />
-								<h:outputLabel styleClass="q-bold" value="Mobile" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.customer.mobile}" />
-								<h:outputLabel styleClass="q-bold" value="Email" />
-								<h:inputText readonly="true"
-									value="#{novincartsBean.selectedCart.customer.email}" />
-							</h:panelGrid>
-						</h:panelGrid>
+<h:outputText value="#{loginBean.checkAccessRedirectHome(act.pageNoVin)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<div class="w3-container">
+		<div align="center" class="w3-padding-8">
+			<h:outputText value="No Vin Carts" styleClass="q-large-text" />
+		</div>
+		<h:form id="form-g">
+			<p:growl id="error-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<h:form>
+			<h:dataTable value="#{novincartsBean.carts}" var="cart"
+				styleClass="w3-table w3-striped w3-border"
+				headerClass="w3-light-grey w3-border-bottom">
+				<h:column style="width:100px">
+					<f:facet name="header">
+						<h:outputText value="CART#" />
+					</f:facet>
+					<h:outputText value="#{cart.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Date" />
+					</f:facet>
+					<h:outputText value="#{cart.created}">
+						<f:convertDateTime type="date" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Time" />
+					</f:facet>
+					<h:outputText value="#{cart.created}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Customer ID" />
+					</f:facet>
+					<h:outputText value="#{cart.customer.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Customer" />
+					</f:facet>
+					<h:outputText
+						value="#{cart.customer.firstName} #{cart.customer.lastName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Loyalty Points" />
+					</f:facet>
+					<h:outputText value="#{cart.customer.totalLoyaltyPoints}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Image" />
+					</f:facet>
+					<h:panelGroup rendered="#{cart.vinImage}">
+						<span> <i class="fa fa-image"></i>
+						</span>
+					</h:panelGroup>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Last Review" />
+					</f:facet>
+					<div>
+						<h:outputText
+							value="#{cart.reviews.get(cart.reviews.size() -1).reviewText}"
+							rendered="#{cart.reviews.size() gt 0}" />
+					</div>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Details" />
+					</f:facet>
+					<div align="center">
+						<p:commandLink process="@this" update=":form1"
+							actionListener="#{novincartsBean.setSelectedCart(cart)}"
+							oncomplete="PF('dlgwv1').show()">
+							<i class="fa fa-search-plus"></i>
+						</p:commandLink>
+					</div>
+				</h:column>
+			</h:dataTable>
+		</h:form>
+		<h:form id="form1">
+			<p:dialog styleClass="q-dialog" header="Quotation Order" id="dlg1"
+				widgetVar="dlgwv1" width="700">
+				<h:panelGrid columns="3">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Cart ID" styleClass="q-bold" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.id}" />
+						<h:outputLabel value="Date" styleClass="q-bold" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.created}">
+							<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
+						</h:inputText>
+						<h:outputLabel styleClass="q-bold" value="City" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.city.region.name} - #{novincartsBean.selectedCart.city.name}" />
+						<h:outputText value="Loyalty Points" styleClass="q-bold" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.customer.totalLoyaltyPoints}" />
+					</h:panelGrid>
+					<p:spacer width="50" />
+					<h:panelGrid columns="2">
+						<h:outputLabel styleClass="q-bold" value="Customer ID" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.customerId}" />
+						<h:outputLabel styleClass="q-bold" value="Name" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.customer.firstName} #{novincartsBean.selectedCart.customer.lastName}" />
+						<h:outputLabel styleClass="q-bold" value="Mobile" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.customer.mobile}" />
+						<h:outputLabel styleClass="q-bold" value="Email" />
+						<h:inputText readonly="true"
+							value="#{novincartsBean.selectedCart.customer.email}" />
+					</h:panelGrid>
+				</h:panelGrid>
+				<br />
+				<div class="scroll-div-150">
+					<ui:repeat var="review"
+						value="#{novincartsBean.selectedCart.reviews}">
+						<h:outputText value="#{review.created}" styleClass="q-bold"
+							style="color:#2dacd1!important;">
+							<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
+						</h:outputText>
+						<h:outputText
+							value=" #{usersBean.getUserFromId(review.reviewerId).firstName}:"
+							styleClass="q-bold" style="color:#2dacd1!important;" />
+						<h:outputText dir="rtl" value=" #{review.reviewText}" />
 						<br />
-						<div class="scroll-div-150">
-							<ui:repeat var="review"
-								value="#{novincartsBean.selectedCart.reviews}">
-								<h:outputText value="#{review.created}" styleClass="q-bold"
-									style="color:#2dacd1!important;">
-									<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
-								</h:outputText>
-								<h:outputText
-									value=" #{usersBean.getUserFromId(review.reviewerId).firstName}:"
-									styleClass="q-bold" style="color:#2dacd1!important;" />
-								<h:outputText dir="rtl" value=" #{review.reviewText}" />
-								<br />
-								<br />
-							</ui:repeat>
+						<br />
+					</ui:repeat>
 
-						</div>
+				</div>
 
-						<div class="scroll-div-150">
-							<h:dataTable value="#{novincartsBean.selectedCart.cartItems}"
-								var="item" styleClass="w3-table w3-striped w3-bordered"
-								headerClass="w3-light-grey w3-bordered-bottom">
-								<f:facet name="header">
-									<div align="center">
-										<h:outputText value="Cart Items" />
-									</div>
-								</f:facet>
-								<h:column>
-									<f:facet name="header">
+				<div class="scroll-div-150">
+					<h:dataTable value="#{novincartsBean.selectedCart.cartItems}"
+						var="item" styleClass="w3-table w3-striped w3-bordered"
+						headerClass="w3-light-grey w3-bordered-bottom">
+						<f:facet name="header">
+							<div align="center">
+								<h:outputText value="Cart Items" />
+							</div>
+						</f:facet>
+						<h:column>
+							<f:facet name="header">
 										Item Desc
 									</f:facet>
-									<h:outputText value="#{item.name}" />
-								</h:column>
-								<h:column>
-									<f:facet name="header">
+							<h:outputText value="#{item.name}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
 										Quantity
 									</f:facet>
-									<h:outputText value="#{item.quantity}" />
-								</h:column>
-							</h:dataTable>
+							<h:outputText value="#{item.quantity}" />
+						</h:column>
+					</h:dataTable>
 
-						</div>
+				</div>
 
-						<div align="center">
-							<h:outputLink value="no-vin-cart?cart=#{novincartsBean.selectedCart.id}"
-								target="_blank">
-								<i class="fa fa-search-plus" style="font-size:20px;"></i>
-							</h:outputLink>
-						</div>
-					</p:dialog>
-				</h:form>
-			</div>
-		</p:layoutUnit>
-	</p:layout>
+				<div align="center">
+					<h:outputLink
+						value="no-vin-cart?cart=#{novincartsBean.selectedCart.id}"
+						target="_blank">
+						<i class="fa fa-search-plus" style="font-size: 20px;"></i>
+					</h:outputLink>
+				</div>
+			</p:dialog>
+		</h:form>
+	</div>
 </h:body>
 </html>

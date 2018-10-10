@@ -57,6 +57,17 @@ public class UsersBean implements Serializable {
 		return new User();
 	}
 	
+	public List<User> getUsersWhoHaveAccessTo(String id) {
+		List<User> accessUsers = new ArrayList<>();
+		for(User user : users) {
+			if(user.hasAccess(Integer.parseInt(id))) {
+				accessUsers.add(user);
+			}
+		}
+		System.out.println(accessUsers.size());
+		return accessUsers;
+	}
+	
 	public void removeRole(Role role) {
 		if(this.selectedUser.getRolesList().size() > 1) {
 			this.selectedUser.getRolesList().remove(role);

@@ -23,7 +23,6 @@ import qetaa.jsf.dashboard.helpers.ThreadRunner;
 import qetaa.jsf.dashboard.model.cart.ApprovedQuotationItem;
 import qetaa.jsf.dashboard.model.cart.Cart;
 import qetaa.jsf.dashboard.model.cart.CartReview;
-import qetaa.jsf.dashboard.model.cart.PartCollectionItem;
 import qetaa.jsf.dashboard.model.cart.PartsOrder;
 import qetaa.jsf.dashboard.model.cart.PartsOrderItem;
 import qetaa.jsf.dashboard.model.cart.Quotation;
@@ -54,6 +53,7 @@ public class FollowUpBean implements Serializable {
 	private boolean promoVerified;
 	private String promCodeString;
 	private char paymentMethod;
+	private int additionalDelivery;
 
 	@Inject
 	private NotificationBean notification;
@@ -73,6 +73,7 @@ public class FollowUpBean implements Serializable {
 	@PostConstruct
 	private void init() {
 		try {
+			additionalDelivery = 0;
 			String s = Helper.getParam("cart");
 			initCart(s);
 			cartReview = new CartReview();
@@ -105,6 +106,19 @@ public class FollowUpBean implements Serializable {
 			Helper.addErrorMessage("Promo Code Not Found");
 		} else {
 			Helper.addErrorMessage("An error occured");
+		}
+	}
+	
+	public int getDeliveryFees() {
+		return this.cart.getDeliveryFees() + this.additionalDelivery;
+	}
+	
+	public void updateDeliveryFees() {
+		if(this.paymentMethod == 'D') {
+			this.additionalDelivery = 25;
+		}
+		else {
+			this.additionalDelivery = 0;
 		}
 	}
 	
@@ -157,6 +171,7 @@ public class FollowUpBean implements Serializable {
 	private void makeCashOnDeliveryPayment() {
 		preparePartsOrder(0L);
 		Map<String,Object> map = new HashMap<String,Object>();
+		cart.setDeliveryFees(this.getDeliveryFees());
 		map.put("partsOrder", partsOrder);
 		map.put("cart", this.cart);
 		map.put("discountPercentage", getCalculatedDiscountPercentage());
@@ -220,16 +235,15 @@ public class FollowUpBean implements Serializable {
 
 	public void initCartVariables() throws InterruptedException {
 		String header = reqs.getSecurityHeader();
-		Thread[] threads = new Thread[9];
+		Thread[] threads = new Thread[8];
 		threads[0] = initModelYear(cart, header);
 		threads[1] = initCustomer(cart, header);
 		threads[2] = initApprovedItems(cart, header);
-		threads[3] = initCollectionItems(cart, header);
-		threads[4] = initReviews(cart, header);
-		threads[5] = initCities(header);
-		threads[6] = initCity(cart, header);
-		threads[7] = initAcitivityGroups(cart.getCustomerId(), header);
-		threads[8] = ThreadRunner.initPromoCode(cart, header);
+		threads[3] = initReviews(cart, header);
+		threads[4] = initCities(header);
+		threads[5] = initCity(cart, header);
+		threads[6] = initAcitivityGroups(cart.getCustomerId(), header);
+		threads[7] = ThreadRunner.initPromoCode(cart, header);
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 			threads[i].join();
@@ -322,27 +336,6 @@ public class FollowUpBean implements Serializable {
 
 	}
 
-	private Thread initCollectionItems(Cart cart, String header) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.getCartCollectionItems(cart.getId()),
-							header);
-					if (r.getStatus() == 200) {
-						List<PartCollectionItem> collections = r
-								.readEntity(new GenericType<List<PartCollectionItem>>() {
-								});
-						cart.setCollections(collections);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
-	}
 
 	private Thread initReviews(Cart cart, String header) {
 		cartReviews = new ArrayList<>();
@@ -428,7 +421,6 @@ public class FollowUpBean implements Serializable {
 			if (cartReview.getActionValue() == 'G') {
 				submitNewQuotation();
 			} else {
-				this.notification.updateFollowups();
 				if(cartReview.getStatus() == 'C') {
 					Helper.redirect("followups");
 				}
@@ -465,7 +457,6 @@ public class FollowUpBean implements Serializable {
 		this.quotation = new Quotation();
 		quotation.setCartId(cart.getId());
 		quotation.setCreatedBy(loginBean.getUserHolder().getUser().getId());
-		quotation.setCreatedByObject(loginBean.getUserHolder().getUser());
 		quotation.setQuotationItems(new ArrayList<>());
 		quotation.setStatus('N');
 	}

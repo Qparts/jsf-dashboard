@@ -8,197 +8,572 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>Quoting</title>
-	<ui:include src="/_includes/_dashboard_header" />
+	<ui:include src="/_includes/_dashboard_header.xhtml" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
-			<h:form id="form-g">
-				<p:growl id="error-growl" sticky="true"
-					rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
-				<p:growl id="success-growl" sticky="true"
-					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
-			</h:form>
-			<div align="center">
-				<h:outputText value="Quoting" styleClass="q-large-text" />
+	<h:outputText
+		value="#{loginBean.checkAccessRedirectHome(act.pageQuoting)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<div class="w3-container">
+		<h:form id="form-g">
+			<p:growl id="error-growl" sticky="true"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl" sticky="true"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<div class="w3-row w3-container w3-padding-16">
+			<div align="left" class="w3-third" style="padding-left: 20px">
+				<h:form>
+					<p:commandButton value="Assign New"
+						actionListener="#{quotingBean.requestAssignment()}"
+						styleClass="q-btn" update=":form-g" />
+				</h:form>
 			</div>
-
-			<div class="w3-container">
-				<div class="w3-row">
-					<ui:repeat var="cart" value="#{quotingBean.carts}">
-						<div class="w3-container">
+			<div align="center" class="w3-third">
+				<h:outputText value="Quotation Orders" styleClass="q-large-text" />
+			</div>
+			<div align="right" class="w3-third">
+				<h:outputText value="Month Score: #{quotingBean.positiveScore}"
+					styleClass="q-bold w3-text-green" />
+				<br />
+				<h:outputText value="Month Deductions: #{quotingBean.negativeScore}"
+					styleClass="q-bold w3-text-red" />
+			</div>
+		</div>
+		<div class="w3-container">
+			<div class="w3-row">
+				<h:panelGroup id="repeat-panel">
+					<ui:repeat id="repeat" var="cart" value="#{quotingBean.carts}">
+						<div class="w3-container" id="c#{cart.id}">
 							<div class="w3-card-4">
-								<header class="w3-container w3-green w3-text-light-grey">
-								<br />
-								<div align="center" class="q-med-text">
-									<h:outputText value="Cart# #{cart.id}" />
+								<header class="w3-container w3-camo-dark-grey w3-padding-8">
+								<div class="w3-container">
+									<div align="center" class="q-med-text">
+										<h:outputText value="Cart# #{cart.id}" />
+										<h:form>
+											<p:commandButton value="Unassign"
+												actionListener="#{quotingBean.unassign(cart.id)}"
+												styleClass="q-btn-red" update=":form-g" />
+										</h:form>
+									</div>
+									<div class="w3-row">
+										<div class="w3-col m12 l4 q-bold" align="left">
+											<h:outputText value="#{cart.modelYear.fullName}" />
+										</div>
+										<div class="w3-col m12 l4 q-bold" align="center">
+											<h:outputText
+												value="#{cityBean.getCityFromId(cart.cityId).fullName}" />
+										</div>
+										<div class="w3-col m12 l4 q-bold" align="right">
+											<h:outputText value="#{cart.vin}" />
+										</div>
+									</div>
 								</div>
-								<div class="w3-row">
-									<div class="w3-third q-bold" align="left">
-										<h:outputText value="#{cart.modelYear.fullName}" />
-									</div>
-									<div class="w3-third q-bold" align="center">
-										<h:outputText value="#{cityBean.getCityFromId(cart.cityId).fullName}" />
-									</div>
-									<div class="w3-third q-bold" align="right">
-										<h:outputText value="#{cart.vin}" />
-									</div>
-								</div>
-								<br />
 								</header>
 								<div class="w3-container">
-									<br />
-									<h:form>
-										<h:dataTable value="#{cart.waitingQuotationItems}" var="qi"
-											styleClass="w3-table w3-striped w3-border"
-											headerClass="w3-light-grey w3-border-bottom"
-											footerClass="w3-light-grey w3-border-top">
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="Edit" />
-												</f:facet>
-												<h:selectBooleanCheckbox value="#{qi.edit}"
-													disabled="#{qi.notAvailable}">
-													<f:ajax render="@form" execute="@this" />
-												</h:selectBooleanCheckbox>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="Description" />
-												</f:facet>
-												<h:outputText value="#{qi.itemDesc}"
-													rendered="#{not qi.edit}" />
-												<h:inputText value="#{qi.itemDesc}" size="10"
-													rendered="#{qi.edit and not (qi.notAvailable)}">
-													<f:ajax execute="@this" />
-												</h:inputText>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="Part Number" />
-												</f:facet>
-												<h:inputText value="#{qi.itemDescAr}" size="10"
-													rendered="#{qi.product eq null and not (qi.notAvailable)}" />
-												<h:outputText value="#{qi.product.productNumber}"
-													rendered="#{not (qi.product eq null)}" />
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="Qty." />
-												</f:facet>
-												<h:outputText value="#{qi.quantity}"
-													rendered="#{not qi.edit}" />
-												<h:selectOneMenu value="#{qi.quantity}"
-													rendered="#{qi.edit and not (qi.notAvailable)}">
-													<f:selectItem itemValue="#{1}" />
-													<f:selectItem itemValue="#{2}" />
-													<f:selectItem itemValue="#{3}" />
-													<f:selectItem itemValue="#{4}" />
-													<f:selectItem itemValue="#{5}" />
-													<f:selectItem itemValue="#{6}" />
-													<f:selectItem itemValue="#{7}" />
-													<f:selectItem itemValue="#{8}" />
-													<f:selectItem itemValue="#{9}" />
-													<f:selectItem itemValue="#{10}" />
-													<f:selectItem itemValue="#{11}" />
-													<f:selectItem itemValue="#{12}" />
-													<f:selectItem itemValue="#{13}" />
-													<f:selectItem itemValue="#{14}" />
-													<f:selectItem itemValue="#{15}" />
-													<f:selectItem itemValue="#{16}" />
-													<f:selectItem itemValue="#{17}" />
-													<f:selectItem itemValue="#{18}" />
-													<f:selectItem itemValue="#{19}" />
-													<f:selectItem itemValue="#{20}" />
-													<f:ajax render="@form" execute="@this" />
-												</h:selectOneMenu>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="Vendor" />
-												</f:facet>
-												<h:outputText
-													value="#{vendorBean.getVendorFromId(qi.product.selectedPrice.vendorId).name}"
-													rendered="#{not (qi.product eq null) and not (qi.product.selectedPrice eq null) and not (qi.edit)}">
-													<f:convertNumber currencySymbol="SR " type="currency" />
-												</h:outputText>
-												<h:selectOneMenu value="#{qi.product.selectedPriceId}"
-													rendered="#{not (qi.product eq null) and not (qi.product.selectedPrice eq null) and (qi.edit)}">
-													<f:selectItems value="#{qi.product.priceList}" var="pr"
-														itemValue="#{pr.id}"
-														itemLabel="#{vendorBean.getVendorFromId(pr.vendorId).name}" />
-													<f:ajax render="@form" execute="@this"
-														listener="#{qi.product.resetSelectedPriceListFromSelectedId()}" />
-												</h:selectOneMenu>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<h:outputText value="Price" />
-												</f:facet>
-												<h:outputText value="#{qi.product.selectedPrice.costPrice}"
-													rendered="#{not (qi.product eq null) and not (qi.product.selectedPrice eq null)}">
-													<f:convertNumber currencySymbol="SR " type="currency" />
-												</h:outputText>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-													<div align="center">
-														<h:outputText value="Not Available" />
-													</div>
-												</f:facet>
-												<div align="center">
-													<h:selectBooleanCheckbox value="#{qi.notAvailable}">
-														<f:ajax render="@form" execute="@this"
-															listener="#{qi.setEdit(false)}" />
-													</h:selectBooleanCheckbox>
-												</div>
-											</h:column>
-											<h:column>
-												<f:facet name="header">
-												<div align="center">
-													<h:outputText value="Submit" />
-													</div>
-												</f:facet>
-												<div align="center">
-													<p:commandButton value="Submit" styleClass="q-btn"></p:commandButton>
-												</div>
-											</h:column>
-											<f:facet name="footer">
-												<div class="w3-row">
-													<div align="left" class="w3-half">
-														<p:commandButton value="Find"
-															actionListener="#{quotingBean.findProducts(cart)}"
-															process="@form" update="@form :form-g" styleClass="q-btn">
-														</p:commandButton>
-													</div>
-													<div align="right" class="w3-half">
-														<p:commandButton value="+"
-															actionListener="#{quotingBean.initQoutationItem(cart)}"
-															styleClass="q-btn" process="@this" update="@form">
-														</p:commandButton>
-													</div>
-
-												</div>
-											</f:facet>
-										</h:dataTable>
-										<div align="center" class="w3-padding-12">
-											<p:commandButton value="Submit All" styleClass="q-btn"
-												actionListener="#{quotingBean.submitQuote(cart)}"></p:commandButton>
+									<br/>
+									<p:panel toggleable="true" header="Customer and Cart Items" collapsed="true"
+										toggleSpeed="100">
+										<div class="w3-row">
+										<div class="w3-col s12 l6">
+											<h:panelGrid columns="2">
+												<h:outputText value="ID" />
+												<h:inputText value="#{cart.customer.id}" readonly="true" />
+												<h:outputText value="Name" />
+												<h:inputText value="#{cart.customer.fullName}"
+													readonly="true" />
+												<h:outputText value="Mobile" />
+												<h:inputText value="#{cart.customer.mobile}" readonly="true" />
+												<h:outputText value="Email" />
+												<h:inputText value="#{cart.customer.email}" readonly="true" />
+											</h:panelGrid>
 										</div>
-									</h:form>
+										<div class="w3-col s12 l6">
+											<h:dataTable value="#{cart.cartItems}" var="item"
+												styleClass="w3-table w3-striped w3-border"
+												headerClass="w3-border-bottom w3-light-grey">
+												<f:facet name="header">
+													<h:outputText value="Cart Items" />
+												</f:facet>
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Item Name" />
+													</f:facet>
+													<h:outputText value="#{item.name}" />
+												</h:column>
+												<h:column>
+													<f:facet name="header">
+														<h:outputText value="Quantity" />
+													</f:facet>
+													<h:outputText value="#{item.quantity}" />
+												</h:column>
+
+											</h:dataTable>
+										</div>
+										</div>
+									</p:panel>
+									<br />
+									<p:panel toggleable="true"
+										header="Reviews (#{cart.reviews.size()})" collapsed="true"
+										toggleSpeed="100">
+										<div class="w3-row">
+											<div class="w3-col m12 l6 w3-padding">
+												<h:panelGroup id="review-panel">
+													<h:outputText value="All Reviews:" styleClass="q-bold" />
+													<br />
+													<div class="w3-container">
+														<ui:repeat var="review" value="#{cart.reviews}">
+															<h:outputText value="#{review.created}"
+																styleClass="q-bold" style="color:#2dacd1!important;">
+																<f:convertDateTime pattern="dd-MMM-yyyy hh:mm" />
+															</h:outputText>
+															<h:outputText
+																value=" #{usersBean.getUserFromId(review.reviewerId).firstName}: "
+																styleClass="q-bold" style="color:#2dacd1!important;" />
+															<h:outputText
+																value=" (#{review.visibleToCustomer ? 'visible' : 'hidden'}) : "
+																style="color:#2dacd1!important;" styleClass="q-bold" />
+															<h:outputText dir="rtl" value=" #{review.reviewText}" />
+															<br />
+														</ui:repeat>
+													</div>
+												</h:panelGroup>
+											</div>
+											<div class="w3-col m12 l6 w3-padding">
+												<h:form>
+													<h:outputText value="New Review:" styleClass="q-bold" />
+													<div class="w3-container">
+														<h:panelGrid columns="2">
+															<h:outputText value="Comment" />
+															<h:inputText value="#{cart.newReview.reviewText}" />
+															<h:outputText value="Visible to Customer" />
+															<h:selectBooleanCheckbox
+																value="#{cart.newReview.visibleToCustomer}" />
+														</h:panelGrid>
+														<p:commandButton value="+Add review" styleClass="q-btn"
+															actionListener="#{quotingBean.submitNewReview(cart)}"
+															ajax="false" process="@form" />
+													</div>
+												</h:form>
+											</div>
+										</div>
+									</p:panel>
+
+
+
+								</div>
+
+
+								<div class="w3-container">
+									<br />
+									<p:panel toggleable="true"
+										header="Quotation Items (#{cart.allQuotationItems.size()})"
+										collapsed="false" toggleSpeed="100">
+										<div align="center">
+											<h:outputText value="Quotation Items"
+												styleClass="q-bold q-med-text" />
+										</div>
+										<div align="center" class="w3-padding-8">
+											<p:commandButton value="+New Item" styleClass="q-btn"
+												oncomplete="PF('dlg5wv').show()"
+												actionListener="#{quotingBean.chooseNewQuotationItem(cart)}"
+												update=":form5" />
+										</div>
+
+										<h:form>
+											<div class="w3-row">
+												<ui:repeat var="qi" value="#{cart.allQuotationItems}">
+													<div class="w3-container w3-col m12 l4 w3-padding">
+														<div class="w3-card-2 w3-border">
+															<div align="center">
+																<h:panelGroup layout="block"
+																	styleClass="w3-pannel w3-green w3-padding w3-contrainer"
+																	rendered="#{qi.status eq 'C'}">
+																	<h:outputText value="Completed" />
+																</h:panelGroup>
+
+																<h:panelGroup layout="block"
+																	styleClass="w3-pannel w3-red w3-padding w3-contrainer"
+																	rendered="#{qi.status eq 'N'}">
+																	<h:outputText value="Not Available" />
+																</h:panelGroup>
+																<h:panelGroup layout="block"
+																	styleClass="w3-pannel w3-blue w3-padding w3-contrainer"
+																	rendered="#{qi.status eq 'W'}">
+																	<h:outputText value="Waiting" />
+																</h:panelGroup>
+															</div>
+															<div class="w3-container ">
+																<br />
+																<h:panelGroup>
+																	<h:panelGrid columns="2">
+																		<h:outputText value="Edit" />
+																		<h:selectBooleanCheckbox value="#{qi.edit}">
+																			<f:ajax execute="@this" render="repeat-panel"></f:ajax>
+																		</h:selectBooleanCheckbox>
+																	</h:panelGrid>
+																</h:panelGroup>
+
+																<h:panelGrid columns="2"
+																	styleClass="w3-table w3-striped w3-border">
+																	<h:outputText value="Description" />
+																	<h:outputText value="#{qi.itemDesc}"
+																		rendered="#{not qi.edit}" styleClass="q-bold" />
+																	<h:inputText value="#{qi.itemDesc}"
+																		rendered="#{qi.edit}" required="true"
+																		requiredMessage="Enter item description"
+																		styleClass="q-bold">
+																		<f:ajax />
+																	</h:inputText>
+																	<h:outputText value="Qty." />
+																	<h:outputText value="#{qi.quantity}"
+																		rendered="#{not qi.edit}" />
+																	<h:inputText value="#{qi.quantity}"
+																		rendered="#{qi.edit}" required="true"
+																		requiredMessage="Enter quantity">
+																		<f:ajax />
+																	</h:inputText>
+																	<h:outputText value="Not Available"
+																		rendered="#{not qi.hasSavedResponse() and not qi.edit}" />
+																	<h:selectBooleanCheckbox value="#{qi.notAvailable}"
+																		rendered="#{not qi.hasSavedResponse() and not qi.edit}">
+																		<f:ajax render="repeat-panel"
+																			listener="#{qi.chooseNotAvailable()}" execute="@this"></f:ajax>
+																	</h:selectBooleanCheckbox>
+																</h:panelGrid>
+
+																<br />
+																<div align="center">
+																	<p:commandButton styleClass="q-btn"
+																		rendered="#{not qi.notAvailable and qi.quotationItemResponses.size() eq 0 and (not qi.edit)}"
+																		actionListener="#{quotingBean.chooseQuotationItem(qi)}"
+																		value="+" oncomplete="PF('dlg3wv').show()"
+																		update=":form3" />
+
+																	<p:commandButton styleClass="q-btn"
+																		rendered="#{qi.edit}"
+																		actionListener="#{quotingBean.saveEdit(qi)}"
+																		value="Save Edit" update="repeat-panel :form-g" />
+																</div>
+																<h:dataTable value="#{qi.quotationItemResponses}"
+																	var="res" styleClass="w3-table w3-striped w3-border"
+																	headerClass="w3-light-grey w3-border-bottom"
+																	rendered="#{qi.quotationItemResponses.size() gt 0}">
+																	<f:facet name="header">
+																		<div align="center">
+																			<h:outputText value="Quotation Responses" />
+																		</div>
+																	</f:facet>
+																	<h:column>
+																		<f:facet name="header">
+																			<h:outputText value="Number" />
+																		</f:facet>
+																		<h:outputText value="#{res.product.productNumber}"
+																			rendered="#{not (res.status eq 'N')}" />
+																		<h:outputText value="N/A"
+																			rendered="#{(res.status eq 'N')}" />
+																	</h:column>
+																	<h:column>
+																		<f:facet name="header">
+																			<h:outputText value="Price" />
+																		</f:facet>
+																		<h:outputText value="#{res.productPrice.costPriceWv}"
+																			rendered="#{res.status eq 'C'}">
+																			<f:convertNumber currencySymbol="SR " type="currency" />
+																		</h:outputText>
+																		<p:commandLink value="Complete"
+																			styleClass="w3-tag w3-orange w3-text-white q-tag-padding"
+																			rendered="#{res.status eq 'I'}"
+																			oncomplete="PF('dlg4wv').show()" update=":form4"
+																			actionListener="#{quotingBean.chooseQuotationItemResponse(res)}" />
+																		<h:outputText value="N/A"
+																			rendered="#{(res.status eq 'N')}" />
+																	</h:column>
+																	<h:column>
+																		<f:facet name="header">
+																			<h:outputText value="Vendor" />
+																		</f:facet>
+																		<h:outputText
+																			value="#{vendorBean.getVendorFromId(res.productPrice.vendorId).name}"
+																			rendered="#{res.status eq 'C'}" />
+																		<h:outputText value="N/A"
+																			rendered="#{res.status eq 'I'}" />
+																		<h:outputText value="N/A"
+																			rendered="#{(res.status eq 'N')}" />
+																	</h:column>
+																	<h:column>
+																		<f:facet name="header">
+																			<h:outputText value="Remove" />
+																		</f:facet>
+																		<p:commandButton styleClass="q-btn-red" value="X"
+																			actionListener="#{quotingBean.removeResponse(res, qi)}"
+																			update=":repeat-panel" execute="@this"
+																			rendered="#{not (res.status eq 'N') and not (qi.status eq 'C')}" />
+																	</h:column>
+																</h:dataTable>
+																<div align="center">
+																	<br />
+																	<p:commandButton styleClass="q-btn-indigo" value="Save"
+																		disabled="#{not qi.notAvailable and qi.quotationItemResponses.size() eq 0}"
+																		actionListener="#{quotingBean.saveResponse(qi)}"
+																		process="@this" update=":form-g"
+																		rendered="#{not (qi.status eq 'N') and not (qi.status eq 'C') and not qi.edit}" />
+																</div>
+															</div>
+															<br />
+														</div>
+													</div>
+												</ui:repeat>
+											</div>
+										</h:form>
+									</p:panel>
+									<br />
 								</div>
 							</div>
 							<br /> <br />
 						</div>
 					</ui:repeat>
-				</div>
+				</h:panelGroup>
+
+				<h:form id="form3">
+					<p:dialog styleClass="q-dialog" header="Add Product" position="top"
+						widgetVar="dlg3wv">
+						<h:panelGrid columns="2" id="search-panel">
+							<h:outputText value="Description" />
+							<h:outputText
+								value="#{quotingBean.selectedQuotationItem.itemDesc}" />
+							<h:outputText value="Enter Part Number" />
+							<h:inputText value="#{quotingBean.partNumber}" required="true"
+								id="part-number" />
+						</h:panelGrid>
+						<div align="center">
+							<p:commandButton styleClass="q-btn"
+								actionListener="#{quotingBean.findProduct()}" value="Search"
+								process="@this part-number" update="found :form-g" />
+						</div>
+						<br />
+						<h:panelGroup id="found">
+							<h:outputText value="#{quotingBean.foundProduct  eq null}" />
+							<h:panelGrid columns="2"
+								styleClass="w3-table w3-striped w3-border"
+								rendered="#{quotingBean.foundProduct.id gt 0}">
+								<h:outputText value="Product Number" />
+								<h:outputText value="#{quotingBean.foundProduct.productNumber}" />
+								<h:outputText value="Product Name" />
+								<h:outputText
+									value="#{quotingBean.foundProduct.productNameCheck}" />
+							</h:panelGrid>
+
+							<div align="center" class="w3-padding-12">
+								<p:commandButton value="No Price"
+									actionListener="#{quotingBean.selectProductWithoutPrice()}"
+									update=":form-g :repeat-panel" oncomplete="PF('dlg3wv').hide()"
+									rendered="#{quotingBean.foundProduct.id gt 0}"
+									styleClass="q-btn-red" />
+							</div>
+							<h:dataTable value="#{quotingBean.foundProduct.priceList}"
+								var="price" styleClass="w3-table w3-striped w3-border"
+								rendered="#{quotingBean.foundProduct.id gt 0}"
+								headerClass="w3-light-grey w3-border-bottom">
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="Vendor Prices" />
+									</div>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Price" />
+									</f:facet>
+									<h:outputText value="#{price.costPriceWv}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Vendor" />
+									</f:facet>
+									<h:outputText
+										value="#{vendorBean.getVendorFromId(price.vendorId).name}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Select Price" />
+									</f:facet>
+									<p:commandButton
+										actionListener="#{quotingBean.selectPrice(price)}"
+										update=":form-g :repeat-panel" styleClass="q-btn"
+										value="Select" oncomplete="PF('dlg3wv').hide()" />
+								</h:column>
+							</h:dataTable>
+							<h:outputText value="New Price " />
+							<h:selectBooleanCheckbox value="#{quotingBean.newPrice}">
+								<f:ajax execute="@this" render="new-price-panel"></f:ajax>
+							</h:selectBooleanCheckbox>
+							<h:panelGroup id="new-price-panel">
+								<h:panelGrid rendered="#{quotingBean.newPrice}" columns="2"
+									styleClass="w3-table w3-striped">
+									<h:outputText value="Price" />
+									<h:inputText value="#{quotingBean.productPrice.costPrice}"
+										required="true" />
+									<h:outputText value="Vat Included?" />
+									<h:selectBooleanCheckbox
+										value="#{quotingBean.productPrice.vatIncluded}" />
+									<h:outputText value="Vendor" />
+									<h:selectOneMenu value="#{quotingBean.productPrice.vendorId}">
+										<f:selectItems
+											value="#{vendorBean.getMakeVendors(quotingBean.cartFromSelectedQuotation.makeId)}"
+											var="vendor" itemLabel="#{vendor.name}"
+											itemValue="#{vendor.id}" />
+									</h:selectOneMenu>
+								</h:panelGrid>
+								<p:commandButton value="Add New Price"
+									rendered="#{quotingBean.newPrice}" styleClass="q-btn"
+									actionListener="#{quotingBean.updateNewPrice(quotingBean.productPrice, quotingBean.foundProduct, false)}"
+									process="new-price-panel @this" update="found :form-g"></p:commandButton>
+							</h:panelGroup>
+						</h:panelGroup>
+					</p:dialog>
+				</h:form>
+				<h:form id="form4">
+					<p:dialog widgetVar="dlg4wv" styleClass="q-dialog"
+						header="Complete Pricing">
+						<h:panelGroup id="found">
+							<h:panelGrid columns="2" styleClass="w3-table w3-striped">
+								<h:outputText value="Product" />
+								<h:outputText
+									value="#{quotingBean.selectedQuotationItemResponse.product.productNumber}" />
+							</h:panelGrid>
+							<h:dataTable
+								value="#{quotingBean.selectedQuotationItemResponse.product.priceList}"
+								var="price" styleClass="w3-table w3-striped w3-border"
+								rendered="#{quotingBean.selectedQuotationItemResponse.product.id gt 0}"
+								headerClass="w3-light-grey w3-border-bottom">
+								<f:facet name="header">
+									<div align="center">
+										<h:outputText value="Vendor Prices" />
+									</div>
+								</f:facet>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Price" />
+									</f:facet>
+									<h:outputText value="#{price.costPriceWv}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Vendor" />
+									</f:facet>
+									<h:outputText
+										value="#{vendorBean.getVendorFromId(price.vendorId).name}" />
+								</h:column>
+								<h:column>
+									<f:facet name="header">
+										<h:outputText value="Select Price" />
+									</f:facet>
+									<p:commandButton
+										actionListener="#{quotingBean.selectPriceComplete(price)}"
+										update=":form-g :repeat-panel" styleClass="q-btn"
+										value="Select" oncomplete="PF('dlg4wv').hide()" />
+								</h:column>
+							</h:dataTable>
+							<h:outputText value="New Price " />
+							<h:selectBooleanCheckbox value="#{quotingBean.newPrice}">
+								<f:ajax execute="@this" render="new-price-panel2"></f:ajax>
+							</h:selectBooleanCheckbox>
+							<h:panelGroup id="new-price-panel2">
+								<h:panelGrid rendered="#{quotingBean.newPrice}" columns="2"
+									styleClass="w3-table w3-striped">
+									<h:outputText value="Price" />
+									<h:inputText
+										value="#{quotingBean.incompleteProductPrice.costPrice}"
+										required="true" />
+									<h:outputText value="Vat Included?" />
+									<h:selectBooleanCheckbox
+										value="#{quotingBean.incompleteProductPrice.vatIncluded}" />
+									<h:outputText value="Vendor" />
+									<h:selectOneMenu
+										value="#{quotingBean.incompleteProductPrice.vendorId}">
+										<f:selectItems
+											value="#{vendorBean.getMakeVendors(quotingBean.cartFromSelectedQuotationItemResponse.makeId)}"
+											var="vendor" itemLabel="#{vendor.name}"
+											itemValue="#{vendor.id}" />
+									</h:selectOneMenu>
+								</h:panelGrid>
+								<p:commandButton value="Add New Price"
+									rendered="#{quotingBean.newPrice}" styleClass="q-btn"
+									actionListener="#{quotingBean.updateNewPrice(quotingBean.incompleteProductPrice, quotingBean.selectedQuotationItemResponse.product, true)}"
+									process="new-price-panel2 @this" update="found :form-g"></p:commandButton>
+							</h:panelGroup>
+						</h:panelGroup>
+					</p:dialog>
+				</h:form>
+
+				<h:form id="form5">
+					<p:dialog id="dlg5" widgetVar="dlg5wv" styleClass="q-dialog"
+						header="New Quotation Item">
+						<h:panelGrid columns="2"
+							styleClass="w3-table w3-striped w3-border">
+							<h:outputText value="Cart ID" />
+							<h:outputText value="#{quotingBean.newQuotationItem.cartId}" />
+							<h:outputText value="Description" />
+							<h:inputText value="#{quotingBean.newQuotationItem.itemDesc}"
+								required="true" requiredMessage="Enter Item Name" />
+							<h:outputText value="Quantity" />
+							<h:selectOneMenu value="#{quotingBean.newQuotationItem.quantity}"
+								required="true">
+								<f:selectItem itemValue="#{1}" itemLabel="1" />
+								<f:selectItem itemValue="#{2}" itemLabel="2" />
+								<f:selectItem itemValue="#{3}" itemLabel="3" />
+								<f:selectItem itemValue="#{4}" itemLabel="4" />
+								<f:selectItem itemValue="#{5}" itemLabel="5" />
+								<f:selectItem itemValue="#{6}" itemLabel="6" />
+								<f:selectItem itemValue="#{7}" itemLabel="7" />
+								<f:selectItem itemValue="#{8}" itemLabel="8" />
+								<f:selectItem itemValue="#{9}" itemLabel="9" />
+								<f:selectItem itemValue="#{10}" itemLabel="10" />
+								<f:selectItem itemValue="#{11}" itemLabel="11" />
+								<f:selectItem itemValue="#{12}" itemLabel="12" />
+								<f:selectItem itemValue="#{13}" itemLabel="13" />
+								<f:selectItem itemValue="#{14}" itemLabel="14" />
+								<f:selectItem itemValue="#{15}" itemLabel="15" />
+								<f:selectItem itemValue="#{16}" itemLabel="16" />
+								<f:selectItem itemValue="#{17}" itemLabel="17" />
+								<f:selectItem itemValue="#{18}" itemLabel="18" />
+								<f:selectItem itemValue="#{19}" itemLabel="19" />
+								<f:selectItem itemValue="#{20}" itemLabel="20" />
+							</h:selectOneMenu>
+						</h:panelGrid>
+						<div align="center">
+							<p:commandButton value="Create Item" styleClass="q-btn"
+								actionListener="#{quotingBean.createNewQuotationItem()}"
+								update=":form-g repeat-panel" oncomplete="PF('dlg52v').hide()" />
+						</div>
+					</p:dialog>
+				</h:form>
+
+
+				<h:outputScript>
+					//<![CDATA[
+					if(window.WebSocket){
+						var ws = new WebSocket("#{quotingBean.quotingWSLink}");
+						ws.onmessage = function(event) {
+					 		var text = event.data;
+					 		console.log(text);
+        					updateQuotations([{name: 'param' , value : text}]);	
+    					};
+					}
+					else {
+    					console.log('bad luck');
+					}
+                	//]]>
+				</h:outputScript>
+
+				<h:form>
+					<p:remoteCommand name="updateQuotations"
+						update=":repeat-panel :form-g"
+						actionListener="#{quotingBean.changeOccured}" />
+				</h:form>
 			</div>
-		</p:layoutUnit>
-	</p:layout>
+		</div>
+	</div>
 </h:body>
 </html>

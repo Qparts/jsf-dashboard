@@ -16,6 +16,9 @@ import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
 import qetaa.jsf.dashboard.beans.LoginBean;
 import qetaa.jsf.dashboard.beans.Requester;
 import qetaa.jsf.dashboard.beans.master.BanksBean;
@@ -24,6 +27,7 @@ import qetaa.jsf.dashboard.beans.master.VendorBean;
 import qetaa.jsf.dashboard.helpers.AppConstants;
 import qetaa.jsf.dashboard.helpers.Helper;
 import qetaa.jsf.dashboard.helpers.PojoRequester;
+import qetaa.jsf.dashboard.helpers.QuotationGenerator;
 import qetaa.jsf.dashboard.helpers.ThreadRunner;
 import qetaa.jsf.dashboard.model.cart.Cart;
 import qetaa.jsf.dashboard.model.cart.CartReview;
@@ -32,6 +36,8 @@ import qetaa.jsf.dashboard.model.payment.Bank;
 import qetaa.jsf.dashboard.model.payment.Wallet;
 import qetaa.jsf.dashboard.model.payment.WalletItem;
 import qetaa.jsf.dashboard.model.payment.WalletItemVendor;
+import qetaa.jsf.dashboard.model.payment.WalletQuotation;
+import qetaa.jsf.dashboard.model.payment.WalletQuotationItem;
 import qetaa.jsf.dashboard.model.purchase.Purchase;
 import qetaa.jsf.dashboard.model.purchase.PurchaseProduct;
 import qetaa.jsf.dashboard.model.vendor.Vendor;
@@ -45,6 +51,7 @@ public class AwaitingWalletBean implements Serializable {
 	private Wallet wallet;
 	private int bankId;
 	private boolean refund;
+	private boolean quotationAvailable;
 	private Purchase purchase;
 	private boolean purchaseAvailable;
 	private PurchaseProduct purchaseProduct;
@@ -149,6 +156,22 @@ public class AwaitingWalletBean implements Serializable {
 			Helper.addErrorMessage("an error occured");
 		}
 	}
+	
+	public void updateWalletITem() {
+		double vat = this.selectedWalletItem.getNewPrice() * this.wallet.getCart().getVatPercentage();
+		double promoDisc = this.wallet.getDiscountPercentage() * this.selectedWalletItem.getNewPrice();
+		this.selectedWalletItem.setUnitSales(this.selectedWalletItem.getNewPrice());
+		this.selectedWalletItem.setUnitSalesWv(this.selectedWalletItem.getUnitSales() + vat);
+		this.selectedWalletItem.setUnitSalesNet(this.selectedWalletItem.getNewPrice() - promoDisc);
+		this.selectedWalletItem.setUnitSalesNetWv(this.selectedWalletItem.getUnitSalesNet() + vat);
+		Response r = reqs.putSecuredRequest(AppConstants.PUT_WALLET_ITEM, this.selectedWalletItem);
+		if(r.getStatus() == 201) {
+			Helper.redirect("wallet-awaiting?wallet=" + wallet.getId());
+		}
+		else {
+			Helper.addErrorMessage("An errro occured");
+		}
+	}
 
 	private void initPricingVendors() {
 		this.pricingVendors = new ArrayList<>();
@@ -219,6 +242,22 @@ public class AwaitingWalletBean implements Serializable {
 		}
 
 	}
+	
+	public void createQuotation() {
+		Response r = reqs.postSecuredRequest(AppConstants.POST_NEW_WALLET_QUOTATION, wallet.getId());
+		if(r.getStatus() == 201) {
+			Long wqId = r.readEntity(Long.class);
+			WalletQuotation wq = new WalletQuotation();
+			wq.setCreatedBy(loginBean.getLoggedUserId());
+			wq.setId(wqId);
+			wq.setWalletId(wallet.getId());
+			initQuotableSelectedWalletItems(wq);
+			Response r2 = reqs.putSecuredRequest(AppConstants.PUT_QUOTATION_WALLET, wq);
+			if (r2.getStatus() == 201) {
+				Helper.redirect("wallet-awaiting?wallet=" + this.wallet.getId());
+			}
+		}
+	}
 
 	public void refundItems() {
 		Response r = reqs.postSecuredRequest(AppConstants.POST_NEW_WALLET_REFUND, wallet.getCartId());
@@ -261,6 +300,16 @@ public class AwaitingWalletBean implements Serializable {
 		}
 		return walletItems;
 	}
+	
+	public List<WalletItem> getSelectedQuotableItems() {
+		List<WalletItem> walletItems = new ArrayList<>();
+		for (WalletItem wi : wallet.getWalletItems()) {
+			if (wi.isQuotation()) {
+				walletItems.add(wi);
+			}
+		}
+		return walletItems;
+	}
 
 	public List<WalletItem> getSelectedPurchaseItems() {
 		List<WalletItem> walletItems = new ArrayList<>();
@@ -270,6 +319,20 @@ public class AwaitingWalletBean implements Serializable {
 			}
 		}
 		return walletItems;
+	}
+	
+	private void initQuotableSelectedWalletItems(WalletQuotation wq) {
+		List<WalletQuotationItem> wqItems = new ArrayList<>();
+		for(WalletItem walletItem : this.wallet.getWalletItems()) {
+			if(walletItem.isQuotation()) {
+				WalletQuotationItem wqi = new WalletQuotationItem();
+				wqi.setWalletId(wq.getWalletId());
+				wqi.setWalletItemId(walletItem.getId());
+				wqi.setWalletQuotationId(wq.getId());
+				wqItems.add(wqi);
+			}
+		}
+		wq.setWalletQuotationItems(wqItems);
 	}
 
 	private void initRefundSelectedWalletItems(Wallet rwallet) {
@@ -323,6 +386,19 @@ public class AwaitingWalletBean implements Serializable {
 		}
 		return refund;
 	}
+	
+	public boolean isQuotable() {
+		boolean quotable = false;
+		if (wallet.getWalletItems() != null) {
+			for (WalletItem wi : this.wallet.getWalletItems()) {
+				if (wi.isQuotation()) {
+					quotable = true;
+					break;
+				}
+			}
+		}
+		return quotable;
+	}
 
 	public boolean isPurchaseable() {
 		boolean purchasable = false;
@@ -367,6 +443,16 @@ public class AwaitingWalletBean implements Serializable {
 			}
 		}
 		return total;
+	}
+
+	public StreamedContent getPdfQuotation(long walletQuotationId) {
+		WalletQuotation walletQuotation = null;
+		for(WalletQuotation wq : this.wallet.getWalletQuotations()) {
+			if(wq.getId() == walletQuotationId)
+				walletQuotation = wq;
+		}
+		QuotationGenerator ig = new QuotationGenerator(wallet, walletQuotation);
+		return new DefaultStreamedContent(ig.getInputStream(), "application/pdf", ig.getIdString() + ".pdf");
 	}
 
 	public double getDelivery() {
@@ -468,6 +554,17 @@ public class AwaitingWalletBean implements Serializable {
 			refund = false;
 		} else {
 			refund = true;
+		}
+	}
+	
+	public void editQuotation() {
+		if (quotationAvailable) {
+			for (WalletItem wi : wallet.getWalletItems()) {
+				wi.setQuotation(false);
+			}
+			quotationAvailable = false;
+		} else {
+			quotationAvailable = true;
 		}
 	}
 
@@ -598,5 +695,15 @@ public class AwaitingWalletBean implements Serializable {
 	public void setReview(CartReview review) {
 		this.review = review;
 	}
+
+	public boolean isQuotationAvailable() {
+		return quotationAvailable;
+	}
+
+	public void setQuotationAvailable(boolean quotationAvailable) {
+		this.quotationAvailable = quotationAvailable;
+	}
+	
+	
 
 }

@@ -18,11 +18,15 @@ public class Product implements Serializable {
 	private int makeId;
 	private List<ProductPrice> priceList;
 	private List<ProductStock> stockList;
+	private Integer manufacturerId;
+	private Integer categoryId;
+	
 	@JsonIgnore
 	private ProductPrice selectedPrice;
 	@JsonIgnore
 	private long selectedPriceId;
-	
+	@JsonIgnore
+	private ProductPrice newPrice = new ProductPrice();
 	
 	@JsonIgnore
 	public String getProductNameCheck() {
@@ -88,6 +92,23 @@ public class Product implements Serializable {
 		return q;
 	}
 	
+	@JsonIgnore
+	public Product getClonedProduct() {
+		Product p = new Product();
+		p.setCreated(created);
+		p.setManufacturerId(manufacturerId);
+		p.setCategoryId(categoryId);
+		p.setDesc(desc);
+		p.setId(id);
+		p.setMakeId(makeId);
+		p.setProductName(productName);
+		p.setProductNumber(productNumber);
+		p.setProductNumberUndecorated(productNumberUndecorated);
+		p.setSelectedPriceId(selectedPriceId);
+		p.setStockList(stockList);
+		return p;
+	}
+	
 	public long getId() {
 		return id;
 	}
@@ -145,6 +166,10 @@ public class Product implements Serializable {
 	public void setPriceList(List<ProductPrice> priceList) {
 		this.priceList = priceList;
 	}
+	
+	public boolean isPriceAvailable() {
+		return !(this.priceList == null || this.priceList.isEmpty());
+	}
 
 	public ProductPrice getSelectedPrice() {
 		if(selectedPrice == null) {
@@ -165,11 +190,31 @@ public class Product implements Serializable {
 	public void setSelectedPriceId(long selectedPriceId) {
 		this.selectedPriceId = selectedPriceId;
 	}
-	
-	
-	
-	
-	
-	
 
+	public ProductPrice getNewPrice() {
+		return newPrice;
+	}
+
+	public void setNewPrice(ProductPrice newPrice) {
+		this.newPrice = newPrice;
+	}
+
+
+	
+	public Integer getManufacturerId() {
+		return manufacturerId;
+	}
+
+	public void setManufacturerId(Integer manufacturerId) {
+		this.manufacturerId = manufacturerId;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+	
 }

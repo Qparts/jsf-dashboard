@@ -3,6 +3,8 @@ package qetaa.jsf.dashboard.model.user;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int id;
@@ -14,6 +16,20 @@ public class User implements Serializable{
 
 	public int getId() {
 		return id;
+	}
+	
+	@JsonIgnore
+	public boolean hasAccess(int id) {
+		for(Role role : rolesList) {
+			for(Activity a : role.getActivityList()) {
+				if(a.getId() == id) {
+					if(a.isAccess()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public String getFirstName() {

@@ -26,10 +26,12 @@ import qetaa.jsf.dashboard.model.cart.PartsOrderItemApproved;
 import qetaa.jsf.dashboard.model.cart.PartsOrderItemReturn;
 import qetaa.jsf.dashboard.model.cart.Quotation;
 import qetaa.jsf.dashboard.model.cart.QuotationItem;
+import qetaa.jsf.dashboard.model.cart.QuotationItemResponse;
 import qetaa.jsf.dashboard.model.cart.QuotationVendorItem;
 import qetaa.jsf.dashboard.model.customer.HitActivityGroup;
 import qetaa.jsf.dashboard.model.payment.PartsPayment;
-import qetaa.jsf.dashboard.model.user.User;
+import qetaa.jsf.dashboard.model.product.Product;
+import qetaa.jsf.dashboard.model.product.ProductPrice;
 @Named
 @SessionScoped 
 public class CartDetailsBean implements Serializable {
@@ -84,7 +86,7 @@ public class CartDetailsBean implements Serializable {
 		if (r.getStatus() == 200) {
 			cart = r.readEntity(Cart.class);
 			initVariables();
-			initTimeline();
+		//	initTimeline();
 		} else if (r.getStatus() == 404) {
 			Helper.addErrorMessage("Cart not found");
 		} else {
@@ -118,17 +120,16 @@ public class CartDetailsBean implements Serializable {
 	
 	private void initVariables() {
 		String header = reqs.getSecurityHeader();
-		Thread[] threads = new Thread[10];
+		Thread[] threads = new Thread[9];
 		threads[0] = ThreadRunner.initReviews(cart, header);
-		threads[1] = ThreadRunner.initCity(cart, header);
-		threads[2] = initPartsApprovedItems(cart, header);
-		threads[3] = initPartsOrder(cart, header);
-		threads[4] = initReturnItems(cart, header);
-		threads[5] = initQuotations(cart, header);
-		threads[6] = initQuotationApprovedItems(cart, header);
-		threads[7] = initAcitivityGroups(cart.getCustomerId(), header);
-		threads[8] = initPartsPayment(cart, header);
-		threads[9] = ThreadRunner.initPromoCode(cart, header);
+		threads[1] = initPartsApprovedItems(cart, header);
+		threads[2] = initPartsOrder(cart, header);
+		threads[3] = initReturnItems(cart, header);
+		threads[4] = initQuotations(cart, header);
+		threads[5] = initQuotationApprovedItems(cart, header);
+		threads[6] = initAcitivityGroups(cart.getCustomerId(), header);
+		threads[7] = initPartsPayment(cart, header);
+		threads[8] = ThreadRunner.initPromoCode(cart, header);
 		for (int i = 0; i < threads.length; i++)
 			try {
 				threads[i].start();
@@ -178,13 +179,7 @@ public class CartDetailsBean implements Serializable {
 					Response r = PojoRequester.getSecuredRequest(AppConstants.getCartQuotations(cart.getId()), header);
 					if (r.getStatus() == 200) {
 						quotations = r.readEntity(new GenericType<List<Quotation>>() {});
-						for (Quotation q : quotations) {
-							Response r2 = PojoRequester.getSecuredRequest(AppConstants.getUser(q.getCreatedBy()), header);	
-							if (r2.getStatus() == 200) {
-								User user = r2.readEntity(User.class);
-								q.setCreatedByObject(user);
-							}
-						}
+						initQuotationItemProducts(header);
 					}
 				} catch (Exception ex) {
 
@@ -192,6 +187,31 @@ public class CartDetailsBean implements Serializable {
 			}
 		});
 		return thread;
+	}
+	
+	private void initQuotationItemProducts(String header) throws Exception{
+		for(Quotation q : quotations) {
+			for (QuotationItem item : q.getQuotationItems()) {
+				if(item.getQuotationItemResponses() != null) {
+					for (QuotationItemResponse res : item.getQuotationItemResponses()) {
+						if (res.getProductId() != null) {
+							Response r = PojoRequester.getSecuredRequest(AppConstants.getProduct(res.getProductId()), header);
+							if (r.getStatus() == 200) {
+								Product p = r.readEntity(Product.class);
+								res.setProduct(p);
+							}
+						}
+						if (res.getProductPriceId() != null) {
+							Response r = PojoRequester.getSecuredRequest(AppConstants.getProductPrice(res.getProductPriceId()), header);
+							if (r.getStatus() == 200) {
+								ProductPrice pp = r.readEntity(ProductPrice.class);
+								res.setProductPrice(pp);
+							}
+						}
+					}
+				}
+			}
+		}		
 	}
 	
 	private Thread initPartsOrder(Cart cart2, String header) {

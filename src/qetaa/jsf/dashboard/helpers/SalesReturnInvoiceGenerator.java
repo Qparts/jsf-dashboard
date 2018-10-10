@@ -25,7 +25,7 @@ public class SalesReturnInvoiceGenerator {
 
 	private static final String LOGO = "/resources/images/logo-qetaa.jpg";
 	private static final String JASPER_FILE = "/WEB-INF/jasper/salesReturnInvoice.jasper";
-	private static final String VAT_NUMBER = "3021266400003";
+	private static final String VAT_NUMBER = "310229170200003";
 	
 	private SalesReturn salesReturn;
 	private Sales sales;

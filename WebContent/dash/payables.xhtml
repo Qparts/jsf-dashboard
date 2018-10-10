@@ -10,245 +10,243 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
-			<div class="w3-container">
-				<div align="center" class="w3-padding-8">
-					<h:outputText value="Payables" styleClass="q-large-text" />
-				</div>
-				<h:form id="form-g">
-					<p:growl id="error-growl"
-						rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
-					<p:growl id="success-growl"
-						rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
-				</h:form>
-				<h:form id="form1">
-					<h:dataTable value="#{payablesBean.purchases}" var="purchase"
-						styleClass="w3-table w3-striped w3-border"
-						headerClass="w3-light-grey w3-border-bottom">
-						<f:facet name="header">
-							<div align="center">
-								<h:outputText value="Outstanding: " />
-								<h:outputText value="#{payablesBean.totalOustanding()}"
-									styleClass="q-bold">
-									<f:convertNumber type="currency" currencySymbol="SR " />
-								</h:outputText>
-							</div>
-						</f:facet>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="ID" />
-							</f:facet>
-							<h:outputText value="#{purchase.id}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Invoice Date" />
-							</f:facet>
-							<h:outputText value="#{purchase.purchaseDate}">
+	<h:outputText
+		value="#{loginBean.checkAccessRedirectHome(act.pagePayables)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<div class="w3-container">
+		<div align="center" class="w3-padding-8">
+			<h:outputText value="Payables" styleClass="q-large-text" />
+		</div>
+		<h:form id="form-g">
+			<p:growl id="error-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+			<p:growl id="success-growl"
+				rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+		</h:form>
+		<h:form id="form1">
+			<h:dataTable value="#{payablesBean.purchases}" var="purchase"
+				styleClass="w3-table w3-striped w3-border"
+				headerClass="w3-light-grey w3-border-bottom">
+				<f:facet name="header">
+					<div align="center">
+						<h:outputText value="Outstanding: " />
+						<h:outputText value="#{payablesBean.totalOustanding()}"
+							styleClass="q-bold">
+							<f:convertNumber type="currency" currencySymbol="SR " />
+						</h:outputText>
+					</div>
+				</f:facet>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<h:outputText value="#{purchase.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Invoice Date" />
+					</f:facet>
+					<h:outputText value="#{purchase.purchaseDate}">
+						<f:convertDateTime type="date" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Cart ID" />
+					</f:facet>
+					<h:outputText value="#{purchase.cartId}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Vendor" />
+					</f:facet>
+					<h:outputLink
+						value="payables-vendor?vendor-id=#{purchase.vendorId}"
+						target="_blank" styleClass="w3-text-blue">
+						<h:outputText
+							value="#{vendorBean.getVendorFromId(purchase.vendorId).name}" />
+
+					</h:outputLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Type" />
+					</f:facet>
+					<h:outputText rendered="#{purchase.transactionType eq 'T'}"
+						value="Credit" styleClass="w3-tag w3-indigo" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Total" />
+					</f:facet>
+					<h:outputText value="#{purchase.totalCostWv}">
+						<f:convertNumber currencySymbol="SR " type="currency" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Paid" />
+					</f:facet>
+					<h:outputText value="#{purchase.paid}"
+						rendered="#{purchase.paid gt 0}" styleClass="w3-text-green">
+						<f:convertNumber currencySymbol="SR " type="currency" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Returned" />
+					</f:facet>
+					<h:outputText value="#{purchase.returned}"
+						rendered="#{purchase.returned lt 0}" styleClass="w3-text-red">
+						<f:convertNumber currencySymbol="SR " type="currency" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Outstanding" />
+					</f:facet>
+					<h:outputText
+						value="#{purchase.totalCostWv - purchase.paid + purchase.returned}">
+						<f:convertNumber currencySymbol="SR " type="currency" />
+					</h:outputText>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Payment" />
+					</f:facet>
+					<p:commandButton
+						actionListener="#{payablesBean.choosePurchase(purchase)}"
+						value="Payment" styleClass="q-btn" oncomplete="PF('dlgwv').show()"
+						update="form2" />
+				</h:column>
+			</h:dataTable>
+		</h:form>
+		<h:form id="form2">
+			<p:dialog id="dlg" widgetVar="dlgwv" header="Make Payment"
+				width="800px" styleClass="q-dialog">
+				<div class="w3-row" align="center">
+					<div class="w3-half">
+						<h:panelGrid columns="2"
+							styleClass="w3-table w3-striped w3-border">
+							<h:outputText value="Purchase ID" />
+							<h:outputText value="#{payablesBean.selectedPurchase.id}" />
+							<h:outputText value="Cart ID" />
+							<h:outputText value="#{payablesBean.selectedPurchase.cartId}" />
+							<h:outputText value="Invoice Date" />
+							<h:outputText
+								value="#{payablesBean.selectedPurchase.purchaseDate}">
 								<f:convertDateTime type="date" />
 							</h:outputText>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Cart ID" />
-							</f:facet>
-							<h:outputText value="#{purchase.cartId}" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Vendor" />
-							</f:facet>
-							<h:outputLink
-								value="payables-vendor?vendor-id=#{purchase.vendorId}"
-								target="_blank" styleClass="w3-text-blue">
-								<h:outputText
-									value="#{vendorBean.getVendorFromId(purchase.vendorId).name}" />
-
-							</h:outputLink>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Type" />
-							</f:facet>
-							<h:outputText rendered="#{purchase.transactionType eq 'T'}"
-								value="Credit" styleClass="w3-tag w3-indigo" />
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Total" />
-							</f:facet>
-							<h:outputText value="#{purchase.totalCostWv}">
-								<f:convertNumber currencySymbol="SR " type="currency" />
-							</h:outputText>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Paid" />
-							</f:facet>
-							<h:outputText value="#{purchase.paid}"
-								rendered="#{purchase.paid gt 0}" styleClass="w3-text-green">
-								<f:convertNumber currencySymbol="SR " type="currency" />
-							</h:outputText>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Returned" />
-							</f:facet>
-							<h:outputText value="#{purchase.returned}"
-								rendered="#{purchase.returned lt 0}" styleClass="w3-text-red">
-								<f:convertNumber currencySymbol="SR " type="currency" />
-							</h:outputText>
-						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Outstanding" />
-							</f:facet>
+							<h:outputText value="Purchase ID" />
 							<h:outputText
-								value="#{purchase.totalCostWv - purchase.paid + purchase.returned}">
+								value="#{vendorBean.getVendorFromId(payablesBean.selectedPurchase.vendorId).name}" />
+							<h:outputText value="Outstanding" />
+							<h:outputText
+								value="#{payablesBean.selectedPurchase.totalCostWv - payablesBean.selectedPurchase.paid + payablesBean.selectedPurchase.returned}">
 								<f:convertNumber currencySymbol="SR " type="currency" />
 							</h:outputText>
-						</h:column>
-						<h:column>
+							<h:outputText value="Amount" />
+							<h:inputText value="#{payablesBean.purchasePayment.amount}"
+								required="true" requiredMessage="Enter Amount" />
+							<h:outputText value="Reference" />
+							<h:inputText value="#{payablesBean.purchasePayment.paymentRef}"
+								required="true" requiredMessage="Enter Reference" />
+							<h:outputText value="Bank" />
+							<h:selectOneMenu value="#{payablesBean.purchasePayment.bankId}"
+								required="true" requiredMessage="Select Bank">
+								<f:selectItems value="#{banksBean.banks}" var="bank"
+									itemValue="#{bank.bankId}" itemLabel="#{bank.name}"></f:selectItems>
+							</h:selectOneMenu>
+						</h:panelGrid>
+					</div>
+					<div class="w3-half">
+						<h:dataTable
+							value="#{payablesBean.selectedPurchase.purchasePayments}"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom" var="payment"
+							rendered="#{not (payablesBean.selectedPurchase.purchasePayments eq null) and (payablesBean.selectedPurchase.purchasePayments.size() gt 0)}">
 							<f:facet name="header">
-								<h:outputText value="Payment" />
+								<div align="center">
+									<h:outputText value="Payment History" />
+								</div>
 							</f:facet>
-							<p:commandButton
-								actionListener="#{payablesBean.choosePurchase(purchase)}"
-								value="Payment" styleClass="q-btn"
-								oncomplete="PF('dlgwv').show()" update="form2" />
-						</h:column>
-					</h:dataTable>
-				</h:form>
-				<h:form id="form2">
-					<p:dialog id="dlg" widgetVar="dlgwv" header="Make Payment"
-						width="800px" styleClass="q-dialog">
-						<div class="w3-row" align="center">
-							<div class="w3-half">
-								<h:panelGrid columns="2"
-									styleClass="w3-table w3-striped w3-border">
-									<h:outputText value="Purchase ID" />
-									<h:outputText value="#{payablesBean.selectedPurchase.id}" />
-									<h:outputText value="Cart ID" />
-									<h:outputText value="#{payablesBean.selectedPurchase.cartId}" />
-									<h:outputText value="Invoice Date" />
-									<h:outputText
-										value="#{payablesBean.selectedPurchase.purchaseDate}">
-										<f:convertDateTime type="date" />
-									</h:outputText>
-									<h:outputText value="Purchase ID" />
-									<h:outputText
-										value="#{vendorBean.getVendorFromId(payablesBean.selectedPurchase.vendorId).name}" />
-									<h:outputText value="Outstanding" />
-									<h:outputText
-										value="#{payablesBean.selectedPurchase.totalCostWv - payablesBean.selectedPurchase.paid + payablesBean.selectedPurchase.returned}">
-										<f:convertNumber currencySymbol="SR " type="currency" />
-									</h:outputText>
+							<h:column>
+								<f:facet name="header">
 									<h:outputText value="Amount" />
-									<h:inputText value="#{payablesBean.purchasePayment.amount}"
-										required="true" requiredMessage="Enter Amount" />
-									<h:outputText value="Reference" />
-									<h:inputText value="#{payablesBean.purchasePayment.paymentRef}"
-										required="true" requiredMessage="Enter Reference" />
+								</f:facet>
+								<h:outputText value="#{payment.amount}"
+									title="#{payment.paymentRef}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
 									<h:outputText value="Bank" />
-									<h:selectOneMenu value="#{payablesBean.purchasePayment.bankId}"
-										required="true" requiredMessage="Select Bank">
-										<f:selectItems value="#{banksBean.banks}" var="bank"
-											itemValue="#{bank.bankId}" itemLabel="#{bank.name}"></f:selectItems>
-									</h:selectOneMenu>
-								</h:panelGrid>
-							</div>
-							<div class="w3-half">
-								<h:dataTable
-									value="#{payablesBean.selectedPurchase.purchasePayments}"
-									styleClass="w3-table w3-striped w3-border"
-									headerClass="w3-light-grey w3-border-bottom" var="payment"
-									rendered="#{not (payablesBean.selectedPurchase.purchasePayments eq null) and (payablesBean.selectedPurchase.purchasePayments.size() gt 0)}">
-									<f:facet name="header">
-										<div align="center">
-											<h:outputText value="Payment History" />
-										</div>
-									</f:facet>
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Amount" />
-										</f:facet>
-										<h:outputText value="#{payment.amount}" title="#{payment.paymentRef}"/>
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Bank" />
-										</f:facet>
-										<h:outputText value="#{banksBean.getBankFromId(payment.bankId).name}" />
-									</h:column>	
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Date" />
-										</f:facet>
-										<h:outputText value="#{payment.paymentDate}">
-											<f:convertDateTime type="date"/>
-										</h:outputText>
-									</h:column>
-								</h:dataTable>
+								</f:facet>
+								<h:outputText
+									value="#{banksBean.getBankFromId(payment.bankId).name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Date" />
+								</f:facet>
+								<h:outputText value="#{payment.paymentDate}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+						</h:dataTable>
 
-								<h:dataTable
-									value="#{payablesBean.selectedPurchase.returnPayments}"
-									styleClass="w3-table w3-striped w3-border"
-									headerClass="w3-light-grey w3-border-bottom" var="payment"
-									rendered="#{not (payablesBean.selectedPurchase.returnPayments eq null) and (payablesBean.selectedPurchase.returnPayments.size() gt 0)}">
-									<f:facet name="header">
-										<div align="center">
-											<h:outputText value="Return Payment History" />
-										</div>
-									</f:facet>
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Amount" />
-										</f:facet>
-										<h:outputText value="#{payment.amount}"
-											title="#{payment.paymentRef}" />
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Bank" />
-										</f:facet>
-										<h:outputText
-											value="#{banksBean.getBankFromId(payment.bankId).name}" />
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Date" />
-										</f:facet>
-										<h:outputText value="#{payment.paymentDate}">
-											<f:convertDateTime type="date" />
-										</h:outputText>
-									</h:column>
-									<h:column>
-										<f:facet name="header">
-											<h:outputText value="Return ID" />
-										</f:facet>
-										<h:outputText value="#{payment.purchaseReturn.id}" />
-									</h:column>
-								</h:dataTable>
-							</div>
-						</div>
-						<div class="w3-row" align="center">
-							<h:outputText value="Payment Date:" />
-							<p:calendar mode="inline"
-								value="#{payablesBean.purchasePayment.paymentDate}" />
-							<p:commandButton value="Create Payment" actionListener="#{payablesBean.createPurchasePayment()}" styleClass="q-btn"
-								update=":form-g @all"></p:commandButton>
-						</div>
+						<h:dataTable
+							value="#{payablesBean.selectedPurchase.returnPayments}"
+							styleClass="w3-table w3-striped w3-border"
+							headerClass="w3-light-grey w3-border-bottom" var="payment"
+							rendered="#{not (payablesBean.selectedPurchase.returnPayments eq null) and (payablesBean.selectedPurchase.returnPayments.size() gt 0)}">
+							<f:facet name="header">
+								<div align="center">
+									<h:outputText value="Return Payment History" />
+								</div>
+							</f:facet>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Amount" />
+								</f:facet>
+								<h:outputText value="#{payment.amount}"
+									title="#{payment.paymentRef}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Bank" />
+								</f:facet>
+								<h:outputText
+									value="#{banksBean.getBankFromId(payment.bankId).name}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Date" />
+								</f:facet>
+								<h:outputText value="#{payment.paymentDate}">
+									<f:convertDateTime type="date" />
+								</h:outputText>
+							</h:column>
+							<h:column>
+								<f:facet name="header">
+									<h:outputText value="Return ID" />
+								</f:facet>
+								<h:outputText value="#{payment.purchaseReturn.id}" />
+							</h:column>
+						</h:dataTable>
+					</div>
+				</div>
+				<div class="w3-row" align="center">
+					<h:outputText value="Payment Date:" />
+					<p:calendar mode="inline"
+						value="#{payablesBean.purchasePayment.paymentDate}" />
+					<p:commandButton value="Create Payment"
+						actionListener="#{payablesBean.createPurchasePayment()}"
+						styleClass="q-btn" update=":form-g @all"></p:commandButton>
+				</div>
 
-					</p:dialog>
-				</h:form>
-			</div>
-		</p:layoutUnit>
-	</p:layout>
+			</p:dialog>
+		</h:form>
+	</div>
 </h:body>
 </html>

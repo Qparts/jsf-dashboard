@@ -72,16 +72,16 @@ public class AppConstants {
 	public final static String GET_UNASSIGNED_NOTIFICATIONS = CART_SERVICE + "unasssigned-notification";
 
 	public final static String GET_ALL_QUOTATIONS_NOTIFICATION = CART_SERVICE + "quotation-notification";
-
+	public final static String GET_PROCESS_WALLET_NOTIFICATION = PAYMENT_SERVICE + "wallets-notification/process";
 	public final static String POST_QUOTATION = CART_SERVICE + "quotation";
 	public final static String POST_QUOTATION_FOR_FINDERS = CART_SERVICE + "quotation/finders";
 	public final static String PUT_UPDATE_ADDITIONAL_QUOTATION = CART_SERVICE + "additional-quotation";
 	public final static String POST_ADDITIONAL_QUOTATION = CART_SERVICE + "additional-quotation";
 	public final static String POST_MANUAL_QUOTATION_VENDOR = CART_SERVICE + "manual-quotation-vendor";
-	public final static String APPROVE_QUOTATION = CART_SERVICE + "approve-quotation";
 	public final static String GET_QUOTATIONS_WAITING = CART_SERVICE + "waiting-quotation-carts";
 	public final static String PUT_ARCHIVE_CART = CART_SERVICE + "archive-cart";
 	public final static String PUT_EDIT_CART = CART_SERVICE + "cart";
+	public final static String PUT_EDIT_CART_VIN_ADDED = CART_SERVICE + "cart/vin-added";
 	public final static String POST_QUOTATION_ITEM_RESPONSE = CART_SERVICE + "quotation-item-response";
 	
 	public final static String POST_BULK_PROMOTION_CODES = PROMOTION_SERVICE + "generate-code/bulk";
@@ -95,14 +95,8 @@ public class AppConstants {
 	public final static String POST_PROMOTION_PROVIDER = PROMOTION_SERVICE + "provider";
 	public final static String GET_ALL_PROMOTION_PROVIDERS = PROMOTION_SERVICE + "all-providers";
 
-	public final static String GET_PARTS_NOTIFICATION = CART_SERVICE + "parts-notification";
-	public final static String GET_PARTS_COLLECTION_ITEMS = CART_SERVICE + "collection-items";
-
-	public final static String PUT_UPDATE_COLLECT_ITEM = CART_SERVICE + "collect-item";
-	public final static String GET_COLLECTION_NOTIFICATION = CART_SERVICE + "collection-items-notification";
 	public final static String GET_WIRE_NOTIFICATION = CART_SERVICE + "wire-notification";
 	public final static String GET_FOLLOWUPS_NOTOFICATION = CART_SERVICE + "followups-notification";
-	public final static String GET_PARTS_RECEIVAL_ITEMS = CART_SERVICE + "receival-items";
 	public final static String GET_RECEIVAL_NOTIFICATION = CART_SERVICE + "receival-items-notification";
 	public final static String PUT_UPDATE_RECEIVE_ITEM = CART_SERVICE + "receive-item";
 	public final static String GET_WAITING_PART_CARTS = CART_SERVICE + "waiting-part-carts";
@@ -120,19 +114,20 @@ public class AppConstants {
 	public final static String POST_NEW_WALLET = PAYMENT_SERVICE + "new-wallet";
 	public final static String PUT_FUND_WALLET = PAYMENT_SERVICE + "fund-wallet/wire-transfer";
 	public final static String POST_NEW_WALLET_REFUND = PAYMENT_SERVICE + "new-wallet/refund";
+	public final static String POST_NEW_WALLET_QUOTATION = PAYMENT_SERVICE + "new-wallet-quotation";
+	public final static String PUT_QUOTATION_WALLET = PAYMENT_SERVICE + "quotation-wallet";
 	public final static String PUT_REFUND_WALLET = PAYMENT_SERVICE + "refund-wallet/wire-transfer";
 	public final static String POST_WALLET_ITEM_VENDOR = PAYMENT_SERVICE + "wallet-item-vendors";
 	public final static String PUT_REPLACE_PURCHASE_PRODUCT = INVOICE_SERVICE + "replace-purchase-product";
-	
+	public final static String PUT_WALLET_ITEM = PAYMENT_SERVICE + "wallet-item";
 	
 	public final static String GET_PROCESS_WALLETS = PAYMENT_SERVICE + "wallets/process";
 	public final static String PUT_CONFIRM_WIRE_TRANSFER = CART_SERVICE + "confirm-wire-transfer";
 	public final static String PUT_UNDO_WIRE_TRANSFER = CART_SERVICE + "undo-wire-transfer";
 
-	public final static String GET_UNASSIGNED_CARTS = CART_SERVICE + "unassigned-carts";
-	public final static String GET_ADVISOR_QUOTATION_CARTS = CART_SERVICE + "advisor-quotation-carts";
-	public final static String PUT_UNASSIGN_CART = CART_SERVICE + "unassign-cart";
-	public final static String POST_ASSIGN_CART = CART_SERVICE + "assign-cart";
+	public final static String PUT_UNASSIGN_CART = CART_SERVICE + "unassign";
+	public final static String POST_ASSIGN_CART = CART_SERVICE + "assign";
+	public final static String POST_ASSIGN_CART_TO_USER = CART_SERVICE + "assign-to-user";
 
 	public final static String GET_TOTAL_REGISTERED_CUSTOMERS = CUSTOMER_SERVICE + "all-customers-number";
 	public final static String GET_CURRENT_MONTH_REGISTERED_CUSTOMERS = CUSTOMER_SERVICE
@@ -155,6 +150,7 @@ public class AppConstants {
 	public final static String GET_ACTIVE_SESSIONS = CUSTOMER_SERVICE + "hit-count/active";
 
 	public final static String POST_REGISTER_SMS = CUSTOMER_SERVICE + "register-sms";
+	public final static String POST_MANUAL_SMS = CUSTOMER_SERVICE + "manual-sms";
 	public final static String POST_REGISTER_EMAIL = CUSTOMER_SERVICE + "register-email";
 	public final static String POST_MOBILE_REGISTER = CUSTOMER_SERVICE + "mobile-register";
 
@@ -170,7 +166,9 @@ public class AppConstants {
 	public final static String PUT_UPDATE_APPROVED_ITEMS = CART_SERVICE + "parts-approved-items";
 	public final static String PUT_UPDATE_APPROVED_ITEM = CART_SERVICE + "parts-approved-item";
 	public final static String PUT_MANUAL_QUOTATION_VENDOR_ITEM = CART_SERVICE + "quotation-vendor-item/user";
-	public final static String POST_QUOTATION_ITEM = CART_SERVICE + "quotation-item";
+	//public final static String POST_QUOTATION_ITEM = CART_SERVICE + "quotation-item";
+	public final static String POST_NEW_QUOTATION_ITEM = CART_SERVICE + "quotation-item";
+	public final static String PUT_QUOTATION_ITEM = CART_SERVICE + "quotation-item";
 	public final static String POST_RETURN_ITEM = CART_SERVICE + "return-item";
 	
 	public final static String GET_INCOMPLETE_PURCHASES = INVOICE_SERVICE + "incomplete-purchases";
@@ -186,7 +184,14 @@ public class AppConstants {
 	
 	public final static String POST_PRODUCT_NAME = PRODUCT_SERVICE + "product-name";
 	public final static String POST_PRODUCT = PRODUCT_SERVICE + "product";
+	public final static String FIND_PRODUCT_CREATE_IF_NOT_AVAILABLE = PRODUCT_SERVICE +  "find-product/create";
 	
+	public final static String POST_PRODUCT_CATEGORY = PRODUCT_SERVICE + "category";
+	public final static String POST_PRODUCT_MANUFACTURER = PRODUCT_SERVICE + "manufacturer";
+	public final static String GET_PRODUCT_CATEGORIES = PRODUCT_SERVICE + "categories";
+	public final static String GET_PRODUCT_MANUFACTURERS = PRODUCT_SERVICE + "manufacturers";
+	
+	public final static String PUT_PRODUCT_PRICE = PRODUCT_SERVICE + "product-price";
 	public final static String POST_NEW_PURCHASE = INVOICE_SERVICE + "new-purchase";
 	public final static String PUT_NEW_PURCHASE = INVOICE_SERVICE + "purchase";
 	
@@ -278,13 +283,12 @@ public class AppConstants {
 		return VEHICLE_SERVICE + "model-year/" + modelYearId;
 	}
 
-	public final static String getFinalizedItems(long cartId) {
-		return CART_SERVICE + "quotation-finalized-items/cart/" + cartId;
+	
+	public final static String getCurrentFinderScore(int userId) {
+		return USER_SERVICE + "current-score/finder/" + userId;
 	}
+	
 
-	public final static String getFinalizedItemsFull(long cartId) {
-		return CART_SERVICE + "quotation-finalized-items-full/cart/" + cartId;
-	}
 
 	public final static String getCustomer(long customerId) {
 		return CUSTOMER_SERVICE + "customer/" + customerId;
@@ -344,9 +348,6 @@ public class AppConstants {
 		return CART_SERVICE + "address/cart/" + cartId;
 	}
 
-	public final static String getCartCollectionItems(long cartId) {
-		return CART_SERVICE + "collection-items/cart/" + cartId;
-	}
 	
 	public final static String putMergeCarts(long mainId, long slaveId, int userId) {
 		return CART_SERVICE + "merge-cart/main/"+mainId+"/slave/"+slaveId+"/user/" + userId;
@@ -521,6 +522,14 @@ public class AppConstants {
 		return PRODUCT_SERVICE + "product/" + productId;
 	}
 	
+	public final static String getProductWithPriceList(long productId) {
+		return PRODUCT_SERVICE + "product/" + productId + "/with-price-list";
+	}
+	
+	public final static String getProductPrice(long productPriceId) {
+		return PRODUCT_SERVICE + "product-price/" + productPriceId;
+	}
+	
 	public final static String getProductForCart(long productId, long cartId) {
 		return PRODUCT_SERVICE + "product/" + productId+"/cart/" + cartId;
 	}
@@ -560,6 +569,15 @@ public class AppConstants {
 	public final static String getWaitingQuotation(int userId) {
 		return CART_SERVICE + "waiting-quotations/user/" + userId;
 	}
+	
+	public final static String getAssignedCarts(int userId) {
+		return CART_SERVICE + "assigned-carts/user/" + userId;
+	}
+	
+	public final static String getAssignedCart(int userId, long cartId) {
+		return CART_SERVICE + "assigned-cart/user/"+userId+"/cart/" + cartId;
+	}
+	
 	
 	public final static String getSoldWalletItems(long cid) {
 		return PAYMENT_SERVICE + "wallet-items/sold/customer/" + cid;

@@ -11,104 +11,100 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
-			<h:form id="form-g">
-				<p:growl id="error-growl" sticky="true"
-					rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
-				<p:growl id="success-growl" sticky="true"
-					rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
-			</h:form>
+	<h:outputText
+		value="#{loginBean.checkAccessRedirectHome(act.pageFollowUpQuotations)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<h:form id="form-g">
+		<p:growl id="error-growl" sticky="true"
+			rendered="#{facesContext.maximumSeverity.ordinal eq 2}" />
+		<p:growl id="success-growl" sticky="true"
+			rendered="#{facesContext.maximumSeverity.ordinal eq 0}" />
+	</h:form>
+	<div align="center">
+		<h:outputText value="Cart Follow Up" styleClass="q-large-text" />
+	</div>
+	<h:dataTable styleClass="w3-table w3-striped w3-border"
+		value="#{followUpsBean.carts}" var="fcart"
+		headerClass="w3-light-grey w3-border-bottom">
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Cart#" />
+			</f:facet>
+			<h:outputText value="#{fcart.id}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Customer" />
+			</f:facet>
+			<h:outputText
+				value="#{fcart.customer.firstName} #{fcart.customer.lastName}">
+				<f:convertDateTime type="date" />
+			</h:outputText>
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Loyalty" />
+			</f:facet>
+			<h:outputText value="#{fcart.customer.totalLoyaltyPoints}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Submitted" />
+			</f:facet>
+			<h:outputText value="#{fcart.submitted}">
+				<f:convertDateTime type="date" locale="en_US" />
+			</h:outputText>
+		</h:column>
+		<h:column rendered="false">
+			<f:facet name="header">
+				<h:outputText value="City" />
+			</f:facet>
+			<h:outputText value="#{fcart.city.name}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Vehicle" />
+			</f:facet>
+			<h:outputText value="#{fcart.modelYear.fullName}" />
+		</h:column>
+		<h:column rendered="true">
+			<f:facet name="header">
+				<h:outputText value="Amout" />
+			</f:facet>
+			<h:outputText value="#{fcart.totalSales()}">
+				<f:convertNumber currencySymbol="SR " type="currency" />
+			</h:outputText>
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Last Reviewer" />
+			</f:facet>
+			<h:outputText rendered="#{not fcart.reviews.isEmpty()}"
+				value="#{fcart.reviews.get(fcart.reviews.size()-1).reviewer.firstName}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<h:outputText value="Reviewed" />
+			</f:facet>
+			<h:outputText rendered="#{not(fcart.reviews.isEmpty())}" value="Yes"
+				styleClass="w3-tag w3-green" />
+			<h:outputText rendered="#{fcart.reviews.isEmpty()}" value="No"
+				styleClass="w3-tag w3-red" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				<div align="center">
+					<h:outputText value="More" />
+				</div>
+			</f:facet>
 			<div align="center">
-				<h:outputText value="Cart Follow Up" styleClass="q-large-text" />
+				<h:outputLink value="followup?cart=#{fcart.id}" target="_blank">
+					<i class="fa fa-search-plus"></i>
+				</h:outputLink>
 			</div>
-			<h:dataTable styleClass="w3-table w3-striped w3-border"
-				value="#{followUpsBean.carts}" var="fcart"
-				headerClass="w3-light-grey w3-border-bottom">
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Cart#" />
-					</f:facet>
-					<h:outputText value="#{fcart.id}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Customer" />
-					</f:facet>
-					<h:outputText
-						value="#{fcart.customer.firstName} #{fcart.customer.lastName}">
-						<f:convertDateTime type="date" />
-					</h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Loyalty" />
-					</f:facet>
-					<h:outputText value="#{fcart.customer.totalLoyaltyPoints}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Submitted" />
-					</f:facet>
-					<h:outputText value="#{fcart.submitted}">
-						<f:convertDateTime type="date" locale="en_US" />
-					</h:outputText>
-				</h:column>
-				<h:column rendered="false">
-					<f:facet name="header">
-						<h:outputText value="City"/>
-					</f:facet>
-					<h:outputText value="#{fcart.city.name}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Vehicle" />
-					</f:facet>
-					<h:outputText value="#{fcart.modelYear.fullName}" />
-				</h:column>
-				<h:column rendered="true">
-					<f:facet name="header">
-						<h:outputText value="Amout"/>
-					</f:facet>
-					<h:outputText value="#{fcart.totalSales()}">
-						<f:convertNumber currencySymbol="SR " type="currency"/>
-					</h:outputText>
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Last Reviewer" />
-					</f:facet>
-					<h:outputText rendered="#{not fcart.reviews.isEmpty()}"
-						value="#{fcart.reviews.get(fcart.reviews.size()-1).reviewer.firstName}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<h:outputText value="Reviewed" />
-					</f:facet>
-					<h:outputText rendered="#{not(fcart.reviews.isEmpty())}"
-						value="Yes" styleClass="w3-tag w3-green" />
-					<h:outputText rendered="#{fcart.reviews.isEmpty()}" value="No"
-						styleClass="w3-tag w3-red" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">
-						<div align="center">
-							<h:outputText value="More" />
-						</div>
-					</f:facet>
-					<div align="center">
-						<h:outputLink value="followup?cart=#{fcart.id}" target="_blank">
-							<i class="fa fa-search-plus"></i>
-						</h:outputLink>
-					</div>
-				</h:column>
-			</h:dataTable>
-		</p:layoutUnit>
-	</p:layout>
+		</h:column>
+	</h:dataTable>
+
 </h:body>
 </html>

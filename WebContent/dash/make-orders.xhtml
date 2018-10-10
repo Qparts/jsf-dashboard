@@ -15,13 +15,9 @@
 	<script src="https://code.highcharts.com/modules/exporting.js" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
+<h:outputText value="#{loginBean.checkAccessRedirectHome(act.pageMakeOrdersReport)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
 			<div class="w3-container">
 				<div align="center" class="w3-padding-8">
 					<h:outputText value="Makes Report" styleClass="q-large-text" />
@@ -237,12 +233,5 @@
 
 			//]]>
 			</h:outputScript>
-
-
-
-
-
-		</p:layoutUnit>
-	</p:layout>
 </h:body>
 </html>

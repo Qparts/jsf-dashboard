@@ -4,72 +4,81 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-	<p:layoutUnit position="west" id="west"
-		styleClass="q-dashboard-background" size="200">
+
+
+	<div class="w3-sidebar w3-bar-block w3-card w3-camo-black" style="width:180px;display:none" id="mySidebar" >
 		<div class="w3-container">
-			<div class="w3-col">
-				<p>
-					<h:outputLink style="text-decoration:none;" value="home">
-						<span>Welcome, <strong>#{loginBean.userHolder.user.firstName}</strong></span>
-					</h:outputLink>
-				</p>
-			</div>
-			<br /> <br />
 			<h:form>
-				<p:panelMenu styleClass="q-panel-menu">
-					<p:submenu label="Configurations" expanded="false" rendered="#{loginBean.hasAccessL([act.pageUsers, act.pageCouriers, act.pageRole, act.pageBanks, act.pageCountries, act.pageCities, act.pageVehicles])}">
-						<p:menuitem value="Users" rendered="#{loginBean.hasAccess(act.pageUsers)}" outcome="/dash/users" ajax="false" />
-						<p:menuitem value="Roles" rendered="#{loginBean.hasAccess(act.pageRole)}" outcome="/dash/roles" ajax="false" />
-						<p:menuitem value="Banks" rendered="#{loginBean.hasAccess(act.pageBanks)}" outcome="/dash/banks" ajax="false" />
-						<p:menuitem value="Countries" rendered="#{loginBean.hasAccess(act.pageCountries)}" outcome="/dash/countries" ajax="false" />
-						<p:menuitem value="Cities" rendered="#{loginBean.hasAccess(act.pageCities)}" outcome="/dash/cities" ajax="false" />
-						<p:menuitem value="Vehicles" rendered="#{loginBean.hasAccess(act.pageVehicles)}" outcome="/dash/vehicles" ajax="false" />
-						<p:menuitem value="Couriers" rendered="#{loginBean.hasAccess(act.pageCouriers)}" outcome="/dash/couriers" ajax="false" />
-					</p:submenu>
-					<p:submenu label="Customer Service" expanded="false" rendered="#{loginBean.hasAccessL([act.pageNoAnswer, act.pageNoVin, act.pageWire, act.pagePosponedSalesReport, act.pageFollowUpQuotations,act.pageCustomers])}">
-						<p:menuitem value="Wire Transfers" rendered="#{loginBean.hasAccess(act.pageWire)}" outcome="/dash/wire_transfers" ajax="false" />
-						<p:menuitem value="Customers" rendered="#{loginBean.hasAccess(act.pageCustomers)}" outcome="/dash/customers" ajax="false" />
-						<p:menuitem value="Follow Up" rendered="#{loginBean.hasAccess(act.pageFollowUpQuotations)}" outcome="/dash/followups" ajax="false" />
-						<p:menuitem value="Postponed" rendered="#{loginBean.hasAccess(act.pagePosponedSalesReport)}" outcome="/dash/postponed-sales" ajax="false" />
-						<p:menuitem value="No Vin Carts" rendered="#{loginBean.hasAccess(act.pageNoVin)}" outcome="/dash/no-vin-carts" ajax="false" />
-					</p:submenu>
-					<p:submenu label="Vendors" expanded="false" rendered="#{loginBean.hasAccessL([act.pageRegionsVendors, act.pagePromotionProviders, act.pageVendors])}">
-						<p:menuitem value="Vendors" rendered="#{loginBean.hasAccess(act.pageVendors)}" outcome="/dash/vendors" ajax="false" />
-						<p:menuitem value="Regions Vendors" rendered="#{loginBean.hasAccess(act.pageRegionsVendors)}" outcome="/dash/regions-vendors" ajax="false" />
-						<p:menuitem value="Join Request" rendered="#{loginBean.hasAccess(act.pageVendorJoinRequest)}" outcome="/dash/vendor-join" ajax="false" />
-						<p:menuitem value="Providers" rendered="#{loginBean.hasAccess(act.pagePromotionProviders)}" outcome="/dash/promotions" ajax="false" />
-					</p:submenu>
-					<p:submenu label="Operations" expanded="false" rendered="#{loginBean.hasAccessL([act.pageQuotations, act.pageWalletsProcess, act.pageAssign, act.pagePartsCollection])}">
-						<p:menuitem value="Quotations" rendered="#{loginBean.hasAccess(act.pageQuotations)}" outcome="/dash/quotations" ajax="false" />
-						<p:menuitem value="Wallets Process" rendered="#{loginBean.hasAccess(act.pageWalletsProcess)}" outcome="/dash/wallets-process" ajax="false" />
-					</p:submenu>
-					<p:submenu label="Invoices" expanded="false" rendered="#{loginBean.hasAccessL([act.pageReceivables, act.pagePayables, act.pageIncompletePurchases, act.pagePurchaseSearch, act.pageSalesSearch, act.pagePurchaseReturn, act.pageSalesReturn])}">
-						<p:menuitem value="Sales Search" rendered="#{loginBean.hasAccess(act.pageSalesSearch)}" outcome="/dash/sales-search" ajax="false"/>
-						<p:menuitem value="Purchase Search" rendered="#{loginBean.hasAccess(act.pagePurchaseSearch)}" outcome="/dash/purchase-search" ajax="false"/>
-						<p:menuitem value="Sales Return" rendered="#{loginBean.hasAccess(act.pageSalesReturn)}" outcome="/dash/sales-return-search" ajax="false"/>
-						<p:menuitem value="Purchase Return" rendered="#{loginBean.hasAccess(act.pagePurchaseReturn)}" outcome="/dash/purchase-return-search" ajax="false"/>
-						<p:menuitem value="Payables" rendered="#{loginBean.hasAccess(act.pagePayables)}" outcome="/dash/payables" ajax="false"/>
-						<p:menuitem value="Receivables" rendered="#{loginBean.hasAccess(act.pageReceivables)}" outcome="/dash/receivables" ajax="false"/>
-						<p:menuitem value="Incomplete Purchases" rendered="#{loginBean.hasAccess(act.pageIncompletePurchases)}" outcome="/dash/purchases-incomplete" ajax="false"/>
-					</p:submenu>
-					<p:submenu label="Reports" expanded="false" rendered="#{loginBean.hasAccessL([act.pageShipmentsReport, act.pageInvoiceReport, act.pageOverallActivity, act.pageHitReport, act.pageCartDetails, act.pageSearchCarts, act.pageWalletsReport, act.pageLostSalesReport, act.pageMakeOrdersReport, act.pageRegistrationReport, act.pageCustomerActivity])}">
-						<p:menuitem value="Wallets Report" rendered="#{loginBean.hasAccess(act.pageWalletsReport)}" outcome="/dash/wallets-report" ajax="false" />
-						<p:menuitem value="Invoices Report" rendered="#{loginBean.hasAccess(act.pageInvoiceReport)}" outcome="/dash/sales-report2" ajax="false" />
-						<p:menuitem value="Shipments Report" rendered="#{loginBean.hasAccess(act.pageShipmentsReport)}" outcome="/dash/shipments-report" ajax="false" />
-						<p:menuitem value="Search Carts" rendered="#{loginBean.hasAccess(act.pageSearchCarts)}" outcome="/dash/search-carts" ajax="false" />
-						<p:menuitem value="Cart Details" rendered="#{loginBean.hasAccess(act.pageCartDetails)}" outcome="/dash/cart-details" ajax="false" />					
-						<p:menuitem value="Make Report" rendered="#{loginBean.hasAccess(act.pageMakeOrdersReport)}" outcome="/dash/make-orders" ajax="false" />
-						<p:menuitem value="Registration" rendered="#{loginBean.hasAccess(act.pageRegistrationReport)}" outcome="/dash/registration-report" ajax="false" />
-						<p:menuitem value="Customer Activity" rendered="#{loginBean.hasAccess(act.pageCustomerActivity)}" outcome="/dash/customer-activity-report" ajax="false" />
-						<p:menuitem value="Customer Hit" rendered="#{loginBean.hasAccess(act.pageHitReport)}" outcome="/dash/customer-hit-report" ajax="false" />
-						<p:menuitem value="Overall Activity" rendered="#{loginBean.hasAccess(act.pageOverallActivity)}" outcome="/dash/overall-activity-report" ajax="false" />
-						<p:menuitem value="Lost Sales" rendered="#{loginBean.hasAccess(act.pageLostSalesReport)}" outcome="/dash/lost-sales" ajax="false" />
-					</p:submenu>
-					<p:submenu label="QVM" expanded="false" rendered="#{loginBean.hasAccessL([act.pageShipmentsReport, act.pageInvoiceReport, act.pageOverallActivity, act.pageHitReport, act.pageCartDetails, act.pageSearchCarts, act.pageWalletsReport, act.pageLostSalesReport, act.pageMakeOrdersReport, act.pageRegistrationReport, act.pageCustomerActivity])}">
-						<p:menuitem value="Vendor Approval" rendered="#{loginBean.hasAccess(act.pageWalletsReport)}" outcome="/dash/wallets-report" ajax="false" />
-					</p:submenu>
-				</p:panelMenu>
+				<div class="w3-dropdown-hover">
+					<h:button class="w3-button w3-camo-black" value="Configurations" rendered="#{loginBean.hasAccessL([act.pageUsers, act.pageCouriers, act.pageRole, act.pageBanks, act.pageCountries, act.pageCities, act.pageVehicles])}" onclick="return false;"/>
+					 <div class="w3-dropdown-content w3-bar-block w3-border">
+					 	<h:outputLink value="/dashboard/dash/users" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageUsers)}">Users</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/roles" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageRole)}">Roles</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/banks" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageBanks)}">Banks</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/countries" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageCountries)}">Countries</h:outputLink>
+ 						<h:outputLink value="/dashboard/dash/cities" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageCities)}">Cities</h:outputLink>
+ 						<h:outputLink value="/dashboard/dash/vehicles" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageVehicles)}">Vehicles</h:outputLink>
+						<h:outputLink value="/dashboard/dash/couriers" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageCouriers)}">Couriers</h:outputLink>
+    				</div>
+				</div>
+				
+				<div class="w3-dropdown-hover">
+					<h:button class="w3-button w3-camo-black" value="Customer Service" rendered="#{loginBean.hasAccessL([act.pageNoVin, act.pageWire, act.pagePosponedSalesReport, act.pageFollowUpQuotations,act.pageCustomers])}" onclick="return false;" />
+					<div class="w3-dropdown-content w3-bar-block w3-border">
+					 	<h:outputLink value="/dashboard/dash/wire_transfers" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageWire)}">Wire Transfers</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/customers" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageCustomers)}">Customers</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/followups" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageFollowUpQuotations)}">Follow Up</h:outputLink>
+						<h:outputLink value="/dashboard/dash/postponed-sales" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pagePosponedSalesReport)}">Postponed</h:outputLink>
+						<h:outputLink value="/dashboard/dash/no-vin-carts" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageNoVin)}">No Vins</h:outputLink>
+    				</div>
+				</div>
+				<div class="w3-dropdown-hover">
+					<h:button class="w3-button w3-camo-black" value="Vendors" rendered="#{loginBean.hasAccessL([act.pageRegionsVendors, act.pagePromotionProviders, act.pageVendors])}" onclick="return false;"/>
+					<div class="w3-dropdown-content w3-bar-block w3-border">
+					 	<h:outputLink value="/dashboard/dash/vendors" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageVendors)}">Vendors</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/regions-vendors" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageRegionsVendors)}">Regions Vendors</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/vendor-join" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageVendorJoinRequest)}">Join Request</h:outputLink>
+						<h:outputLink value="/dashboard/dash/promotions" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pagePromotionProviders)}">Providers</h:outputLink>
+					</div>
+				</div>
+				<div class="w3-dropdown-hover">
+					<h:button class="w3-button w3-camo-black" value="Operations" rendered="#{loginBean.hasAccessL([act.pageQuotations, act.pageWalletsProcess, act.pageQuoting])}" onclick="return false;"/>
+					<div class="w3-dropdown-content w3-bar-block w3-border">
+					 	<h:outputLink value="/dashboard/dash/quotations" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageQuotations)}">Quotations</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/wallets-process" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageWalletsProcess)}">Wallets Process</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/quoting" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageQuoting)}">Quoting</h:outputLink>
+					</div>
+				</div>
+				<div class="w3-dropdown-hover">
+					<h:button class="w3-button w3-camo-black" value="Invoices" rendered="#{loginBean.hasAccessL([act.pageReceivables, act.pagePayables, act.pageIncompletePurchases, act.pagePurchaseSearch, act.pageSalesSearch, act.pagePurchaseReturn, act.pageSalesReturn])}" onclick="return false;"/>
+					<div class="w3-dropdown-content w3-bar-block w3-border">
+					 	<h:outputLink value="/dashboard/dash/sales-search" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageSalesSearch)}">Sales Search</h:outputLink>
+						<h:outputLink value="/dashboard/dash/purchase-search" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pagePurchaseSearch)}">Purchase Search</h:outputLink>
+					 	<h:outputLink value="/dashboard/dash/sales-return-search" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageSalesReturn)}">Sales Return</h:outputLink>					 	
+					 	<h:outputLink value="/dashboard/dash/purchase-return-search" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pagePurchaseReturn)}">Purchase Return</h:outputLink>					 	
+					 	<h:outputLink value="/dashboard/dash/payables" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pagePayables)}">Payables</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/receivables" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageReceivables)}">Receivables</h:outputLink>
+      					<h:outputLink value="/dashboard/dash/purchases-incomplete" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageIncompletePurchases)}">Incomplete Purchases</h:outputLink>      					
+					</div>
+				</div>
+				<div class="w3-dropdown-hover">
+					<h:button class="w3-button w3-camo-black" value="Reports" rendered="#{loginBean.hasAccessL([act.pageShipmentsReport, act.pageInvoiceReport, act.pageOverallActivity, act.pageHitReport, act.pageCartDetails, act.pageSearchCarts, act.pageWalletsReport, act.pageLostSalesReport, act.pageMakeOrdersReport, act.pageRegistrationReport, act.pageCustomerActivity])}" onclick="return false;"/>
+					<div class="w3-dropdown-content w3-bar-block w3-border">
+					 	<h:outputLink value="/dashboard/dash/wallets-report" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageWalletsReport)}">Wallets Report</h:outputLink>
+						<h:outputLink value="/dashboard/dash/sales-report2" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageInvoiceReport)}">Invoices Report</h:outputLink>
+						<h:outputLink value="/dashboard/dash/shipments-report" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageShipmentsReport)}">Shipments Report</h:outputLink>
+						<h:outputLink value="/dashboard/dash/search-carts" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageSearchCarts)}">Search Carts</h:outputLink>
+						<h:outputLink value="/dashboard/dash/cart-details" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageCartDetails)}">Cart Details</h:outputLink>
+						<h:outputLink value="/dashboard/dash/make-orders" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageMakeOrdersReport)}">Make Report</h:outputLink>
+						<h:outputLink value="/dashboard/dash/registration-report" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageRegistrationReport)}">Registration</h:outputLink>
+						<h:outputLink value="/dashboard/dash/customer-activity-report" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageCustomerActivity)}">Customer Activity</h:outputLink>
+						<h:outputLink value="/dashboard/dash/customer-hit-report" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageHitReport)}">Customer Hit</h:outputLink>
+						<h:outputLink value="/dashboard/dash/overall-activity-report" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageOverallActivity)}">Overall Activity</h:outputLink>
+						<h:outputLink value="/dashboard/dash/lost-sales" styleClass="w3-bar-item w3-button w3-camo-dark-grey" rendered="#{loginBean.hasAccess(act.pageLostSalesReport)}">Lost Sales</h:outputLink>
+					</div>
+				</div>
+				
 			</h:form>
 		</div>
-	</p:layoutUnit>
+		</div>
 </ui:composition>

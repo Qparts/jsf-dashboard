@@ -38,11 +38,15 @@ public class WalletItem implements Serializable{
 	@JsonIgnore
 	private boolean refund;
 	@JsonIgnore
+	private boolean quotation;
+	@JsonIgnore
 	private boolean purchase;
 	@JsonIgnore
 	private Product product;
 	@JsonIgnore
 	private boolean shipmentSelection;
+	@JsonIgnore
+	private double newPrice;
 	
 	
 	@JsonIgnore
@@ -233,6 +237,22 @@ public class WalletItem implements Serializable{
 
 	public void setShipmentSelection(boolean shipmentSelection) {
 		this.shipmentSelection = shipmentSelection;
+	}
+
+	public double getNewPrice() {
+		return newPrice;
+	}
+
+	public void setNewPrice(double newPrice) {
+		this.newPrice = newPrice;
+	}
+
+	public boolean isQuotation() {
+		return quotation;
+	}
+
+	public void setQuotation(boolean quotation) {
+		this.quotation = quotation;
 	}
 	
 	

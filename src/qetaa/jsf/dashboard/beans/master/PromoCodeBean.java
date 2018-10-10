@@ -42,7 +42,7 @@ public class PromoCodeBean implements Serializable {
 			this.discountPromo = false;
 			this.discountPercentage = 0.05;
 		} catch (Exception ex) {
-			Helper.redirect("no-vin-carts");
+			Helper.redirect("home");
 		}
 	}
 	

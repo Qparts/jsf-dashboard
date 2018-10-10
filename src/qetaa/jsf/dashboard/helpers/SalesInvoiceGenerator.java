@@ -23,7 +23,7 @@ import qetaa.jsf.dashboard.model.sales.SalesProduct;
 public class SalesInvoiceGenerator {
 	private static final String LOGO = "/resources/images/logo-qetaa.jpg";
 	private static final String JASPER_FILE = "/WEB-INF/jasper/salesInvoice.jasper";
-	private static final String VAT_NUMBER = "3021266400003";
+	private static final String VAT_NUMBER = "310229170200003";
 	
 	private Sales sales;
 	private InputStream jasperIS;
@@ -129,6 +129,10 @@ public class SalesInvoiceGenerator {
 	
 
 	public class SalesItem {
+		
+		public SalesItem() {
+			
+		}
 		private String itemNumber;
 		private String itemName;
 		private double price;

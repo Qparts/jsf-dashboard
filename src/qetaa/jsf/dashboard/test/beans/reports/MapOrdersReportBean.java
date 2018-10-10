@@ -27,7 +27,6 @@ public class MapOrdersReportBean implements Serializable{
 		Response r = reqs.getSecuredRequest(AppConstants.GET_ORDERS_MAP_REPORT);
 		if(r.getStatus() == 200) {
 			orderSummary = r.readEntity(OrdersSummary.class);
-			System.out.println(orderSummary.getCountrySummaries().size());
 		}
 	}
 	

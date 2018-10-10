@@ -3,22 +3,22 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core">
 	<header>
-		<div class="container headertop">
-			<div class="row">
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<a href="/index"> 
-						<h:graphicImage value="/resources/images/logo.png"
-							rendered="true" styleClass="img-responsive logo" />
-					</a>
-				</div>
-				<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-					<ul class="nav navbar-nav navbar-right">
-						<li><i class="fa fa-headphones" aria-hidden="true"></i>#{lex.customerServiceSpecial}</li>
-						<li><i class="fa fa-credit-card-alt" aria-hidden="true"></i>#{lex.bestPricesGurantee}</li>
-						<li><i class="fa fa-star" aria-hidden="true"></i>#{lex.qualityServiceGurantee}</li>
-					</ul>
-				</div>
+		<div class="w3-container w3-camo-black" style="width:100%" >
+		<div class="">
+			<div align="left" class="w3-padding-16 w3-col s12 m12 l6">
+				<h:form id="notification-form">
+					<div class="w3-col s12">
+						
+					</div>
+				</h:form>
 			</div>
+			<div align="right" class="w3-hide-small w3-hide-medium w3-col s0 l6">
+				<h:outputText value="dashboard"
+					style="color:white;vertical-align:top;" />
+				<h:graphicImage value="/resources/images/logo_no_text.png"
+					width="61" rendered="true" />
+			</div>
+		</div>
 		</div>
 	</header>
 

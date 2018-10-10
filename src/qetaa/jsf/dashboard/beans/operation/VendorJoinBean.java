@@ -34,6 +34,13 @@ public class VendorJoinBean implements Serializable{
 		initVendorJoins();
 	}
 	
+	private void initVendorJoins() {
+		Response r = reqs.getSecuredRequest(AppConstants.GET_VENDOR_JOIN_REQUESTS);
+		if(r.getStatus() == 200) {
+			vendorJoins = r.readEntity(new GenericType<List<VendorJoinRequest>>() {});
+		}
+	}
+	
 	public void archiveVendorJoin() {
 		Response r = reqs.deleteSecuredRequest(AppConstants.deleteVendorJoinRequest(this.selectedVendorJoin.getId()));
 		if(r.getStatus() == 201) {
@@ -44,12 +51,7 @@ public class VendorJoinBean implements Serializable{
 		}
 	}
 	
-	private void initVendorJoins() {
-		Response r = reqs.getSecuredRequest(AppConstants.GET_VENDOR_JOIN_REQUESTS);
-		if(r.getStatus() == 200) {
-			vendorJoins = r.readEntity(new GenericType<List<VendorJoinRequest>>() {});
-		}
-	}
+	
 
 	public List<VendorJoinRequest> getVendorJoins() {
 		return vendorJoins;

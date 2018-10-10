@@ -8,20 +8,15 @@
 			<p:panel toggleable="true" header="Quotation Information"
 				collapsed="false" toggleSpeed="100">
 				<h:panelGrid columns="2">
-					<h:outputText value="Advisor " />
-					<h:inputText readonly="true" styleClass="w3-text-grey"
-						value="#{quotation.createdByObject.firstName} #{quotation.createdByObject.lastName}" />
+					<h:outputText value="Created By" />
+					<h:inputText readonly="true" styleClass="w3-text-grey" rendered="#{quotation.createdBy gt 0}"
+						value="#{usersBean.getUserFromId(quotation.createdBy).firstName} #{usersBean.getUserFromId(quotation.createdBy).lastName}" />
+						<h:inputText readonly="true" styleClass="w3-text-grey" rendered="#{quotation.createdBy eq 0}"
+						value="Customer" />
 					<h:outputText value="Created On "
 						rendered="#{quotation.status != 'N'}" />
 					<h:inputText readonly="true" styleClass="w3-text-grey"
 						value="#{quotation.created}" rendered="#{quotation.status != 'N'}">
-						<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
-					</h:inputText>
-					<h:outputText value="Deadline"
-						rendered="#{quotation.status != 'N'}" />
-					<h:inputText readonly="true" styleClass="w3-text-grey"
-						value="#{quotation.deadline}"
-						rendered="#{quotation.status != 'N'}">
 						<f:convertDateTime pattern="dd-MMM-yyyy HH:mm" />
 					</h:inputText>
 					<h:outputText value="Status " />
@@ -79,121 +74,28 @@
 								<f:ajax execute="table" render="@form" />
 							</h:commandButton>
 						</h:column>
-
-						<h:column
-							rendered="#{quotationBean.isFirstColumnShown(quotation)}">
+						<h:column >
 							<f:facet name="header">
-								<div align="center">
-									<h:outputText value="$V1" />
-								</div>
+								<h:outputText value="Product" />
 							</f:facet>
-							<div align="center">
-								<p:commandLink styleClass="w3-tag w3-green q-tag-padding"
-									value="#{item.vendorItems.get(0).itemCostPrice}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									rendered="#{item.vendorItems.get(0).status eq 'C'}"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(0))}" />
-								<p:commandLink value="waiting"
-									styleClass="w3-tag w3-indigo q-tag-padding"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									rendered="#{item.vendorItems.get(0).status eq 'W'}"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(0))}" />
-								<p:commandLink value="N/A"
-									styleClass="w3-tag w3-red q-tag-padding"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									rendered="#{item.vendorItems.get(0).status eq 'N'}"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(0))}" />
-								<p:commandLink value="finder"
-									styleClass="w3-tag w3-red q-tag-padding"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									rendered="#{item.vendorItems.get(0).status eq 'F'}"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(0))}" />
-							</div>
+							<ui:repeat var="res" value="#{item.quotationItemResponses}" rendered="#{item.quotationItemResponses.size() gt 0}">
+								<h:outputText value="#{res.product.productNumber}" />
+								<h:outputText value="N/A" styleClass="w3-tag w3-orange w3-text-white" rendered="#{res.status eq 'N'}"/>							
+							</ui:repeat>
+								<h:outputText rendered="#{item.quotationItemResponses.size() eq 0}" value="Waiting" styleClass="w3-tag w3-indigo" />
 						</h:column>
-						<h:column
-							rendered="#{quotationBean.isSecondColumnShown(quotation)}">
+						<h:column >
 							<f:facet name="header">
-								<div align="center">
-									<h:outputText value="$V2" />
-								</div>
+								<h:outputText value="Price" />
 							</f:facet>
-							<div align="center">
-								<p:commandLink value="#{item.vendorItems.get(1).itemCostPrice}"
-									styleClass="w3-tag w3-green q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 1) and item.vendorItems.get(1).status eq 'C'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(1))}" />
-								<p:commandLink value="waiting"
-									styleClass="w3-tag w3-indigo q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 1) and item.vendorItems.get(1).status eq 'W'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(1))}" />
-								<p:commandLink value="N/A"
-									styleClass="w3-tag w3-red q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 1) and item.vendorItems.get(1).status eq 'N'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(1))}" />
-							</div>
-						</h:column>
-						<h:column
-							rendered="#{quotationBean.isThirdColumnShown(quotation)}">
-							<f:facet name="header">
-								<div align="center">
-									<h:outputText value="$V3" />
-								</div>
-							</f:facet>
-							<div align="center">
-								<p:commandLink value="#{item.vendorItems.get(2).itemCostPrice}"
-									styleClass="w3-tag w3-green q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 2) and item.vendorItems.get(2).status eq 'C'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(2))}" />
-								<p:commandLink value="waiting"
-									styleClass="w3-tag w3-indigo q-tag-padding"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									rendered="#{(item.vendorItems.size() gt 2) and item.vendorItems.get(2).status eq 'W'}"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(2))}" />
-								<p:commandLink value="N/A"
-									styleClass="w3-tag w3-red q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 2) and item.vendorItems.get(2).status eq 'N'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(2))}" />
-							</div>
-						</h:column>
-						<h:column
-							rendered="#{quotationBean.isFourthColumnShown(quotation)}">
-							<f:facet name="header">
-								<div align="center">
-									<h:outputText value="$V4" />
-								</div>
-							</f:facet>
-							<div align="center">
-								<p:commandLink value="#{item.vendorItems.get(3).itemCostPrice}"
-									styleClass="w3-tag w3-green q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 3) and item.vendorItems.get(3).status eq 'C'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(3))}" />
-								<p:commandLink value="waiting"
-									styleClass="w3-tag w3-indigo q-tag-padding"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									rendered="#{(item.vendorItems.size() gt 3) and item.vendorItems.get(3).status eq 'W'}"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(3))}" />
-								<p:commandLink value="N/A"
-									styleClass="w3-tag w3-red q-tag-padding"
-									rendered="#{(item.vendorItems.size() gt 3) and item.vendorItems.get(3).status eq 'N'}"
-									oncomplete="PF('qvdlgwv').show()" update=":form-qv"
-									actionListener="#{quotationBean.setSelectedVendorItem(item.vendorItems.get(3))}" />
-							</div>
-						</h:column>
-						<h:column rendered="#{quotation.allResponsesNotAvailable()}">
-							<f:facet name="header">
-								<h:outputText value="Add" />
-							</f:facet>
-							<p:commandButton value="+" oncomplete="PF('dlgmanualwv').show()"
-								update=":form-manual"
-								actionListener="#{quotationBean.selectQuotationItem(item)}"
-								rendered="#{item.allVendorItemsNotAvailable()}"
-								styleClass="q-btn" />
+							<ui:repeat var="res" value="#{item.quotationItemResponses}" rendered="#{item.quotationItemResponses.size() gt 0}">
+								<h:outputText value="#{res.productPrice.costPriceWv}" styleClass="w3-tag w3-green" rendered="#{item.status eq 'C'}">
+									<f:convertNumber currencySymbol="SR " type="currency"/>
+								</h:outputText>
+								<h:outputText value="Incomplete" styleClass="w3-tag w3-orange w3-text-white" rendered="#{res.status eq 'I'}"/>
+								<h:outputText value="N/A" styleClass="w3-tag w3-orange w3-text-white" rendered="#{res.status eq 'N'}"/>
+							</ui:repeat>
+							<h:outputText rendered="#{item.quotationItemResponses.size() eq 0}" value="Waiting" styleClass="w3-tag w3-indigo" />
 						</h:column>
 						<h:column rendered="#{quotation.status != 'N'}">
 							<f:facet name="header">
@@ -218,13 +120,12 @@
 								
 							<h:commandButton
 								rendered="#{(quotation.status eq 'N' and quotationBean.cart.status eq 'N') or (quotation.manuallyAdded)}"
-								styleClass="q-btn" value="Send all to Finders"
+								styleClass="q-btn" value="Send for Pricing"
 								actionListener="#{quotationBean.submitQuotationOrderToFinder(quotation)}" />
 							
-							
-							<h:commandButton
+							<p:commandButton
 								rendered="#{quotation.status eq 'N' and quotationBean.cart.status eq 'A'}"
-								styleClass="q-btn" value="Update Quotation"
+								styleClass="q-btn" value="Send for Pricing"
 								actionListener="#{quotationBean.updateQuotationOrder(quotation)}" />
 						</div>
 					</div>

@@ -34,7 +34,6 @@ public class QuotationRequestBean implements Serializable {
 			initquantityArray();
 
 		} catch (Exception ex) {
-			System.out.println("an error occured");
 		}
 	}
 

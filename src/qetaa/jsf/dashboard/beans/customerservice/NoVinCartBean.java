@@ -120,7 +120,7 @@ public class NoVinCartBean implements Serializable {
 		if (cart.getVin().length() == 17) {
 			cart.setVin(cart.getVin().toUpperCase());
 			cart.setNoVin(false);
-			Response r = reqs.putSecuredRequest(AppConstants.PUT_EDIT_CART, this.cart);
+			Response r = reqs.putSecuredRequest(AppConstants.PUT_EDIT_CART_VIN_ADDED, this.cart);
 			if (r.getStatus() == 201) {
 				Helper.redirect("no-vin-carts");
 			} else {

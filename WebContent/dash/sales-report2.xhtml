@@ -7,16 +7,12 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<title>Sales Report</title>
-	<ui:include src="/_includes/_dashboard_header" />
+	<ui:include src="/_includes/_dashboard_header.xhtml" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
+<h:outputText value="#{loginBean.checkAccessRedirectHome(act.pageWalletsReport)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
 			<div class="w3-container">
 				<div align="center" class="w3-padding-8">
 					<h:outputText value="Sales Report" styleClass="q-large-text" />
@@ -89,7 +85,7 @@
 							</div>
 						</div>
 						<div class="w3-row">
-							<div class="w3-third">
+							<div class="w3-col s12 m6 l4 w3-border">
 								<h:panelGrid columns="2">
 									<h:outputText value="Sales" />
 									<h:inputText value="#{salesReport3Bean.completeTotalSalesWv}"
@@ -111,7 +107,7 @@
 									</h:inputText>
 								</h:panelGrid>
 							</div>
-							<div class="w3-third">
+							<div class="w3-col s12 m6 l4 w3-border">
 								<h:panelGrid columns="2">
 									<h:outputText value="Sales Cost" />
 									<h:inputText value="#{salesReport3Bean.completedTotalCostWv}"
@@ -132,7 +128,7 @@
 									</h:inputText>
 								</h:panelGrid>
 							</div>
-							<div class="w3-third">
+							<div class="w3-col s12 m6 l4 w3-border">
 								<h:panelGrid columns="2">
 									<h:outputText value="Sales Profit" />
 									<h:inputText
@@ -163,7 +159,7 @@
 							</div>
 						</div>
 						<div class="w3-row">
-							<div class="w3-third">
+							<div class="w3-col s12 m6 l4 w3-border">
 								<h:panelGrid columns="2">
 									<h:outputText value="Sales" />
 									<h:inputText value="#{salesReport3Bean.incompleteTotalSalesWv}"
@@ -185,7 +181,7 @@
 									</h:inputText>
 								</h:panelGrid>
 							</div>
-							<div class="w3-third">
+							<div class="w3-col s12 m6 l4 w3-border">
 								<h:panelGrid columns="2">
 									<h:outputText value="Sales Cost" />
 									<h:inputText value="#{salesReport3Bean.incompletedTotalCostWv}"
@@ -206,7 +202,7 @@
 									</h:inputText>
 								</h:panelGrid>
 							</div>
-							<div class="w3-third">
+							<div class="w3-col s12 m6 l4 w3-border">
 								<h:panelGrid columns="2">
 									<h:outputText value="Sales Profit"	/>
 									<h:inputText
@@ -254,6 +250,12 @@
 								<h:outputText value="Cart#" />
 							</f:facet>
 							<h:outputText value="#{holder.sales.cart.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Customer ID" />
+							</f:facet>
+							<h:outputText value="#{holder.sales.cart.customer.id}" />
 						</h:column>
 						<h:column>
 							<f:facet name="header">
@@ -389,6 +391,13 @@
 						</h:column>
 						<h:column>
 							<f:facet name="header">
+								<h:outputText value="Customer ID" />
+							</f:facet>
+							<h:outputText
+								value="#{sreturn.salesReturn.sales.cart.customer.id}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">
 								<h:outputText value="Customer" />
 							</f:facet>
 							<h:outputText
@@ -498,7 +507,5 @@
 					</h:dataTable>
 				</div>
 			</div>
-		</p:layoutUnit>
-	</p:layout>
 </h:body>
 </html>

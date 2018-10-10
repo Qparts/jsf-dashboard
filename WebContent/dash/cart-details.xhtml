@@ -10,13 +10,12 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
+	<h:outputText
+		value="#{loginBean.checkAccessRedirectHome(act.pageCartDetails)}" />
+	<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
+	<div>
+		<div class="w3-main">
 			<div class="w3-container">
 				<div align="center" class="w3-padding-8">
 					<h:outputText value="Cart Details" styleClass="q-large-text" />
@@ -43,7 +42,7 @@
 					</h:form>
 					<br />
 					<div class="w3-row-padding" style="margin: 0 -16px">
-						<div class="w3-half">
+						<div class="w3-col s12 l6">
 							<p:panel toggleable="true" header="Cart Info" collapsed="false"
 								toggleSpeed="100">
 								<h:panelGrid columns="2">
@@ -107,7 +106,7 @@
 										<h:inputText value="#{cartDetailsBean.cart.customer.email}"
 											readonly="true" />
 										<h:outputText value="City" />
-										<h:inputText value="#{cartDetailsBean.cart.city.name}"
+										<h:inputText value="#{cityBean.getCityFromId(cartDetailsBean.cart.cityId).name}"
 											readonly="true" />
 										<h:outputText value="Delivery Fees" />
 										<h:inputText value="#{cartDetailsBean.cart.deliveryFees}"
@@ -117,7 +116,9 @@
 									</h:panelGrid>
 								</h:panelGrid>
 								<div align="center">
-									<h:outputText value="#{cartDetailsBean.cart.promoCodeObject.provider.name}" styleClass="w3-tag w3-green"/>
+									<h:outputText
+										value="#{cartDetailsBean.cart.promoCodeObject.provider.name}"
+										styleClass="w3-tag w3-green" />
 								</div>
 								<h:dataTable value="#{cartDetailsBean.cart.cartItems}"
 									var="item" styleClass="w3-border w3-table w3-striped"
@@ -207,7 +208,7 @@
 
 						</div>
 
-						<div class="w3-half">
+						<div class="w3-col s12 l6">
 							<h:form>
 								<ui:repeat var="quotation" value="#{cartDetailsBean.quotations}">
 									<p:panel toggleable="true" header="Quotation Order"
@@ -215,7 +216,10 @@
 										<h:panelGrid columns="2">
 											<h:outputText value="Advisor " />
 											<h:inputText readonly="true" styleClass="w3-text-grey"
-												value="#{quotation.createdByObject.firstName} #{quotation.createdByObject.lastName}" />
+												rendered="#{quotation.createdBy gt 0}"
+												value="#{usersBean.getUserFromId(quotation.createdBy).firstName} #{usersBean.getUserFromId(quotation.createdBy).lastName}" />
+											<h:inputText readonly="true" styleClass="w3-text-grey"
+												rendered="#{quotation.createdBy eq 0}" value="Customer" />
 											<h:outputText value="Created On "
 												rendered="#{quotation.status != 'N'}" />
 											<h:inputText readonly="true" styleClass="w3-text-grey"
@@ -241,7 +245,7 @@
 												rendered="#{quotation.status == 'C'}" />
 										</h:panelGrid>
 										<br />
-										<h:dataTable id="table"
+										<h:dataTable id="table" rendered="true"
 											styleClass="w3-center w3-table w3-striped w3-border"
 											value="#{quotation.quotationItems}" var="item"
 											headerClass="w3-border-bottom w3-light-grey">
@@ -266,146 +270,46 @@
 													<h:outputText value="#{item.quantity}" />
 												</div>
 											</h:column>
-											<h:column
-												rendered="#{cartDetailsBean.isFirstColumnShown(quotation)}">
+											<h:column>
+												<f:facet name="header">
+													<h:outputText value="Product" />
+												</f:facet>
+												<ui:repeat var="res" value="#{item.quotationItemResponses}"
+													rendered="#{item.quotationItemResponses.size() gt 0}">
+													<h:outputText value="#{res.product.productNumber}" />
+													<h:outputText value="N/A"
+														styleClass="w3-tag w3-orange w3-text-white"
+														rendered="#{res.status eq 'N'}" />
+												</ui:repeat>
+												<h:outputText
+													rendered="#{item.quotationItemResponses.size() eq 0}"
+													value="Waiting" styleClass="w3-tag w3-indigo" />
+											</h:column>
+											<h:column>
 												<f:facet name="header">
 													<div align="center">
-														<h:outputText value="$V1" />
+														<h:outputText value="Price" />
 													</div>
 												</f:facet>
-												<div align="center">
-													<p:commandLink styleClass="w3-tag w3-green q-tag-padding"
-														value="#{item.vendorItems.get(0).itemCostPrice}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														rendered="#{item.vendorItems.get(0).status eq 'C'}"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(0))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="waiting"
-														styleClass="w3-tag w3-indigo q-tag-padding"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														rendered="#{item.vendorItems.get(0).status eq 'W'}"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(0))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
+												<ui:repeat var="res" value="#{item.quotationItemResponses}"
+													rendered="#{item.quotationItemResponses.size() gt 0}">
+													<h:outputText value="#{res.productPrice.costPriceWv}"
+														styleClass="w3-tag w3-green"
+														rendered="#{item.status eq 'C'}">
+														<f:convertNumber currencySymbol="SR " type="currency" />
+													</h:outputText>
+													<h:outputText value="Incomplete"
+														styleClass="w3-tag w3-orange w3-text-white"
+														rendered="#{res.status eq 'I'}" />
+													<h:outputText value="N/A"
+														styleClass="w3-tag w3-orange w3-text-white"
+														rendered="#{res.status eq 'N'}" />
+												</ui:repeat>
+												<h:outputText
+													rendered="#{item.quotationItemResponses.size() eq 0}"
+													value="Waiting" styleClass="w3-tag w3-indigo" />
+											</h:column>
 
-													<p:commandLink value="N/A"
-														styleClass="w3-tag w3-red q-tag-padding"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														rendered="#{item.vendorItems.get(0).status eq 'N'}"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(0))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-												</div>
-											</h:column>
-											<h:column
-												rendered="#{cartDetailsBean.isSecondColumnShown(quotation)}">
-												<f:facet name="header">
-													<div align="center">
-														<h:outputText value="$V2" />
-													</div>
-												</f:facet>
-												<div align="center">
-													<p:commandLink
-														value="#{item.vendorItems.get(1).itemCostPrice}"
-														styleClass="w3-tag w3-green q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 1) and item.vendorItems.get(1).status eq 'C'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(1))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="waiting"
-														styleClass="w3-tag w3-indigo q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 1) and item.vendorItems.get(1).status eq 'W'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(1))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="N/A"
-														styleClass="w3-tag w3-red q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 1) and item.vendorItems.get(1).status eq 'N'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														action="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(1))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-												</div>
-											</h:column>
-											<h:column
-												rendered="#{cartDetailsBean.isThirdColumnShown(quotation)}">
-												<f:facet name="header">
-													<div align="center">
-														<h:outputText value="$V3" />
-													</div>
-												</f:facet>
-												<div align="center">
-													<p:commandLink
-														value="#{item.vendorItems.get(2).itemCostPrice}"
-														styleClass="w3-tag w3-green q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 2) and item.vendorItems.get(2).status eq 'C'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(2))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="waiting"
-														styleClass="w3-tag w3-indigo q-tag-padding"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														rendered="#{(item.vendorItems.size() gt 2) and item.vendorItems.get(2).status eq 'W'}"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(2))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="N/A"
-														styleClass="w3-tag w3-red q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 2) and item.vendorItems.get(2).status eq 'N'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(2))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-												</div>
-											</h:column>
-											<h:column
-												rendered="#{cartDetailsBean.isFourthColumnShown(quotation)}">
-												<f:facet name="header">
-													<div align="center">
-														<h:outputText value="$V4" />
-													</div>
-												</f:facet>
-												<div align="center">
-													<p:commandLink
-														value="#{item.vendorItems.get(3).itemCostPrice}"
-														styleClass="w3-tag w3-green q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 3) and item.vendorItems.get(3).status eq 'C'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(3))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="waiting"
-														styleClass="w3-tag w3-indigo q-tag-padding"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														rendered="#{(item.vendorItems.size() gt 3) and item.vendorItems.get(3).status eq 'W'}"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(3))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-													<p:commandLink value="N/A"
-														styleClass="w3-tag w3-red q-tag-padding"
-														rendered="#{(item.vendorItems.size() gt 3) and item.vendorItems.get(3).status eq 'N'}"
-														oncomplete="PF('qvdlgwv').show()" process="@this"
-														update=":form-qv"
-														actionListener="#{cartDetailsBean.selectVendorItem(item.vendorItems.get(3))}">
-														<p:ajax update=":form-qv" />
-													</p:commandLink>
-												</div>
-											</h:column>
 										</h:dataTable>
 
 
@@ -658,8 +562,7 @@
 										<f:convertNumber type="currency" currencySymbol="SR " />
 									</h:outputText>
 									<h:outputText value="Promotion Discount" />
-									<h:outputText
-										value="#{cartDetailsBean.discountTotal}"
+									<h:outputText value="#{cartDetailsBean.discountTotal}"
 										style="color:red;">
 										<f:convertNumber type="currency" currencySymbol="SR " />
 									</h:outputText>
@@ -694,7 +597,7 @@
 					</div>
 					<div>
 						<br />
-						<p:timeline id="timeline" styleClass="w3-border"
+						<p:timeline id="timeline" styleClass="w3-border" rendered="false"
 							value="#{cartDetailsBean.timeline}" zoomable="false"
 							movable="false" eventStyle="box" axisOnTop="true"
 							stackEvents="false">
@@ -791,87 +694,87 @@
 					</div>
 				</p:dialog>
 			</h:form>
-			
-			
-			<style type="text/css">
-    			/* Custom styles for the Timeline */  
-    			div.timeline-frame {  
-        			border-color: #5D99C3;  
-        			border-radius: 5px;  
-    			}  
- 
-    			div.timeline-axis {  
-        			border-color: #5D99C3;  
-        			background-color: #5D99C3;  
-        			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5D99C3', endColorstr='#3A6DA0') alpha(opacity = 100);  
-        			background: -webkit-gradient(linear, left top, left bottom, from(#5D99C3), to(#3A6DA0));  
-        			background: -moz-linear-gradient(top,  #5D99C3,  #3A6DA0);  
-        			-khtml-opacity: 1;  
-        			-moz-opacity: 1;  
-        			opacity: 1;  
-    			}  
- 
-    			div.timeline-groups-axis {  
-        			border-color: #5D99C3;  
-    			}  
- 
-    			div.timeline-groups-axis-onleft {  
-        			border-style: none solid none none;  
-    			}  
- 
-    			div.timeline-axis-text {  
-        			color: white;  
-    			}  
- 
-    			div.timeline-event {  
-        			color: white !important;  
-        			border-radius: 5px !important;  
-    			}  
- 
-    			div.timeline-event-content {  
-        			padding: 5px;  
-        			text-shadow: none;  
-    			}  
- 
-    			div.parts-ordered {  
-        			background: #607d8b none !important;  /* red */  
-        			border-color: #607d8b !important;     /* red */  
-    			}  
- 
-    			div.quotation-submitted {  
-        			background: #3f51b5 none !important;  /* green */  
-        			border-color: #3f51b5 !important;     /* green */  
-    			}  
- 
-    			div.cart-created{
-    				color:#000 !important;
-        			background: #ffeb3b none !important;  /* orange */  
-        			border-color: #ffeb3b !important;     /* orange */  
-    			}  
-    			
-    			div.cart-archived{  
-        			background: #f44336 none !important;  /* orange */  
-        			border-color: #f44336 !important;     /* orange */  
-    			}  
-    			
-    			div.cart-closed{  
-        			background: #ff9800 none !important;  /* orange */  
-        			border-color: #ff9800 !important;     /* orange */  
-    			}  
-    			
-    			div.parts-shipped{  
-        			background: #4CAF50 none !important;  /* orange */  
-        			border-color: #4CAF50 !important;     /* orange */  
-    			}  
-    			
- 
-    			div.timeline-event-selected {  
-        			background: #BECEFE none !important;  
-        			border-color: #97B0F8 !important;  
-    			}  
-		</style>
 
-		</p:layoutUnit>
-	</p:layout>
+
+			<style type="text/css">
+/* Custom styles for the Timeline */
+div.timeline-frame {
+	border-color: #5D99C3;
+	border-radius: 5px;
+}
+
+div.timeline-axis {
+	border-color: #5D99C3;
+	background-color: #5D99C3;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#5D99C3',
+		endColorstr='#3A6DA0') alpha(opacity = 100);
+	background: -webkit-gradient(linear, left top, left bottom, from(#5D99C3),
+		to(#3A6DA0));
+	background: -moz-linear-gradient(top, #5D99C3, #3A6DA0);
+	-khtml-opacity: 1;
+	-moz-opacity: 1;
+	opacity: 1;
+}
+
+div.timeline-groups-axis {
+	border-color: #5D99C3;
+}
+
+div.timeline-groups-axis-onleft {
+	border-style: none solid none none;
+}
+
+div.timeline-axis-text {
+	color: white;
+}
+
+div.timeline-event {
+	color: white !important;
+	border-radius: 5px !important;
+}
+
+div.timeline-event-content {
+	padding: 5px;
+	text-shadow: none;
+}
+
+div.parts-ordered {
+	background: #607d8b none !important; /* red */
+	border-color: #607d8b !important; /* red */
+}
+
+div.quotation-submitted {
+	background: #3f51b5 none !important; /* green */
+	border-color: #3f51b5 !important; /* green */
+}
+
+div.cart-created {
+	color: #000 !important;
+	background: #ffeb3b none !important; /* orange */
+	border-color: #ffeb3b !important; /* orange */
+}
+
+div.cart-archived {
+	background: #f44336 none !important; /* orange */
+	border-color: #f44336 !important; /* orange */
+}
+
+div.cart-closed {
+	background: #ff9800 none !important; /* orange */
+	border-color: #ff9800 !important; /* orange */
+}
+
+div.parts-shipped {
+	background: #4CAF50 none !important; /* orange */
+	border-color: #4CAF50 !important; /* orange */
+}
+
+div.timeline-event-selected {
+	background: #BECEFE none !important;
+	border-color: #97B0F8 !important;
+}
+</style>
+		</div>
+	</div>
 </h:body>
 </html>

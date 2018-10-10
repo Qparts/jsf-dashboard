@@ -31,6 +31,7 @@ public class Wallet implements Serializable{
 	private Double creditFees;//credit fees
 	private Double discountPercentage;
 	private List<WalletItem> walletItems;
+	private List<WalletQuotation> walletQuotations;
 	
 	
 	@JsonIgnore
@@ -241,6 +242,16 @@ public class Wallet implements Serializable{
 	public void setCart(Cart cart) {
 		this.cart = cart;
 	}
+
+	public List<WalletQuotation> getWalletQuotations() {
+		return walletQuotations;
+	}
+
+	public void setWalletQuotations(List<WalletQuotation> walletQuotations) {
+		this.walletQuotations = walletQuotations;
+	}
+	
+	
 	
 	
 	

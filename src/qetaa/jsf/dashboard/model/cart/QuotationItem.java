@@ -1,12 +1,11 @@
 package qetaa.jsf.dashboard.model.cart;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import qetaa.jsf.dashboard.model.product.Product;
 
 public class QuotationItem implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -19,14 +18,35 @@ public class QuotationItem implements Serializable {
 	private String itemDescAr;
 	private Date created;
 	private char status;
+	private List<QuotationVendorItem> vendorItems;
+	private List<QuotationItemResponse> quotationItemResponses;
 	@JsonIgnore
 	private boolean edit;
 	@JsonIgnore
 	private boolean notAvailable;
-
-	private List<QuotationVendorItem> vendorItems;
+	
+	public QuotationItem() {
+		this.quotationItemResponses = new ArrayList<>();
+	}
+	
+	
+	public List<QuotationItemResponse> getQuotationItemResponses() {
+		return quotationItemResponses;
+	}
+	public void setQuotationItemResponses(List<QuotationItemResponse> quotationItemResponses) {
+		this.quotationItemResponses = quotationItemResponses;
+	}
+	
 	@JsonIgnore
-	private Product product;
+	public boolean hasSavedResponse() {
+		for(QuotationItemResponse qir : this.quotationItemResponses ) {
+			if(qir.getId() > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@JsonIgnore
 	public boolean allVendorItemsNotAvailable() {
 		boolean found = true;
@@ -43,16 +63,11 @@ public class QuotationItem implements Serializable {
 	}
 	
 	@JsonIgnore
-	public Product getProduct() {
-		return product;
+	public void chooseNotAvailable() {
+		this.getQuotationItemResponses().clear();
 	}
 	
-	@JsonIgnore
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
-
+	
 	public List<QuotationVendorItem> getVendorItems() {
 		return vendorItems;
 	}
@@ -206,5 +221,7 @@ public class QuotationItem implements Serializable {
 	public void setNotAvailable(boolean notAvailable) {
 		this.notAvailable = notAvailable;
 	}
+	
+	
 
 }

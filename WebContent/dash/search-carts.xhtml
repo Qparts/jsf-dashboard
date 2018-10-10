@@ -10,13 +10,9 @@
 	<ui:include src="/_includes/_dashboard_header" />
 </h:head>
 <h:body>
-	<p:layout fullPage="true">
-		<p:layoutUnit position="north" size="62"
-			styleClass="q-dashboard-background" id="north">
-			<ui:include src="/_includes/top_dashboard" />
-		</p:layoutUnit>
-		<ui:include src="/_includes/side" />
-		<p:layoutUnit position="center">
+<h:outputText value="#{loginBean.checkAccessRedirectHome(act.pageSearchCarts)}" />
+<ui:include src="/_includes/top_dashboard.xhtml" />
+	<ui:include src="/_includes/side.xhtml" />
 			<div class="w3-container">
 				<div align="center" class="w3-padding-8">
 					<h:outputText value="Search Carts" styleClass="q-large-text" />
@@ -271,7 +267,5 @@
 
 				</div>
 			</div>
-		</p:layoutUnit>
-	</p:layout>
 </h:body>
 </html>

@@ -21,21 +21,21 @@ import qetaa.jsf.dashboard.helpers.PojoRequester;
 import qetaa.jsf.dashboard.model.cart.Cart;
 import qetaa.jsf.dashboard.model.cart.CartItem;
 import qetaa.jsf.dashboard.model.cart.CartReview;
-import qetaa.jsf.dashboard.model.cart.FinalizedItem;
-import qetaa.jsf.dashboard.model.cart.FinalizedItemsHolder;
 import qetaa.jsf.dashboard.model.cart.ManualQuotationVendor;
 import qetaa.jsf.dashboard.model.cart.Quotation;
 import qetaa.jsf.dashboard.model.cart.QuotationItem;
+import qetaa.jsf.dashboard.model.cart.QuotationItemResponse;
 import qetaa.jsf.dashboard.model.cart.QuotationVendorItem;
 import qetaa.jsf.dashboard.model.customer.Customer;
 import qetaa.jsf.dashboard.model.location.City;
-import qetaa.jsf.dashboard.model.user.User;
+import qetaa.jsf.dashboard.model.product.Product;
+import qetaa.jsf.dashboard.model.product.ProductPrice;
 import qetaa.jsf.dashboard.model.vehicle.Make;
 import qetaa.jsf.dashboard.model.vehicle.Model;
 import qetaa.jsf.dashboard.model.vehicle.ModelYear;
 import qetaa.jsf.dashboard.model.vendor.PromotionCode;
 import qetaa.jsf.dashboard.model.vendor.Vendor;
- 
+
 @Named
 @ViewScoped
 public class QuotationBean implements Serializable {
@@ -46,8 +46,6 @@ public class QuotationBean implements Serializable {
 	private int[] quantityArray;
 	private QuotationVendorItem selectedVendorItem;
 	private QuotationItem selectedQuotationItem;
-	private List<FinalizedItem> finalizedItems;
-	private List<FinalizedItem> allResponses;
 	private List<Vendor> makeVendors;
 	private CartReview review;
 	private List<CartReview> reviews;
@@ -76,15 +74,15 @@ public class QuotationBean implements Serializable {
 			initQuotations();
 			initNewQuotation();
 			initCartVariables();
+			initQuotationItemProducts();
 			review = new CartReview();
 			selectedVendorItem = new QuotationVendorItem();
 			this.selectedMake = new Make();
 			this.selectedModel = new Model();
 			this.selectedModelYear = new ModelYear();
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			Helper.redirect("quotations");
+//			Helper.redirect("quotations");
 		}
 	}
 
@@ -159,42 +157,20 @@ public class QuotationBean implements Serializable {
 
 	public void initCartVariables() throws InterruptedException {
 		String header = reqs.getSecurityHeader();
-		Thread[] threads = new Thread[7];
+		Thread[] threads = new Thread[5];
 		threads[0] = initModelYear(cart, header);
 		threads[1] = initCustomer(cart, header);
 		threads[2] = initCity(cart, header);
-		threads[3] = initFinalizedCart(cart, header);
-		threads[4] = initAllResponses(cart, header);
-		threads[5] = initReviews(cart, header);
-		threads[6] = initPromoCode(cart, header);
+		threads[3] = initReviews(cart, header);
+		threads[4] = initPromoCode(cart, header);
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 			threads[i].join();
 		}
 	}
 
-	private Thread initFinalizedCart(Cart cart, String header) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				if (cart.getStatus() == 'R') {
-					try {
-						Response r = PojoRequester.getSecuredRequest(AppConstants.getFinalizedItems(cart.getId()),
-								header);
-						if (r.getStatus() == 200) {
-							QuotationBean.this.finalizedItems = r.readEntity(new GenericType<List<FinalizedItem>>() {
-							});
-						}
 
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-			}
-		});
-		return thread;
-	}
-	
+
 	private Thread initPromoCode(Cart cart, String header) {
 		Thread thread = new Thread(new Runnable() {
 			@Override
@@ -237,28 +213,7 @@ public class QuotationBean implements Serializable {
 		return thread;
 	}
 
-	private Thread initAllResponses(Cart cart, String header) {
-		allResponses = new ArrayList<>();
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				if (cart.getStatus() == 'R') {
-					try {
-						Response r = PojoRequester.getSecuredRequest(AppConstants.getFinalizedItemsFull(cart.getId()),
-								header);
-						if (r.getStatus() == 200) {
-							QuotationBean.this.allResponses = r.readEntity(new GenericType<List<FinalizedItem>>() {
-							});
-						}
-
-					} catch (Exception ex) {
-
-					}
-				}
-			}
-		});
-		return thread;
-	}
+	
 
 	private Thread initModelYear(Cart cart, String header) {
 		Thread thread = new Thread(new Runnable() {
@@ -324,22 +279,39 @@ public class QuotationBean implements Serializable {
 		if (r.getStatus() == 200) {
 			this.quotations = r.readEntity(new GenericType<List<Quotation>>() {
 			});
-			for (Quotation q : quotations) {
-				Response r2 = reqs.getSecuredRequest(AppConstants.getUser(q.getCreatedBy()));
-				if (r2.getStatus() == 200) {
-					User user = r2.readEntity(User.class);
-					q.setCreatedByObject(user);
-				}
-			}
 		}
 	}
-	
+
+	private void initQuotationItemProducts() {
+		for(Quotation q : quotations) {
+			for (QuotationItem item : q.getQuotationItems()) {
+				if(item.getQuotationItemResponses() != null) {
+					for (QuotationItemResponse res : item.getQuotationItemResponses()) {
+						if (res.getProductId() != null) {
+							Response r = reqs.getSecuredRequest(AppConstants.getProduct(res.getProductId()));
+							if (r.getStatus() == 200) {
+								Product p = r.readEntity(Product.class);
+								res.setProduct(p);
+							}
+						}
+						if (res.getProductPriceId() != null) {
+							Response r = reqs.getSecuredRequest(AppConstants.getProductPrice(res.getProductPriceId()));
+							if (r.getStatus() == 200) {
+								ProductPrice pp = r.readEntity(ProductPrice.class);
+								res.setProductPrice(pp);
+							}
+						}
+					}
+				}
+			}
+		}		
+	}
+
 	public void deleteQuotationItem(QuotationItem qitem) {
 		Response r = reqs.deleteSecuredRequest(AppConstants.deleteQuotationItem(qitem.getId()));
-		if(r.getStatus() == 201) {
+		if (r.getStatus() == 201) {
 			Helper.redirect("process_quotation?cart-id=" + cart.getId());
-		}
-		else {
+		} else {
 			Helper.addErrorMessage("An error occured");
 		}
 	}
@@ -365,26 +337,7 @@ public class QuotationBean implements Serializable {
 
 	}
 
-	public void submitFinalized() {
-		if (cart.getDeliveryFees() >= 0) {
-			FinalizedItemsHolder holder = new FinalizedItemsHolder();
-			holder.setFinalizedItems(finalizedItems);
-			holder.setCartId(this.cart.getId());
-			holder.setDeliveryFees(this.cart.getDeliveryFees());
-			holder.setCreatedBy(loginBean.getUserHolder().getUser().getId());
-			Response r = reqs.postSecuredRequest(AppConstants.APPROVE_QUOTATION, holder);
-			if (r.getStatus() == 200) {
-				Helper.redirect("quotations");
-			} else if (r.getStatus() == 409) {
-				Helper.redirect("quotations");
-			} else {
-				Helper.addErrorMessage("An error occured");
-			}
-		} else {
-			Helper.addErrorMessage("Enter delivery cost");
-		}
-
-	}
+	
 
 	public boolean isFirstColumnShown(Quotation quotation) {
 		boolean found = false;
@@ -435,7 +388,6 @@ public class QuotationBean implements Serializable {
 			Quotation q = new Quotation();
 			q.setCartId(cart.getId());
 			q.setCreatedBy(loginBean.getUserHolder().getUser().getId());
-			q.setCreatedByObject(loginBean.getUserHolder().getUser());
 			q.setQuotationItems(new ArrayList<>());
 			q.setStatus('N');
 			for (CartItem cartItem : cart.getCartItems()) {
@@ -444,6 +396,7 @@ public class QuotationBean implements Serializable {
 				qitem.setCreatedBy(loginBean.getUserHolder().getUser().getId());
 				qitem.setItemDesc(cartItem.getName());
 				qitem.setQuantity(cartItem.getQuantity());
+				qitem.setQuotationItemResponses(new ArrayList<>());
 				q.getQuotationItems().add(qitem);
 			}
 			this.quotations.add(q);
@@ -470,14 +423,12 @@ public class QuotationBean implements Serializable {
 			Helper.addErrorMessage("Something went wrong");
 		}
 	}
-	
 
 	public void deleteQuotation(Quotation quotation) {
 		Response r = reqs.deleteSecuredRequest(AppConstants.deleteQuotation(quotation.getId()));
-		if(r.getStatus() == 201) {
+		if (r.getStatus() == 201) {
 			Helper.redirect("process_quotation?cart-id=" + this.cart.getId());
-		}
-		else {
+		} else {
 			Helper.addErrorMessage("An error occured");
 		}
 	}
@@ -487,7 +438,6 @@ public class QuotationBean implements Serializable {
 		q.setManuallyAdded(true);
 		q.setCartId(cart.getId());
 		q.setCreatedBy(loginBean.getUserHolder().getUser().getId());
-		q.setCreatedByObject(loginBean.getUserHolder().getUser());
 		q.setQuotationItems(new ArrayList<>());
 		q.setStatus('N');
 		q.setCreated(new Date());
@@ -514,8 +464,7 @@ public class QuotationBean implements Serializable {
 			Helper.addErrorMessage("Enter Item name");
 		}
 	}
-	
-	
+
 	public void submitQuotationOrderToFinder(Quotation quotation) {
 		boolean ok = true;
 		for (QuotationItem qi : quotation.getQuotationItems()) {
@@ -527,7 +476,7 @@ public class QuotationBean implements Serializable {
 		if (ok) {
 			Response r = reqs.postSecuredRequest(AppConstants.POST_QUOTATION_FOR_FINDERS, quotation);
 			if (r.getStatus() == 200) {
-				Helper.redirect("quotation-request?cart-id=" + this.cart.getId());
+				Helper.redirect("process_quotation?cart-id=" + this.cart.getId());
 			} else {
 				Helper.addErrorMessage("An error occured");
 			}
@@ -535,57 +484,55 @@ public class QuotationBean implements Serializable {
 			Helper.addErrorMessage("Enter Item name");
 		}
 	}
-	
 
 	public void updateQuotationOrder(Quotation quotation) {
 		Response r = reqs.putSecuredRequest(AppConstants.PUT_UPDATE_ADDITIONAL_QUOTATION, quotation);
 		if (r.getStatus() == 200) {
-			Helper.redirect("quotations");
+			Helper.redirect("process_quotation?cart-id=" + this.cart.getId());
 		} else {
 			Helper.addErrorMessage("An error occured");
 		}
 	}
-	
+
 	public void chooseMake() {
-		for(Make make : this.vehiclesBean.getMakes()) {
-			if(make.getId() == this.selectedMakeId) {
+		for (Make make : this.vehiclesBean.getMakes()) {
+			if (make.getId() == this.selectedMakeId) {
 				this.selectedMake = make;
 				break;
 			}
 		}
 	}
-	
+
 	public void chooseModelYear() {
-		for(ModelYear myear : this.selectedModel.getModelYears()) {
-			if(myear.getId() == this.selectedModelYearId) {
+		for (ModelYear myear : this.selectedModel.getModelYears()) {
+			if (myear.getId() == this.selectedModelYearId) {
 				this.selectedModelYear = myear;
 				break;
 			}
 		}
 	}
-	
-	
+
 	public void chooseModel() {
-		for(Model model : this.selectedMake.getModels()) {
-			if(model.getId() == this.selectedModelId) {
+		for (Model model : this.selectedMake.getModels()) {
+			if (model.getId() == this.selectedModelId) {
 				this.selectedModel = model;
 				break;
 			}
 		}
 	}
-	
+
 	public void initVehicleEdit() {
-		if(this.cart.getModelYear() != null) {
-			for(Make make : this.vehiclesBean.getMakes()) {
-				if(make.getId() == cart.getModelYear().getMake().getId()) {
+		if (this.cart.getModelYear() != null) {
+			for (Make make : this.vehiclesBean.getMakes()) {
+				if (make.getId() == cart.getModelYear().getMake().getId()) {
 					selectedMake = make;
 					break;
 				}
 			}
 			this.selectedMakeId = cart.getModelYear().getMake().getId();
-			
-			for(Model model : this.selectedMake.getModels()) {
-				if(cart.getModelYear().getModel().getId() == model.getId()) {
+
+			for (Model model : this.selectedMake.getModels()) {
+				if (cart.getModelYear().getModel().getId() == model.getId()) {
 					selectedModel = model;
 					break;
 				}
@@ -593,9 +540,8 @@ public class QuotationBean implements Serializable {
 			this.selectedModelId = cart.getModelYear().getModel().getId();
 			this.selectedModelYear = cart.getModelYear();
 			this.selectedModelYearId = cart.getModelYear().getId();
-		}
-		else {
-			
+		} else {
+
 		}
 	}
 
@@ -612,37 +558,17 @@ public class QuotationBean implements Serializable {
 		Long id = Long.parseLong(param);
 		initquantityArray();
 		// get the cart from active carts
-		//Response r = reqs.getSecuredRequest(AppConstants.getCart(id, loginBean.getUserHolder().getUser().getId()));
+		// Response r = reqs.getSecuredRequest(AppConstants.getCart(id,
+		// loginBean.getUserHolder().getUser().getId()));
 		Response r = reqs.getSecuredRequest(AppConstants.getCart(id));
 		if (r.getStatus() == 200) {
 			cart = r.readEntity(Cart.class);
-			if(!(cart.getStatus() == 'W' || cart.getStatus() == 'N' || cart.getStatus() == 'Q' || cart.getStatus() == 'A' || cart.getStatus() == 'R')) {
+			if (!(cart.getStatus() == 'W' || cart.getStatus() == 'N' || cart.getStatus() == 'Q'
+					|| cart.getStatus() == 'A' || cart.getStatus() == 'R')) {
 				throw new Exception();
 			}
 		} else
 			throw new Exception();
-	}
-
-	public double getFinalizedTotalCost() {
-		if (finalizedItems != null) {
-			double total = 0;
-			for (FinalizedItem fitem : this.finalizedItems) {
-				total += fitem.getTotalCostPrice();
-			}
-			return total;
-		} else
-			return 0;
-	}
-
-	public double getFinalizedTotalSales() {
-		if (finalizedItems != null) {
-			double total = 0;
-			for (FinalizedItem fitem : this.finalizedItems) {
-				total += fitem.getTotalSalesPrice();
-			}
-			return total;
-		} else
-			return 0;
 	}
 
 	private void initquantityArray() {
@@ -682,22 +608,6 @@ public class QuotationBean implements Serializable {
 
 	public void setSelectedVendorItem(QuotationVendorItem selectedVendorItem) {
 		this.selectedVendorItem = selectedVendorItem;
-	}
-
-	public List<FinalizedItem> getFinalizedItems() {
-		return finalizedItems;
-	}
-
-	public void setFinalizedItems(List<FinalizedItem> finalizedItems) {
-		this.finalizedItems = finalizedItems;
-	}
-
-	public List<FinalizedItem> getAllResponses() {
-		return allResponses;
-	}
-
-	public void setAllResponses(List<FinalizedItem> allResponses) {
-		this.allResponses = allResponses;
 	}
 
 	public QuotationItem getSelectedQuotationItem() {
@@ -779,6 +689,5 @@ public class QuotationBean implements Serializable {
 	public void setSelectedModelYearId(int selectedModelYearId) {
 		this.selectedModelYearId = selectedModelYearId;
 	}
-	
 
 }

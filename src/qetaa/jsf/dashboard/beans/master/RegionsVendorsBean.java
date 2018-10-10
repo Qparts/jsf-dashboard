@@ -76,7 +76,6 @@ public class RegionsVendorsBean implements Serializable{
 	
 	private void initRegionVendors() {
 		Response r = reqs.getSecuredRequest(AppConstants.GET_VENDORS_REGIONS);
-		System.out.println(r.getStatus());
 		if(r.getStatus() == 200) {
 			List<VendorRegion> vendorRegions = r.readEntity(new GenericType<List<VendorRegion>>() {});
 			for(RegionsVendorsHolder rvh : this.regionsVendors) {

@@ -75,9 +75,7 @@ public class PriceListUploadBean implements Serializable {
 				// getCellTypeEnum ill be renamed to getCellType starting from version 4.0
 				// if (currentCell.getCellTypeEnum() == CellType.STRING) {
 				// String partName = currentCell.getStringCellValue();
-				// System.out.print(currentCell.getStringCellValue() + "--");
 				// } else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) {
-				// System.out.print(currentCell.getNumericCellValue() + "--");
 				// }
 
 				// }

@@ -91,6 +91,7 @@ public class ThreadRunner {
 						if (r.getStatus() == 200) {
 							cart.setPromoCodeObject(r.readEntity(PromotionCode.class));
 						}
+					}else {
 					}
 
 				} catch (Exception ex) {

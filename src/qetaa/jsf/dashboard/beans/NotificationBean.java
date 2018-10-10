@@ -1,24 +1,23 @@
 package qetaa.jsf.dashboard.beans;
- 
+
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.Response;
 
-import qetaa.jsf.dashboard.beans.LoginBean;
-import qetaa.jsf.dashboard.beans.Requester;
 import qetaa.jsf.dashboard.helpers.AppConstants;
-import qetaa.jsf.dashboard.helpers.PojoRequester;
+import qetaa.jsf.dashboard.helpers.WebsocketLinks;
 
 @Named
 @SessionScoped
 public class NotificationBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private String header;
 	private int userId;
 	private int noVin;
 	private int quotations;
@@ -26,9 +25,7 @@ public class NotificationBean implements Serializable {
 	private int parts;
 	private int followups;
 	private int wires;
-	private int unassigned;
-	private int collection;
-	private int receival;
+	private int wallets;
 
 	@Inject
 	private Requester reqs;
@@ -39,220 +36,99 @@ public class NotificationBean implements Serializable {
 	@PostConstruct
 	private void init() {
 		this.userId = loginBean.getUserHolder().getUser().getId();
-		this.header = reqs.getSecurityHeader();
+	}
+
+	public void changeOccured() {
 		try {
-			initNotifications();
-		} catch (Exception ex) {
-
-		}
-	}
-
-	public void initNotifications() throws InterruptedException {
-		Thread[] threads = new Thread[9];
-		Thread t1 = initFollowups();
-		Thread t2 = initUnassigned();
-		Thread t3 = initParts();
-		Thread t4 = initCollections();
-		Thread t5 = initReceival();
-		Thread t6 = initWires();
-		Thread t7 = initQuotations();
-		Thread t8 = initAllQuotations();
-		Thread t9 = initNoVins();
-		threads[0] = t1;
-		threads[1] = t2;
-		threads[2] = t3;
-		threads[3] = t4;
-		threads[4] = t5;
-		threads[5] = t6;
-		threads[6] = t7;
-		threads[7] = t8;
-		threads[8] = t9;
-		t1.start();
-		t2.start();
-		t3.start();
-		t4.start();
-		t5.start();
-		t6.start();
-		t7.start();
-		t8.start();
-		t9.start();
-	}
-
-	public void updateFollowups() {
-		try {
-			Response r = PojoRequester.getSecuredRequest(AppConstants.GET_FOLLOWUPS_NOTOFICATION, header);
-			if (r.getStatus() == 200) {
-				followups = r.readEntity(Integer.class);
-			}
-		} catch (Exception ex) {
-
-		}
-	}
-
-	private Thread initFollowups() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_FOLLOWUPS_NOTOFICATION, header);
-					if (r.getStatus() == 200) {
-						followups = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
+			Map<String, String> map = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+			String data = map.get("param");
+			if (data != null) {
+				String[] messages = data.split(",");
+				String function = messages[0];
+				String value = messages[1];
+				switch (function) {
+				case "load initials":
+					loadInitials();
+					break;
+				case "followups":
+					followups = Integer.parseInt(value);
+					break;
+				case "wire transfers":
+					wires = Integer.parseInt(value);
+					break;
+				case "no vins":
+					this.noVin = Integer.parseInt(value);
+					break;
+				case "quotations":
+					this.allQuotations = Integer.parseInt(value);
+					break;
+				case "my quotations":
+					this.quotations = Integer.parseInt(value);
+					break;
+				default:
+					System.out.println("default");
 
 				}
 			}
-		});
-		return thread;
+		} catch (Exception ex) {
 
+		}
+
+	}
+
+	public void loadInitials() {
+		initFollowups();
+		initWires();
+		initQuotations();
+		initAllQuotations();
+		initNoVins();
+		initWallets();
 	}
 	
-	private Thread initNoVins() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_NO_VINS_NOTIFICATION, header);
-					if (r.getStatus() == 200) {
-						noVin = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
+	private void initWallets() {
+		Response r = reqs.getSecuredRequest(AppConstants.GET_PROCESS_WALLET_NOTIFICATION);
+		if (r.getStatus() == 200) {
+			wallets = r.readEntity(Integer.class);
+		}
 
 	}
 
-	private Thread initParts() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_PARTS_NOTIFICATION, header);
-					if (r.getStatus() == 200) {
-						parts = r.readEntity(Integer.class);
-					}
 
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
+	private void initFollowups() {
+		Response r = reqs.getSecuredRequest(AppConstants.GET_FOLLOWUPS_NOTOFICATION);
+		if (r.getStatus() == 200) {
+			followups = r.readEntity(Integer.class);
+		}
 
 	}
 
-	private Thread initQuotations() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.getQuotationNotification(userId), header);
-					if (r.getStatus() == 200) {
-						quotations = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
+	private void initNoVins() {
+		Response r = reqs.getSecuredRequest(AppConstants.GET_NO_VINS_NOTIFICATION);
+		if (r.getStatus() == 200) {
+			noVin = r.readEntity(Integer.class);
+		}
 	}
 
-	private Thread initAllQuotations() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_ALL_QUOTATIONS_NOTIFICATION, header);
-					if (r.getStatus() == 200) {
-						allQuotations = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
+	private void initQuotations() {
+		Response r = reqs.getSecuredRequest(AppConstants.getQuotationNotification(userId));
+		if (r.getStatus() == 200) {
+			quotations = r.readEntity(Integer.class);
+		}
 	}
 
-	private Thread initUnassigned() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_UNASSIGNED_NOTIFICATIONS, header);
-					if (r.getStatus() == 200) {
-						unassigned = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
+	private void initAllQuotations() {
+		Response r = reqs.getSecuredRequest(AppConstants.GET_ALL_QUOTATIONS_NOTIFICATION);
+		if (r.getStatus() == 200) {
+			allQuotations = r.readEntity(Integer.class);
+		}
 	}
 
-	private Thread initWires() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_WIRE_NOTIFICATION, header);
-					if (r.getStatus() == 200) {
-						wires = r.readEntity(Integer.class);
-					}
+	private void initWires() {
+		Response r = reqs.getSecuredRequest(AppConstants.GET_WIRE_NOTIFICATION);
+		if (r.getStatus() == 200) {
+			wires = r.readEntity(Integer.class);
+		}
 
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
-
-	}
-
-	private Thread initCollections() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_COLLECTION_NOTIFICATION, header);
-					if (r.getStatus() == 200) {
-						collection = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
-	}
-
-	Thread initReceival() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					Response r = PojoRequester.getSecuredRequest(AppConstants.GET_RECEIVAL_NOTIFICATION, header);
-					if (r.getStatus() == 200) {
-						receival = r.readEntity(Integer.class);
-					}
-
-				} catch (Exception ex) {
-
-				}
-			}
-		});
-		return thread;
 	}
 
 	public int getQuotations() {
@@ -271,24 +147,20 @@ public class NotificationBean implements Serializable {
 		return wires;
 	}
 
-	public int getUnassigned() {
-		return unassigned;
-	}
-
-	public int getCollection() {
-		return collection;
-	}
-
-	public int getReceival() {
-		return this.receival;
-	}
-
 	public int getAllQuotations() {
 		return allQuotations;
 	}
 
 	public int getNoVin() {
 		return noVin;
+	}
+
+	
+	public int getWallets() {
+		return wallets;
+	}
+	public String getNotificationsWSLink() {
+		return WebsocketLinks.getNotificationsLink(loginBean.getLoggedUserId(), loginBean.getUserHolder().getToken());
 	}
 
 }
